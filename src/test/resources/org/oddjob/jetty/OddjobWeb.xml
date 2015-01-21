@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<oddjob id="this">
+    <job>
+        <sequential>
+            <jobs>
+                <properties>
+                  <values>
+                    <file key="project.root" file="."/>
+                  </values>
+                </properties>
+                <web:server xmlns:web="oddjob:web" id="server">
+                    <handlers>
+                        <web:files baseDir="${project.root}/src/main/webapp/"
+                        directoriesListed="true">
+                          <welcomeFiles>
+                            <value value="index.html"/>
+                          </welcomeFiles>
+                        </web:files>
+                        <web:oddjob-ws>
+                            <root>
+                                <value value="${jobs}"/>
+                            </root>
+                        </web:oddjob-ws>
+                    </handlers>
+                </web:server>
+                <sequential id="jobs">
+                    <jobs>
+                        <echo name="Echo 1"><![CDATA[Hello]]></echo>
+                        <echo name="Echo 2"><![CDATA[Hello]]></echo>
+                    </jobs>
+                </sequential>
+            </jobs>
+        </sequential>
+    </job>
+</oddjob>

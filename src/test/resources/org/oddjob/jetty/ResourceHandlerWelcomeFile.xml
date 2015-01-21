@@ -1,0 +1,13 @@
+<oddjob id="this">
+  <job>
+    <web:server xmlns:web="oddjob:web" id="server">
+      <handlers>
+        <web:files baseDir="${this.dir}">
+          <welcomeFiles>
+            <value value="TestFile.txt"/>
+          </welcomeFiles>
+        </web:files>
+      </handlers>
+    </web:server>
+  </job>
+</oddjob>

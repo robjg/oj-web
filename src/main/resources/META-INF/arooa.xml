@@ -1,0 +1,17 @@
+<arooa:descriptor xmlns:arooa="http://rgordon.co.uk/oddjob/arooa"
+  prefix="web" namespace="oddjob:web">
+  <values>
+    <arooa:bean-def element='oddjob-ws'
+      className='org.oddjob.jetty.OddjobRestHandler'/>
+    <arooa:bean-def element='files'
+      className='org.oddjob.jetty.ResourceHandlerType'/>
+  </values>
+  <components>
+    <arooa:bean-def element='server'
+      className='org.oddjob.jetty.JettyHttpServer'>
+    </arooa:bean-def>
+    <arooa:bean-def element='client'
+      className='org.oddjob.jetty.JettyHttpClient'>
+    </arooa:bean-def>
+  </components>
+</arooa:descriptor>
