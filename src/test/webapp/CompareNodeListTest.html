@@ -1,0 +1,110 @@
+<html>
+<body>
+
+
+<button id="runTestOne">Test 1</button>
+<div id=result1></div>
+
+<button id="runTestTwo">Test 2</button>
+<div id=result2></div>
+
+<button id="runTestThree">Test 3</button>
+<div id=result3></div>
+
+<button id="runTestFour">Test 4</button>
+<div id=result4></div>
+
+<button id="runTestFive">Test 5</button>
+<div id=result5></div>
+
+<button id="runTestSix">Test 6</button>
+<div id=result6></div>
+
+<script src="../../main/webapp/scripts/jquery-1.11.2.js"></script>
+
+
+
+<script>
+
+function compareNodeList(nodes1, nodes2, result$) {
+	
+	result$.append("<p>" + nodes1 + " : " + nodes2 + "</p>");
+	
+	var lastI = 0, insertPoint = 0;
+	
+	for (var j = 0; j < nodes2.length; ++j) {
+
+		var found = false;
+		
+		for (var i = lastI; i < nodes1.length; ++i) {
+		
+			if (nodes2[j] == nodes1[i]) {
+			
+				for (; lastI < i; ++lastI) {
+					result$.append("<p>deleted(" + nodes1[lastI] + ", " + insertPoint + ")</p>");
+				}
+				++lastI;
+				++insertPoint;
+				found = true;
+				break;
+			}
+		}
+		
+		if (!found) {
+			result$.append("<p>inserted(" + nodes2[j] + ", " + (insertPoint++) + ")</p>");
+		}
+	}
+
+	for (var i = lastI; i < nodes1.length; ++i) {
+		result$.append("<p>deleted(" + nodes1[i] + ", " + insertPoint + ")</p>");
+	}
+}
+
+
+$(document).ready(function() {
+	
+	$("#runTestOne").click(function() {
+
+		compareNodeList([10, 11, 12], [8, 10, 12, 14], $('#result1'));
+	});
+	
+	$("#runTestTwo").click(function() {
+		
+		compareNodeList([10, 11, 12], [10, 11, 12, 14], $('#result2'));		
+	});
+	
+	$("#runTestThree").click(function() {
+		
+		compareNodeList([10, 11, 12], [12], $('#result3'))
+	});
+	
+	$("#runTestFour").click(function() {
+		
+		compareNodeList([], [8, 10, 12, 14], $('#result4'))
+	});
+	
+	$("#runTestFive").click(function() {
+		
+		compareNodeList([10, 11, 12], [], $('#result5'))
+	});
+	
+	$("#runTestSix").click(function() {
+		
+		compareNodeList([10, 11, 12], [15, 16, 17], $('#result6'))
+	});
+	
+	$("#runTestOne").click();
+	$("#runTestTwo").click();
+	$("#runTestThree").click();
+	$("#runTestFour").click();
+	$("#runTestFive").click();
+	$("#runTestSix").click();
+});
+
+
+
+
+
+</script>
+</body>
+</html>

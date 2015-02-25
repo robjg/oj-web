@@ -1,9 +1,4 @@
 .tree {
-	position: absolute;
-	top: 0;
-	right: 0;
-	bottom: 0;
-	left: 0;	
 	overflow: auto;
 	white-space: nowrap;
 	padding: 2px;
@@ -20,10 +15,7 @@
 	padding: 0 0 0 0;
 }
 
-.tree li form {
-	display: inline;
-}
-.tree li input {
+.tree li img.toggle {
 	margin: 0 0 0 -20px;
 	padding: 0 0 0 0;
 }

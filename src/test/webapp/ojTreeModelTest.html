@@ -1,0 +1,126 @@
+<html>
+<body>
+
+
+<button id="runTestOne">Test 1</button>
+<div id=result1></div>
+
+<button id="runTestTwo">Test 2</button>
+<div id=result2></div>
+
+<button id="runTestThree">Test 3</button>
+<div id=result3></div>
+
+<button id="runTestFour">Test 4</button>
+<div id=result4></div>
+
+<button id="runTestFive">Test 5</button>
+<div id=result5></div>
+
+<button id="runTestSix">Test 6</button>
+<div id=result6></div>
+
+<script src="../../main/webapp/scripts/jquery-1.11.2.js"></script>
+<script src="../../main/webapp/scripts/ojTreeModel.js"></script>
+<script src="ojTreeModelTest.js"></script>
+
+
+
+<script>
+
+$(document).ready(function() {
+	
+	var test = ojTreeModelFactory(ojTreeUI, ojTreeDao);
+	
+	$("#runTestOne").click(function() {
+		test.init();
+
+		var request = makeNodeInfoRequest_argCapture[0]
+		$('#result1').append("<div class='makeNodeInfoRequest_argCapture'>" +
+				"makeNodeInfoRequest_argCapture: " + request.nodeIds + " " + request.eventSeq + "</div>");
+		$('#result1').append("<div class='makeNodeInfoRequest_callCount'>" +
+				"makeNodeInfoRequest_callCount: " + ojTreeDao.getCallCount() + "</div>");
+		
+		var rootNode = rootNode_argCapture[0]
+		$('#result1').append("<div class='rootNode_argCapture'>" +
+				"rootNode_argCapture: " + rootNode.nodeId + " " + rootNode.name + "</div>");
+	});
+	
+	$("#runTestTwo").click(function() {
+		
+		test.poll();
+		
+		var request = makeNodeInfoRequest_argCapture[1]
+		$('#result2').append("<div class='makeNodeInfoRequest_argCapture'>" +
+				"makeNodeInfoRequest_argCapture: " + request.nodeIds + " " + request.eventSeq + "</div>");
+		$('#result2').append("<div class='makeNodeInfoRequest_callCount'>" +
+				"makeNodeInfoRequest_callCount: " + ojTreeDao.getCallCount() + "</div>");
+		
+	});
+	
+	$("#runTestThree").click(function() {
+		
+		test.expandNode('0');
+		
+		var request = makeNodeInfoRequest_argCapture[2]
+		$('#result3').append("<div class='makeNodeInfoRequest_argCapture'>" +
+				"makeNodeInfoRequest_argCapture: " + request.nodeIds + " " + request.eventSeq + "</div>");
+		$('#result3').append("<div class='makeNodeInfoRequest_callCount'>" +
+				"makeNodeInfoRequest_callCount: " + ojTreeDao.getCallCount() + "</div>");
+		
+	});
+	
+	$("#runTestFour").click(function() {
+		
+		test.poll();
+		
+		var request = makeNodeInfoRequest_argCapture[3]
+		$('#result4').append("<div class='makeNodeInfoRequest_argCapture'>" +
+				"makeNodeInfoRequest_argCapture: " + request.nodeIds + " " + request.eventSeq + "</div>");
+		$('#result4').append("<div class='makeNodeInfoRequest_callCount'>" +
+				"makeNodeInfoRequest_callCount: " + ojTreeDao.getCallCount() + "</div>");
+	});
+	
+	$("#runTestFive").click(function() {
+		
+		test.poll();
+		
+		var request = makeNodeInfoRequest_argCapture[4]
+		$('#result5').append("<div class='makeNodeInfoRequest_argCapture'>" +
+				"makeNodeInfoRequest_argCapture: " + request.nodeIds + " " + request.eventSeq + "</div>");
+		$('#result5').append("<div class='makeNodeInfoRequest_callCount'>" +
+				"makeNodeInfoRequest_callCount: " + ojTreeDao.getCallCount() + "</div>");
+	});
+	
+	$("#runTestSix").click(function() {
+		
+		test.poll();
+		
+		var request1 = makeNodeInfoRequest_argCapture[5]
+		$('#result6').append("<div class='makeNodeInfoRequest_argCapture'>" +
+				"makeNodeInfoRequest_argCapture: " + request1.nodeIds + " " + request1.eventSeq + "</div>");
+		
+		$('#result6').append("<div class='makeNodeInfoRequest_callCount'>" +
+				"makeNodeInfoRequest_callCount: " + ojTreeDao.getCallCount() + "</div>");
+		
+		var request2 = makeNodeInfoRequest_argCapture[6]
+		$('#result6').append("<div class='makeNodeInfoRequest_argCapture'>" +
+				"makeNodeInfoRequest_argCapture: " + request2.nodeIds + " " + request2.eventSeq + "</div>");
+		
+	});
+	
+	$("#runTestOne").click();
+	$("#runTestTwo").click();
+	$("#runTestThree").click();
+	$("#runTestFour").click();
+	$("#runTestFive").click();
+	$("#runTestSix").click();
+});
+
+
+
+
+
+</script>
+</body>
+</html>

@@ -29,18 +29,24 @@ public class JettyHttpServer implements Service {
 
 		server = new Server(port);
 		
-		HandlerList handlerList = new HandlerList();
-		
-		handlerList.setHandlers(handlers.toArray(
-				new Handler[handlers.size()]));
-
-		handlerList.addHandler(new DefaultHandler());
-		
-		server.setHandler(handlerList);
-		
-		server.start();
-		
-		port = ((ServerConnector) server.getConnectors()[0]).getLocalPort();
+		try {
+			HandlerList handlerList = new HandlerList();
+			
+			handlerList.setHandlers(handlers.toArray(
+					new Handler[handlers.size()]));
+	
+			handlerList.addHandler(new DefaultHandler());
+			
+			server.setHandler(handlerList);
+			
+			server.start();
+			
+			port = ((ServerConnector) server.getConnectors()[0]).getLocalPort();
+		}
+		catch (Exception e) {
+			server = null;
+			throw e;
+		}
 	}
 
 	@Override

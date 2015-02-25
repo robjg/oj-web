@@ -22,6 +22,11 @@ public class ResourceHandlerType implements ValueFactory<Handler>{
 	
 	private String[] welcomeFiles;
 	
+	/**
+	 * https://wiki.eclipse.org/Jetty/Howto/Deal_with_Locked_Windows_Files
+	 */
+	private Integer minMemoryMappedContentLength;
+	
 	@Override
 	public Handler toValue() throws ArooaConversionException {
 
@@ -31,7 +36,7 @@ public class ResourceHandlerType implements ValueFactory<Handler>{
 		 
 		 if (welcomeFiles != null) {
 			 resourceHandler.setWelcomeFiles(welcomeFiles);
-			 logger.debug("Setting welcome files to [" + Arrays.toString(welcomeFiles));
+			 logger.debug("Setting welcome files to " + Arrays.toString(welcomeFiles));
 		 }
 		 
 		 if (baseDir != null) {
@@ -43,6 +48,10 @@ public class ResourceHandlerType implements ValueFactory<Handler>{
 			 }
 			 resourceHandler.setBaseResource(Resource.newResource(baseDir));
 			 logger.debug("Setting base directory to " + baseDir);
+		 }
+		 
+		 if (minMemoryMappedContentLength != null) {
+			 resourceHandler.setMinMemoryMappedContentLength(minMemoryMappedContentLength);
 		 }
 		 
 		return resourceHandler;
@@ -73,8 +82,17 @@ public class ResourceHandlerType implements ValueFactory<Handler>{
 		this.welcomeFiles = welcomeFiles;
 	}
 	
+	public Integer getMinMemoryMappedContentLength() {
+		return minMemoryMappedContentLength;
+	}
+
+	public void setMinMemoryMappedContentLength(Integer minMemoryMappedFileSize) {
+		this.minMemoryMappedContentLength = minMemoryMappedFileSize;
+	}
+	
 	@Override
 	public String toString() {
 		return getClass().getName() + ", base=" + baseDir;
 	}
+
 }

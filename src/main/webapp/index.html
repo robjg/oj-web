@@ -2,19 +2,33 @@
 <html>
 <head>
 <meta charset="ISO-8859-1">
-<title>Oddjob</title>
+	<style type="text/css">
+	@import url(css/tree.css?v=1.1.0);
+	</style>	
+	<title>Oddjob</title>
 </head>
 <body>
 
-<p>My First Java Script</p>
+	<p>Oddjob</p>
 
-<button id="button">Press Me</button>
-<div id='0000'></div>
+	<div id='ojNodeRoot' class='tree'>
+		<ul>
+		</ul>
+	</div>
 
+	<script src="scripts/jquery-1.11.2.js"></script>
+	<script src="scripts/ojTreeUI.js"></script>
+	<script src="scripts/ojTreeModel.js"></script>
+	<script src="scripts/ojTreeController.js"></script>
 
-<p>And That was it.</p>
-	<script src="scripts/jquery-1.11.1.js"></script>
-	<script src="scripts/oj-ws-client.js"></script>
+<script>
+
+$(document).ready(function() {
+	
+	ojTreeController().start();
+});
+
+</script>
 
 </body>
 </html>
