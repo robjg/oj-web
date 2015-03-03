@@ -3,7 +3,6 @@
   <modelVersion>4.0.0</modelVersion>
   <groupId>co.uk.rgordon</groupId>
   <artifactId>oj-web</artifactId>
-  <packaging>war</packaging>
   <version>0.0.1-SNAPSHOT</version>
   <name>Oddjob Webapp</name>
   <url>http://rgordon.co.uk/oddjob</url>
@@ -16,6 +15,11 @@
     <dependency>
       <groupId>org.eclipse.jetty</groupId>
       <artifactId>jetty-servlet</artifactId>
+      <version>9.2.6.v20141205</version>
+    </dependency>
+    <dependency>
+      <groupId>org.eclipse.jetty</groupId>
+      <artifactId>jetty-webapp</artifactId>
       <version>9.2.6.v20141205</version>
     </dependency>
     <dependency>
@@ -54,5 +58,27 @@
   </dependencies>
   <build>
     <finalName>oj-web</finalName>
+    <plugins>
+      <plugin>
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-assembly-plugin</artifactId>
+        <executions>
+          <execution>
+            <id>assemblies</id>
+            <phase>install</phase>
+            <goals>
+              <goal>single</goal>
+            </goals>
+          </execution>
+        </executions>
+        <configuration>
+          <!-- Specifies the configuration file of the assembly plugin -->
+          <descriptors>
+            <descriptor>src/main/assembly/src-assembly.xml</descriptor>
+            <descriptor>src/main/assembly/bin-assembly.xml</descriptor>
+          </descriptors>
+        </configuration>
+      </plugin>
+    </plugins>
   </build>
 </project>

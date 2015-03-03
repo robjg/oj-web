@@ -1,6 +1,7 @@
 package org.oddjob.jetty;
 
 import java.io.File;
+import java.util.Properties;
 
 import junit.framework.TestCase;
 
@@ -26,6 +27,12 @@ public class JettyHttpServerExamplesTest extends TestCase {
 		Oddjob oddjob = new Oddjob();
 		oddjob.setName("My Oddjob");
 		oddjob.setFile(file);
+		
+		if (System.getProperty("basedir") == null) {
+			Properties properties = new Properties();
+			properties.setProperty("basedir", new File(".").getCanonicalPath());
+			oddjob.setProperties(properties);
+		}		
 		
 		oddjob.run();
 		

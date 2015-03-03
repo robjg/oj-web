@@ -37,7 +37,7 @@ var ojTreeUIFactory = function(ojTreeController, idPrefix) {
 		
 		return $('<img>').attr(
 				{ class: 'icon',
-				  src: 'images/' + iconName + '.gif', 
+				  src: 'ojws/icon/' + iconName, 
 				  alt: iconName 
 				}
 		);

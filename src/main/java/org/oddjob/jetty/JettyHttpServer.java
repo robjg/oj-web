@@ -14,6 +14,8 @@ import org.oddjob.framework.Service;
 
 public class JettyHttpServer implements Service {
 
+	private volatile String name;
+	
 	private volatile Server server;
 
 	private volatile int port;
@@ -65,6 +67,14 @@ public class JettyHttpServer implements Service {
 		}
 	}
 	
+	public String getName() {
+		return name;
+	}
+	
+	public void setName(String name) {
+		this.name = name;
+	}
+	
 	public int getPort() {
 		return port;
 	}
@@ -79,5 +89,15 @@ public class JettyHttpServer implements Service {
 	
 	public void setHandlers(int index, Handler handler) {
 		new ListSetterHelper<Handler>(handlers).set(index, handler);
+	}
+	
+	@Override
+	public String toString() {
+		if (name == null) {
+			return getClass().getSimpleName();
+		}
+		else {
+			return name;
+		}
 	}
 }

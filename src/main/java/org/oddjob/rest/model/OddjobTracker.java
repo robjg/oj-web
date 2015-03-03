@@ -22,6 +22,7 @@ public class OddjobTracker {
 	
 	private final Map<Integer, Tracker> nodes = new ConcurrentHashMap<>();
 	
+	private final IconRegistry iconRegistry = new IconRegistry();
 	
 	public int track(Object node) {
 		
@@ -36,7 +37,9 @@ public class OddjobTracker {
 				
 				@Override
 				public void iconEvent(IconEvent e) {
-					tracker.updateIcon(e.getIconId(), sequenceNumber.incrementAndGet());
+					String iconId = e.getIconId();
+					iconRegistry.register(iconId, e.getSource());
+					tracker.updateIcon(iconId, sequenceNumber.incrementAndGet());
 				}
 			});
 		}
@@ -86,7 +89,10 @@ public class OddjobTracker {
 		return new NodeInfos(lastSequence, info);
 	}
 	
-	
+	public byte[] iconImageFor(String iconId) {
+		
+		return iconRegistry.retrieve(iconId);
+	}
 
 	static class Tracker {
 		

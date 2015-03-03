@@ -31,4 +31,9 @@ public class OddjobApiImpl implements OddjobApi {
 		 return Response.status(200).entity(json).build();
 	}
 	
+	@Override
+	public Response iconFor(String iconId) {
+		
+		return Response.ok(tracker.iconImageFor(iconId)).build();
+	}
 }
