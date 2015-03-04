@@ -9,8 +9,6 @@ var ojTreeModelFactory = function(ojTreeUI, ojTreeDao) {
 	
 	var lastSeq = -1;
 	
-	var pendingNodesById = {};
-	
 	var pendingLeastSeq;
 	
 	function compareNodeList(nodes1, nodes2, callbacks) {
@@ -60,19 +58,25 @@ var ojTreeModelFactory = function(ojTreeUI, ojTreeDao) {
 		nodeData.expanded = expanded;
 	}
 	
-	function createNodeState(nodeOrArray) {
+	function createNodeState(nodeOrArray, pending) {
 
+		if (pending === undefined) {
+			pending = false;
+		}
+		
 		if (nodeOrArray.constructor === Array) {
 			for (var i = 0; i < nodeOrArray.length; ++i) {
-				createNodeState(nodeOrArray[i]);
+				createNodeState(nodeOrArray[i], pending);
 			}
 		}
 		else {
+			var node = nodeOrArray;
 			var nodeData = {};
 			nodeData.expanded = false;
-			nodeData.node = nodeOrArray;
+			nodeData.pending = pending;
+			nodeData.node = node;
 			
-			nodeDataById[nodeOrArray.nodeId] = nodeData;
+			nodeDataById[node.nodeId] = nodeData;
 		}
 	}
 	
@@ -135,19 +139,14 @@ var ojTreeModelFactory = function(ojTreeUI, ojTreeDao) {
 			
 			updateNodeStateExpanded(parentNodeId, true);
 			
-			pendingNodesById[parentNodeId] = nodeArray;
+			createNodeState(nodeArray, true);
 			updatePendingSeq(data.eventSeq);
 		}; 
 	}	
 	
 	function recursiveCollapse(nodeId) {
 		
-		var nodeData = nodeDataById[nodeId]
-		
-		if (nodeData == undefined) {
-			// still pending
-			return;
-		}
+		var nodeData = nodeDataFor(nodeId);
 		
 		if (!nodeData.expanded) {
 			return;
@@ -162,7 +161,6 @@ var ojTreeModelFactory = function(ojTreeUI, ojTreeDao) {
 			recursiveCollapse(childNodeId);
 			
 			delete nodeDataById[childNodeId];
-			delete pendingNodesById[childNodeId];
 		}
 		
 		ojTreeUI.collapseNode(nodeId);
@@ -172,14 +170,7 @@ var ojTreeModelFactory = function(ojTreeUI, ojTreeDao) {
 	
 	function insertNode(parentNodeId, index, node) {
 
-		var nodeArray = pendingNodesById[parentNodeId];
-		if (nodeArray === undefined) {
-			nodeArray = [node.nodeId];
-			pendingNodesById[parentNodeId] = nodeArray;
-		}
-		else {
-			nodeArray.push(node.nodeId);
-		}
+		createNodeState(node, true);
 		
 		ojTreeUI.insertChild(parentNodeId, index, node);
 	}
@@ -207,15 +198,15 @@ var ojTreeModelFactory = function(ojTreeUI, ojTreeDao) {
 		
 		var nodeData = nodeDataFor(node.nodeId);	
 
-		if (nodeData.expanded) {
+		var newChildren = node.children;
+		
+		if (nodeData.expanded && newChildren !== undefined) {
 
-			var children = node.children;
-			
 			var oldChildren = nodeData.node.children;
 			
 			var index = 0;
 			
-			compareNodeList(oldChildren, children, {
+			compareNodeList(oldChildren, newChildren, {
 				inserted: function(nodeId, index) {
 					childThings.insertedNodeIds.push(nodeId);
 					childThings.nodeActions.push(function (childNode) {
@@ -258,12 +249,11 @@ var ojTreeModelFactory = function(ojTreeUI, ojTreeDao) {
 			lastSeq = data.eventSeq;
 		}
 		else {
-			for (var property in pendingNodesById) {
-				if (pendingNodesById.hasOwnProperty(property)) {
-		            createNodeState(pendingNodesById[property]);
+			for (var property in nodeDataById) {
+				if (nodeDataById.hasOwnProperty(property)) {
+					nodeDataById[property].pending = false;
 		        }
 		    }		
-			pendingNodesById = {};
 			lastSeq = pendingLeastSeq;
 			pendingLeastSeq = undefined;
 		}
@@ -306,9 +296,18 @@ var ojTreeModelFactory = function(ojTreeUI, ojTreeDao) {
 		
 		poll: function() {
 			
-			var nodeIds = Object.keys(nodeDataById);
+			var nonePendingNodeIds = [];
 			
-			ojTreeDao.makeNodeInfoRequest(childrenRequest(nodeIds), 
+			for (var property in nodeDataById) {
+				if (nodeDataById.hasOwnProperty(property)) {
+					var nodeData = nodeDataById[property];
+					if (nodeData.pending === false) {
+						nonePendingNodeIds.push(nodeData.node.nodeId);
+					}
+		        }
+		    }		
+				
+			ojTreeDao.makeNodeInfoRequest(childrenRequest(nonePendingNodeIds), 
 					pollCallback, lastSeq);
 		}
 		

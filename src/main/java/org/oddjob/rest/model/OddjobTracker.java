@@ -7,6 +7,7 @@ import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.atomic.AtomicInteger;
 import java.util.concurrent.atomic.AtomicLong;
 
+import org.apache.log4j.Logger;
 import org.oddjob.Iconic;
 import org.oddjob.Structural;
 import org.oddjob.images.IconEvent;
@@ -16,6 +17,8 @@ import org.oddjob.structural.StructuralListener;
 
 public class OddjobTracker {
 
+	private static final Logger logger = Logger.getLogger(OddjobTracker.class);
+	
 	private final AtomicLong sequenceNumber = new AtomicLong();
 	
 	private final AtomicInteger nodeId = new AtomicInteger();
@@ -23,7 +26,7 @@ public class OddjobTracker {
 	private final Map<Integer, Tracker> nodes = new ConcurrentHashMap<>();
 	
 	private final IconRegistry iconRegistry = new IconRegistry();
-	
+
 	public int track(Object node) {
 		
 		int nodeId = this.nodeId.getAndIncrement();
@@ -75,7 +78,8 @@ public class OddjobTracker {
 			Tracker tracker = nodes.get(nodeId);
 			
 			if (tracker == null) {
-				throw new IllegalArgumentException("Unknown Id" + nodeId);
+				logger.debug("Node Info request for unknown Id [" + nodeId + "]");
+				continue;
 			}
 			
 			NodeInfo nodeInfo = tracker.infoFor(nodeId, fromSequence);
@@ -91,7 +95,11 @@ public class OddjobTracker {
 	
 	public byte[] iconImageFor(String iconId) {
 		
-		return iconRegistry.retrieve(iconId);
+		byte[] image = iconRegistry.retrieve(iconId);
+		if (image == null) {
+			logger.debug("Icon request for unknown Id [" + iconId + "]");
+		}
+		return image;
 	}
 
 	static class Tracker {
