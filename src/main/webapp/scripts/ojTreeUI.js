@@ -178,15 +178,18 @@ var ojTreeUIFactory = function(ojTreeController, idPrefix) {
 			
 			var li$ = $(nodeIdSelector(node.nodeId));
 			
-			if (node.children !== undefined && node.children.length > 0) {
-				if (li$.find('ul>li').length === 0) {
-					li$.prepend(expandImage(node.nodeId));
+			if (node.children !== undefined) {
+				
+				if (node.children.length > 0) {
+					if (li$.find('ul>li').length === 0) {
+						li$.prepend(expandImage(node.nodeId));
+					}
+				}
+				else {
+					removeToggleImage(li$);
 				}
 			}
-			else {
-				removeToggleImage(li$);
-			}
-				
+			
 			if (node.icon !== undefined) {
 				changeIconImage(li$, node.icon);
 			}

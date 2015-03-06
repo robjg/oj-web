@@ -218,7 +218,7 @@ var ojTreeModelFactory = function(ojTreeUI, ojTreeDao) {
 					childThings.nodeActions.push(function(childNode) {
 						recursiveCollapse(nodeId);
 						delete nodeDataById[nodeId];
-						ojTreeUI.removeNode(node.nodeId, index);
+						ojTreeUI.removeNode(nodeId);
 						return 0;
 					});
 				}

@@ -21,19 +21,19 @@ ojTreeController = function(idPrefix) {
 				ojTreeController.init();
 			}
 			if (interval === undefined) {
-				interval = 5000;
+				interval = 5;
 			}
-			if (intervalRef !== undefined) {
-				ojTreeController.stop();
-			}
-			intervalRef = setInterval(ojTreeController.poll, interval);
-		},
-		
-		stop: function() {
 			if (intervalRef !== undefined) {
 				clearInterval(intervalRef);
 				intervalRef = undefined;
 			}
+			if (interval > 0) {
+				intervalRef = setInterval(ojTreeController.poll, interval * 1000);
+			}
+		},
+		
+		stop: function() {
+			ojTreeController.start(0);
 		},
 		
 		poll: function() {

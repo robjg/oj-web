@@ -1,9 +1,9 @@
 package org.oddjob.js;
 
+import static junit.framework.Assert.assertEquals;
+
 import java.io.File;
 import java.net.URL;
-
-import junit.framework.Assert;
 
 import org.junit.Test;
 
@@ -31,10 +31,19 @@ public class OjTreeModelScript1Test {
 	    
 	    button1.click();
 	    
-	    String result1 = page.getElementById("result1").asText();
+	    String result1Request = ((HtmlElement) page.getElementById(
+	    		"result1").getFirstByXPath(
+	    				"div[@class='makeNodeInfoRequest_argCapture']")).asText();
 	    
-	    Assert.assertTrue(result1, result1.contains(
-	    		"makeNodeInfoRequest_argCapture: 0 -1"));
+	    assertEquals("makeNodeInfoRequest_argCapture: 0 -1", 
+	    		result1Request);
+	    
+	    String result1TreeCapture = ((HtmlElement) page.getElementById(
+	    		"result1").getFirstByXPath(
+	    				"div[@class='ojTreeUI_capture']")).asText();
+	    
+	    assertEquals("rootNode: 0 Some Jobs", 
+	    		result1TreeCapture);
 	    
 	    // Test 2
 	    
@@ -42,10 +51,20 @@ public class OjTreeModelScript1Test {
 	    
 	    button2.click();
 	    
-	    String result2 = page.getElementById("result2").asText();
+	    String result2Request = ((HtmlElement) page.getElementById(
+	    		"result2").getFirstByXPath(
+	    				"div[@class='makeNodeInfoRequest_argCapture']")).asText();
 	    
-	    Assert.assertTrue(result2, result2.contains(
-	    		"makeNodeInfoRequest_argCapture: 0 457"));
+	    assertEquals("makeNodeInfoRequest_argCapture: 0 457", 
+	    		result2Request);
+	    	    
+	    
+	    String result2TreeCaptureLength = ((HtmlElement) page.getElementById(
+	    		"result2").getFirstByXPath(
+	    				"div[@class='ojTreeUI_captureLength']")).asText();
+	    
+	    assertEquals("ojTreeUI_captureLength: 1", 
+	    		result2TreeCaptureLength );
 	    
 	    // Test 3
 	    
@@ -53,10 +72,19 @@ public class OjTreeModelScript1Test {
 	    
 	    button3.click();
 	    
-	    String result3 = page.getElementById("result3").asText();
+	    String result3Request = ((HtmlElement) page.getElementById(
+	    		"result3").getFirstByXPath(
+	    				"div[@class='makeNodeInfoRequest_argCapture']")).asText();
 	    
-	    Assert.assertTrue(result3, result3.contains(
-	    		"makeNodeInfoRequest_argCapture: 12,13 -1"));
+	    assertEquals("makeNodeInfoRequest_argCapture: 12,13 -1", 
+	    		result3Request);
+	    
+	    String result3TreeCapture = ((HtmlElement) page.getElementById(
+	    		"result3").getFirstByXPath(
+	    				"div[@class='ojTreeUI_capture']")).asText();
+	    
+	    assertEquals("expandNode: 0 12 13", 
+	    		result3TreeCapture);
 	    
 	    // Test 4
 	    
@@ -64,10 +92,19 @@ public class OjTreeModelScript1Test {
 	    
 	    button4.click();
 	    
-	    String result4 = page.getElementById("result4").asText();
+	    String result4Request = ((HtmlElement) page.getElementById(
+	    		"result4").getFirstByXPath(
+	    				"div[@class='makeNodeInfoRequest_argCapture']")).asText();
 	    
-	    Assert.assertTrue(result4, result4.contains(
-	    		"makeNodeInfoRequest_argCapture: 0 457"));
+	    assertEquals("makeNodeInfoRequest_argCapture: 0 457", 
+	    		result4Request);
+	    	    
+	    String result4TreeCaptureLength = ((HtmlElement) page.getElementById(
+	    		"result4").getFirstByXPath(
+	    				"div[@class='ojTreeUI_captureLength']")).asText();
+	    
+	    assertEquals("ojTreeUI_captureLength: 2", 
+	    		result4TreeCaptureLength );
 	    
 	    // Test 5
 	    
@@ -75,10 +112,33 @@ public class OjTreeModelScript1Test {
 	    
 	    button5.click();
 	    
-	    String result5 = page.getElementById("result5").asText();
+	    String result5Request = ((HtmlElement) page.getElementById(
+	    		"result5").getFirstByXPath(
+	    				"div[@class='makeNodeInfoRequest_argCapture']")).asText();
 	    
-	    Assert.assertTrue(result5, result5.contains(
-	    		"makeNodeInfoRequest_argCapture: 0,12,13 572"));
+	    assertEquals("makeNodeInfoRequest_argCapture: 0,12,13 572", 
+	    		result5Request);
+	    	    
+	    String result5TreeCapture1 = ((HtmlElement) page.getElementById(
+	    		"result5").getFirstByXPath(
+	    				"div[@class='ojTreeUI_capture1']")).asText();
+	    
+	    assertEquals("updateNode: 12", 
+	    		result5TreeCapture1);
+	    
+	    String result5TreeCapture2 = ((HtmlElement) page.getElementById(
+	    		"result5").getFirstByXPath(
+	    				"div[@class='ojTreeUI_capture2']")).asText();
+	    
+	    assertEquals("updateNode: 13 81,82", 
+	    		result5TreeCapture2);
+	    
+	    String result5TreeCaptureLength = ((HtmlElement) page.getElementById(
+	    		"result5").getFirstByXPath(
+	    				"div[@class='ojTreeUI_captureLength']")).asText();
+	    
+	    assertEquals("ojTreeUI_captureLength: 4", 
+	    		result5TreeCaptureLength );
 	    
 	    // Test 6
 	    
@@ -86,13 +146,63 @@ public class OjTreeModelScript1Test {
 	    
 	    button6.click();
 	    
-	    String result6 = page.getElementById("result6").asText();
+	    String result6Request1 = ((HtmlElement) page.getElementById(
+	    		"result6").getFirstByXPath(
+	    				"div[@class='makeNodeInfoRequest_argCapture1']")).asText();
 	    
-	    Assert.assertTrue(result6, result6.contains(
-	    		"makeNodeInfoRequest_argCapture: 0,12,13 612"));
+	    assertEquals("makeNodeInfoRequest_argCapture: 0,12,13 612", 
+	    		result6Request1);
+	    	    
+	    String result6Request2 = ((HtmlElement) page.getElementById(
+	    		"result6").getFirstByXPath(
+	    				"div[@class='makeNodeInfoRequest_argCapture2']")).asText();
 	    
-	    Assert.assertTrue(result6, result6.contains(
-	    		"makeNodeInfoRequest_argCapture: 20,21,22 -1"));
+	    assertEquals("makeNodeInfoRequest_argCapture: 20,21,22 -1", 
+	    		result6Request2);
+
+	    String result6TreeCapture1 = ((HtmlElement) page.getElementById(
+	    		"result6").getFirstByXPath(
+	    				"div[@class='ojTreeUI_capture1']")).asText();
+	    
+	    assertEquals("updateNode: 0 20,12,21,22", 
+	    		result6TreeCapture1);
+	    
+	    String result6TreeCapture2 = ((HtmlElement) page.getElementById(
+	    		"result6").getFirstByXPath(
+	    				"div[@class='ojTreeUI_capture2']")).asText();
+	    
+	    assertEquals("insertChild: 0 0 20", 
+	    		result6TreeCapture2);
+	    
+	    String result6TreeCapture3 = ((HtmlElement) page.getElementById(
+	    		"result6").getFirstByXPath(
+	    				"div[@class='ojTreeUI_capture3']")).asText();
+	    
+	    assertEquals("insertChild: 0 2 21", 
+	    		result6TreeCapture3);
+	    
+	    String result6TreeCapture4 = ((HtmlElement) page.getElementById(
+	    		"result6").getFirstByXPath(
+	    				"div[@class='ojTreeUI_capture4']")).asText();
+	    
+	    assertEquals("insertChild: 0 3 22", 
+	    		result6TreeCapture4);
+	    
+	    String result6TreeCapture5 = ((HtmlElement) page.getElementById(
+	    		"result6").getFirstByXPath(
+	    				"div[@class='ojTreeUI_capture5']")).asText();
+	    
+	    assertEquals("removeNode: 13", 
+	    		result6TreeCapture5);
+	    
+	    
+	    String result6TreeCaptureLength = ((HtmlElement) page.getElementById(
+	    		"result6").getFirstByXPath(
+	    				"div[@class='ojTreeUI_captureLength']")).asText();
+	    
+	    assertEquals("ojTreeUI_captureLength: 9", 
+	    		result6TreeCaptureLength );
+	    
 	    
 	    // Cleanup
 	    

@@ -1,11 +1,74 @@
 package org.oddjob.rest.model;
 
+import static org.junit.Assert.assertEquals;
+
 import org.junit.Assert;
 import org.junit.Test;
 import org.oddjob.Oddjob;
 import org.oddjob.arooa.xml.XMLConfiguration;
+import org.oddjob.state.FlagState;
 
 public class OddjobTrackerTest {
+	
+	@Test
+	public void testSimleIconEvents() {
+		FlagState flagJob = new FlagState();
+		
+		OddjobTracker tracker = new OddjobTracker();
+		
+		int nodeId = tracker.track(flagJob);
+		
+		assertEquals(0, nodeId);
+		
+		// First info
+		
+		NodeInfos nodeInfos = tracker.infoFor(-1, 0);
+		
+		assertEquals(1, nodeInfos.getEventSeq());
+		
+		NodeInfo nodeInfo = nodeInfos.getNodeInfo()[0];
+		
+		assertEquals(0, nodeInfo.getNodeId());
+		assertEquals(FlagState.class.getSimpleName(), nodeInfo.getName());
+		assertEquals("ready", nodeInfo.getIcon());
+		assertEquals(null, nodeInfo.getChildren());
+		
+		flagJob.run();
+		
+		// Second info
+		
+		nodeInfos = tracker.infoFor(-1, 0);
+		
+		assertEquals(3, nodeInfos.getEventSeq());
+		
+		nodeInfo = nodeInfos.getNodeInfo()[0];
+		
+		assertEquals(0, nodeInfo.getNodeId());
+		assertEquals(FlagState.class.getSimpleName(), nodeInfo.getName());
+		assertEquals("complete", nodeInfo.getIcon());
+		assertEquals(null, nodeInfo.getChildren());
+	
+		// Third Info
+		
+		nodeInfos = tracker.infoFor(3, 0);
+		
+		assertEquals(3, nodeInfos.getEventSeq());
+		assertEquals(0, nodeInfos.getNodeInfo().length);
+				
+		flagJob.hardReset();
+		
+		// Fourth Info
+		
+		nodeInfos = tracker.infoFor(3, 0);
+		
+		assertEquals(4, nodeInfos.getEventSeq());
+		nodeInfo = nodeInfos.getNodeInfo()[0];
+		
+		assertEquals(0, nodeInfo.getNodeId());
+		assertEquals(null, nodeInfo.getName());
+		assertEquals("ready", nodeInfo.getIcon());
+		assertEquals(null, nodeInfo.getChildren());
+	}
 
 	@Test
 	public void testFullLifecycle() {

@@ -9,7 +9,7 @@
 </head>
 <body>
 
-	<p>Oddjob</p>
+	<p>Refresh Interval <input id="refresh" type="text"/></p>
 
 	<div id='ojNodeRoot' class='tree'>
 		<ul>
@@ -25,7 +25,13 @@
 
 $(document).ready(function() {
 	
-	ojTreeController().start();
+	var controller = ojTreeController();
+	
+	$("#refresh").change(function(event) {
+		controller.start(event.currentTarget.value);
+	});
+	
+	controller.start();
 });
 
 </script>

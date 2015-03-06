@@ -2,6 +2,7 @@ package org.oddjob.rest;
 
 import javax.ws.rs.core.Response;
 
+import org.apache.log4j.Logger;
 import org.oddjob.rest.model.NodeInfos;
 import org.oddjob.rest.model.OddjobTracker;
 
@@ -9,6 +10,8 @@ import com.google.gson.Gson;
 
 public class OddjobApiImpl implements OddjobApi {
 
+	private static final Logger logger = Logger.getLogger(OddjobApiImpl.class);
+	
 	private final OddjobTracker tracker;
 		
 	public OddjobApiImpl(Object rootNode) {
@@ -28,7 +31,12 @@ public class OddjobApiImpl implements OddjobApi {
 		Gson gson = new Gson();
 		String json = gson.toJson(nodeInfos);  
 	
-		 return Response.status(200).entity(json).build();
+		if (logger.isDebugEnabled()) {
+			logger.debug("Request(" + nodeIds + ", " + eventSeq + 
+					") Response: " + json);
+		}
+		
+		return Response.status(200).entity(json).build();
 	}
 	
 	@Override

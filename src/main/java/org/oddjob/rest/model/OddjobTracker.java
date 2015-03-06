@@ -15,6 +15,15 @@ import org.oddjob.images.IconListener;
 import org.oddjob.structural.StructuralEvent;
 import org.oddjob.structural.StructuralListener;
 
+/**
+ * Track changes in an Oddjob tree and provide {@link NodeInfo} records
+ * based on a last sequence number.
+ * <p>
+ * The first event will be for sequence number 0;
+ * 
+ * @author rob
+ *
+ */
 public class OddjobTracker {
 
 	private static final Logger logger = Logger.getLogger(OddjobTracker.class);
@@ -27,6 +36,12 @@ public class OddjobTracker {
 	
 	private final IconRegistry iconRegistry = new IconRegistry();
 
+	/**
+	 * Track changes in a node node.
+	 * 
+	 * @param node The job node.
+	 * @return The nodeId create to reference the node by.
+	 */
 	public int track(Object node) {
 		
 		int nodeId = this.nodeId.getAndIncrement();
@@ -102,6 +117,9 @@ public class OddjobTracker {
 		return image;
 	}
 
+	/**
+	 * Adds listeners to a node to track changes.
+	 */
 	static class Tracker {
 		
 		private final Object node;
@@ -114,11 +132,17 @@ public class OddjobTracker {
 		
 		private long childrenSequence;
 		
-		private final List<Integer> children = new ArrayList<>();
+		private final List<Integer> children;
 		
 		public Tracker(Object node, long sequence) {
 			this.node = node;
 			this.nameSequence = sequence;
+			if (node instanceof Structural) {
+				this.children = new ArrayList<>();
+			}
+			else {
+				this.children = null;
+			}
 		}
 		
 		synchronized void updateIcon(String icon, long sequence) {
@@ -150,13 +174,15 @@ public class OddjobTracker {
 				hasInfo = true;
 			}
 			int[] children = null;
-			if (fromSequence < childrenSequence) {
+			if (this.children != null &&
+					fromSequence < childrenSequence) {
 				children = new int[this.children.size()];
 				for (int i = 0; i < children.length; ++i) {
 					children[i] = this.children.get(i);
 				}
 				hasInfo = true;
 			}
+			
 			if (hasInfo) {
 				return new NodeInfo(nodeId, name, icon, children);
 			}

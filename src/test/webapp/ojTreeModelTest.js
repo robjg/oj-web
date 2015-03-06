@@ -64,36 +64,69 @@ var ojTreeDao = function() {
 
 var rootNode_argCapture = [];
 
+var ojTreeUI_capture = [];
+
 var ojTreeUI = function() {
-	
-	var callCount = 0;
 	
 	return {
 		rootNode: function(node) {
 			
-			rootNode_argCapture[callCount] = node;
-			
-			++callCount;
+			var capture = {
+					func: 'rootNode',
+					args: arguments
+				};
+				
+			ojTreeUI_capture.push(capture);
 		},
 		
 		insertChild: function(parentId, index, node) {
 			
+			var capture = {
+					func: 'insertChild',
+					args: arguments
+			};
+				
+			ojTreeUI_capture.push(capture);
 		},
 		
  		removeNode: function(nodeId) {
 
+			var capture = {
+					func: 'removeNode',
+					args: arguments
+			};
+				
+			ojTreeUI_capture.push(capture);
 		},
 		
 		expandNode: function(parentId, nodeList) {
 			
+			var capture = {
+					func: 'expandNode',
+					args: arguments
+			};
+				
+			ojTreeUI_capture.push(capture);
 		},
 		
 		collapseNode: function(parentId) {
 
+			var capture = {
+					func: 'collapseNode',
+					args: arguments
+			};
+				
+			ojTreeUI_capture.push(capture);
 		},
 		
 		updateNode: function(node) {
 			
+			var capture = {
+					func: 'updateNode',
+					args: arguments
+			};
+				
+			ojTreeUI_capture.push(capture);
 		}
 
 	};
