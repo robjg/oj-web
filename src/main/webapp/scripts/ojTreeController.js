@@ -6,6 +6,26 @@ ojTreeController = function(idPrefix) {
 	
 	var intervalRef;
 	
+	var lastInterval;
+	
+	function stopRefresh() {
+		
+		if (intervalRef !== undefined) {
+			clearInterval(intervalRef);
+			intervalRef = undefined;
+			
+			return function() {
+				
+				ojTreeController.start(lastInterval);
+			}
+		}
+		else {
+			return function() {
+				
+			}
+		}
+	}
+	
 	var ojTreeController = {
 		
 		init: function() {
@@ -23,13 +43,14 @@ ojTreeController = function(idPrefix) {
 			if (interval === undefined) {
 				interval = 5;
 			}
-			if (intervalRef !== undefined) {
-				clearInterval(intervalRef);
-				intervalRef = undefined;
-			}
+			
+			stopRefresh();
+			
 			if (interval > 0) {
 				intervalRef = setInterval(ojTreeController.poll, interval * 1000);
 			}
+			
+			lastInterval = interval;
 		},
 		
 		stop: function() {
@@ -40,21 +61,40 @@ ojTreeController = function(idPrefix) {
 			if (!initialised) {
 				throw "ojTreeController not initialised.";
 			}
+			
+			var resume = stopRefresh();
+			
 			ojTreeModel.poll();
+			
+			resume();
 		},
 		
 		expandNode: function(nodeId) {
 			if (!initialised) {
 				throw "ojTreeController not initialised.";
 			}
+			
+			var resume = stopRefresh();
+			
+			ojTreeModel.poll();
+			
 			ojTreeModel.expandNode(nodeId);
+			
+			resume();
 		},
 	
 		collapseNode: function(nodeId) {
 			if (!initialised) {
 				throw "ojTreeController not initialised.";
 			}
+			
+			var resume = stopRefresh();
+			
 			ojTreeModel.collapseNode(nodeId);
+			
+			ojTreeModel.poll();
+			
+			resume();
 		}
 	};
 	

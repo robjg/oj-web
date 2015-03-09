@@ -52,6 +52,15 @@ var ojTreeModelFactory = function(ojTreeUI, ojTreeDao) {
 		return nodeData;
 	}
 	
+	function whenNodeDataFor(nodeId, then) {
+		
+		var nodeData = nodeDataById[nodeId];
+		
+		if (nodeData !== undefined) {
+			return then(nodeData);
+		}
+	}
+	
 	function updateNodeStateExpanded(nodeId, expanded) {
 		
 		var nodeData = nodeDataFor(nodeId);
@@ -146,26 +155,27 @@ var ojTreeModelFactory = function(ojTreeUI, ojTreeDao) {
 	
 	function recursiveCollapse(nodeId) {
 		
-		var nodeData = nodeDataFor(nodeId);
-		
-		if (!nodeData.expanded) {
-			return;
-		}
-		
-		var node = nodeData.node;
+		whenNodeDataFor(nodeId, function(nodeData) {
+			
+			if (!nodeData.expanded) {
+				return;
+			}
+			
+			var node = nodeData.node;
 
-		var childNodeIds = node.children;
+			var childNodeIds = node.children;
+				
+			for (var i = 0; i < childNodeIds.length; ++i) {
+				var childNodeId = childNodeIds[i];
+				recursiveCollapse(childNodeId);
+				
+				delete nodeDataById[childNodeId];
+			}
 			
-		for (var i = 0; i < childNodeIds.length; ++i) {
-			var childNodeId = childNodeIds[i];
-			recursiveCollapse(childNodeId);
+			ojTreeUI.collapseNode(nodeId);
 			
-			delete nodeDataById[childNodeId];
-		}
-		
-		ojTreeUI.collapseNode(nodeId);
-		
-		nodeData.expanded = false;
+			nodeData.expanded = false;
+		});
 	}
 	
 	function insertNode(parentNodeId, index, node) {
@@ -282,11 +292,14 @@ var ojTreeModelFactory = function(ojTreeUI, ojTreeDao) {
 		
 		expandNode: function(nodeId) {
 			
-			var nodeData = nodeDataFor(nodeId);
-			var node = nodeData.node;
-			var childNodes = childrenRequest(node.children);
-			ojTreeDao.makeNodeInfoRequest(childNodes, 
-					provideExpandCallback(nodeId), -1);
+			var nodeData = whenNodeDataFor(nodeId, function(nodeData) {
+				
+				var node = nodeData.node;
+				var childNodes = childrenRequest(node.children);
+				
+				ojTreeDao.makeNodeInfoRequest(childNodes, 
+						provideExpandCallback(nodeId), -1);
+			})
 		},
 		
 		collapseNode: function(nodeId) {
