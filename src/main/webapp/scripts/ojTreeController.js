@@ -95,6 +95,21 @@ ojTreeController = function(idPrefix) {
 			ojTreeModel.poll();
 			
 			resume();
+		},
+		
+		select: function(nodeId) {
+			
+			if (!initialised) {
+				throw "ojTreeController not initialised.";
+			}
+			
+			var resume = stopRefresh();
+			
+			ojTreeModel.poll();
+			
+			ojTreeModel.select(nodeId);
+			
+			resume();
 		}
 	};
 	

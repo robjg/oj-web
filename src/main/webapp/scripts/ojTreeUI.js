@@ -9,6 +9,21 @@ var ojTreeUIFactory = function(ojTreeController, idPrefix) {
 		idPrefix = 'ojNode';
 	}
 	
+	var label;
+	
+	if (ojTreeController.select === undefined) {
+		label = function(node) {
+			return node.name;			
+		}
+	}
+	else {
+		label = function(node) {
+			return $('<a>' + node.name + '</a>').click(function() {
+				ojTreeController.select(node.nodeId);
+			});
+		}
+	}
+	
 	function expandImage(nodeId) {
 		return $('<img>').attr(
 				{ class: 'toggle',
@@ -89,7 +104,7 @@ var ojTreeUIFactory = function(ojTreeController, idPrefix) {
 			li$.append(iconImage(node.icon));
 		}
 		
-		li$.append(node.name);
+		li$.append(label(node));
 		
 	    li$.append('<ul>');
 	    
@@ -195,6 +210,16 @@ var ojTreeUIFactory = function(ojTreeController, idPrefix) {
 			}
 			
 			// Todo: Change text.
+		},
+		
+		select: function(nodeId) {
+				$(nodeIdSelector(nodeId) + ">a").attr(
+						'class', 'selected');
+		},
+		
+		unselect: function(nodeId) {
+			$(nodeIdSelector(nodeId) + ">a").removeAttr(
+						'class');
 		}
 	};
 };

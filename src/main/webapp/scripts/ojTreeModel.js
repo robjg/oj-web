@@ -11,6 +11,8 @@ var ojTreeModelFactory = function(ojTreeUI, ojTreeDao) {
 	
 	var pendingLeastSeq;
 	
+	var selectedNodeId;
+	
 	function compareNodeList(nodes1, nodes2, callbacks) {
 								
 		var lastI = 0, insertPoint = 0;
@@ -322,7 +324,22 @@ var ojTreeModelFactory = function(ojTreeUI, ojTreeDao) {
 				
 			ojTreeDao.makeNodeInfoRequest(childrenRequest(nonePendingNodeIds), 
 					pollCallback, lastSeq);
-		}
+		},
 		
+		select: function(nodeId, selectionChanged) {
+			
+			if (nodeId !== selectedNodeId) {
+				if (selectedNodeId !== undefined) {
+					ojTreeUI.unselect(selectedNodeId)
+				}
+				
+				ojTreeUI.select(nodeId)
+				selectedNodeId = nodeId;
+				
+				if (selectionChanged !== undefined) {
+					selectionChanged(node);
+				}
+			}
+		}		
 	};
 };
