@@ -26,7 +26,7 @@ public class OddjobRestHandler implements ValueFactory<Handler>{
 		servletHolder.setInitParameter("javax.ws.rs.Application", 
 				"org.oddjob.rest.OddjobApplication");
 		
-		contextHandler.addServlet(servletHolder, "/ojws/*");
+		contextHandler.addServlet(servletHolder, "/api/*");
 		
 		return contextHandler;
 	}

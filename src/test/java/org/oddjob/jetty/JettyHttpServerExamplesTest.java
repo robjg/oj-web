@@ -77,7 +77,7 @@ public class JettyHttpServerExamplesTest extends TestCase {
 		
 		JettyHttpClient httpClient = new JettyHttpClient();
 		httpClient.setUrl("http://localhost:" + port + 
-				"/ojws/nodeInfo?nodeIds=0,1,2&eventSeq=-1");
+				"/api/nodeInfo?nodeIds=0,1,2&eventSeq=-1");
 		httpClient.call();
 		
 		String content = httpClient.getContent();

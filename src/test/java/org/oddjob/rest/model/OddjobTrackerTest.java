@@ -1,6 +1,7 @@
 package org.oddjob.rest.model;
 
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertSame;
 
 import org.junit.Assert;
 import org.junit.Test;
@@ -19,6 +20,9 @@ public class OddjobTrackerTest {
 		int nodeId = tracker.track(flagJob);
 		
 		assertEquals(0, nodeId);
+		
+		// Test nodeFor
+		assertSame(flagJob, tracker.nodeFor(nodeId));
 		
 		// First info
 		

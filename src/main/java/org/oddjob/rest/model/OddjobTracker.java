@@ -116,6 +116,17 @@ public class OddjobTracker {
 		}
 		return image;
 	}
+	
+	public Object nodeFor(int nodeId) {
+		
+		Tracker tracker = nodes.get(nodeId);
+		
+		if (tracker == null) {
+			return null;
+		}
+		
+		return tracker.getNode();
+	}
 
 	/**
 	 * Adds listeners to a node to track changes.
@@ -189,6 +200,10 @@ public class OddjobTracker {
 			else {
 				return null;
 			}
+		}
+		
+		public Object getNode() {
+			return node;
 		}
 	}
 	
