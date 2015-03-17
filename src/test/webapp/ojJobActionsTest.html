@@ -1,0 +1,44 @@
+<html>
+<head>
+</head>
+<body>
+
+<div id="ojJobActions">
+</div>
+
+<button id="runTestOne">Test 1 (Select)</button>
+<div id=result1></div>
+
+<button id="runTestTwo">Test 2 (Click Run)</button>
+<div id=result2></div>
+
+
+<script src="../../main/webapp/scripts/jquery-1.11.2.js"></script>
+<script src="../../main/webapp/scripts/ojJobActions.js"></script>
+<script src="ojJobActionsTest.js"></script>
+
+<script>
+
+$(document).ready(function() {
+
+	var test = ojJobActions(testActionsDao)
+	testTreeModel.addSelectionListener(test);
+	
+	$("#runTestOne").click(function() {
+		testTreeModel.fireSelectionChanged(undefined, 3);
+	});
+
+	$("#runTestTwo").click(function() {
+		$('#ojJobActions .run_action').click();
+		
+		$('#result2').append("<div class='actionExecuted'>" +
+				"actionExecuted: " + 
+				actionsExecuted[0].actionName + "/" +
+				actionsExecuted[0].nodeId + "</div>");
+	});
+
+});
+</script>
+
+</body>
+</html>

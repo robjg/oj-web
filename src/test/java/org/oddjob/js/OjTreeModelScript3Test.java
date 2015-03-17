@@ -42,7 +42,7 @@ public class OjTreeModelScript3Test {
 	    		"result1").getFirstByXPath(
 	    				"div[@class='ojTreeUI_capture']")).asText();
 	    
-	    assertEquals("rootNode: 0 Some Jobs", 
+	    assertEquals("nodeInitialised: 0 Some Jobs", 
 	    		result1TreeCapture);
 	    
 	    // Test 2
@@ -62,7 +62,7 @@ public class OjTreeModelScript3Test {
 	    		"result2").getFirstByXPath(
 	    				"div[@class='ojTreeUI_capture']")).asText();
 	    
-	    assertEquals("updateNode: 0", 
+	    assertEquals("nodeUpdated: 0", 
 	    		result2TreeCapture);
 	    
 	    // Test 3
@@ -82,7 +82,7 @@ public class OjTreeModelScript3Test {
 	    		"result3").getFirstByXPath(
 	    				"div[@class='ojTreeUI_capture']")).asText();
 	    
-	    assertEquals("expandNode: 0 12 13", 
+	    assertEquals("nodeExpanded: 0 12 13", 
 	    		result3TreeCapture);
 	    
 	    // Test 4
@@ -95,14 +95,14 @@ public class OjTreeModelScript3Test {
 	    		"result4").getFirstByXPath(
 	    				"div[@class='ojTreeUI_capture1']")).asText();
 	    
-	    assertEquals("updateNode: 0", 
+	    assertEquals("nodeUpdated: 0", 
 	    		result4TreeCapture1);
 	    
 	    String result4TreeCapture2 = ((HtmlElement) page.getElementById(
 	    		"result4").getFirstByXPath(
 	    				"div[@class='ojTreeUI_capture2']")).asText();
 	    
-	    assertEquals("updateNode: 12", 
+	    assertEquals("nodeUpdated: 12", 
 	    		result4TreeCapture2);
 	    
 	    // Test 5
@@ -122,7 +122,7 @@ public class OjTreeModelScript3Test {
 	    		"result5").getFirstByXPath(
 	    				"div[@class='ojTreeUI_capture']")).asText();
 	    
-	    assertEquals("updateNode: 0", 
+	    assertEquals("nodeUpdated: 0", 
 	    		result5TreeCapture);
 	    
 	    // Cleanup

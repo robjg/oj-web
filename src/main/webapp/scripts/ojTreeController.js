@@ -115,15 +115,34 @@ ojTreeController = function(idPrefix) {
 	
 	var ojTreeUI = ojTreeUIFactory(ojTreeController, idPrefix);
 	
-	var ojTreeModel = ojTreeModelFactory(ojTreeUI, 
-		{
+	var ojTreeDao = {
 			
-				makeNodeInfoRequest: function(nodeIds, ajaxCallback, eventSeq) {
-				
-				$.get('ojws/nodeInfo', 'nodeIds=' + nodeIds + '&eventSeq=' + eventSeq,
-						ajaxCallback);
-			}
-		});
+			makeNodeInfoRequest: function(nodeIds, ajaxCallback, eventSeq) {
+			
+			$.get('api/nodeInfo', 'nodeIds=' + nodeIds + '&eventSeq=' + eventSeq,
+					ajaxCallback);
+		}
+	};
+	
+	var ojTreeModel = ojTreeModelFactory(ojTreeDao);
+	ojTreeModel.addTreeChangeListener(ojTreeUI);
+	ojTreeModel.addSelectionListener(ojTreeUI);
+	
+	var ojActionsDao = {
+			
+		actionsFor: function(nodeId, ajaxCallback) {
+			
+			$.get('api/actionsFor/' + nodeId,
+					ajaxCallback);
+		},
+		
+		executeAction: function(actionName, nodeId) {
+			$.get('api/action/' + actionName + '/' + nodeId);
+		}
+	};
+	
+	var ojActions = ojJobActions(ojActionsDao);
+	ojTreeModel.addSelectionListener(ojActions);
 	
 	return ojTreeController;
 };

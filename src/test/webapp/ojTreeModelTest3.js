@@ -62,55 +62,55 @@ var ojTreeUI_capture = [];
 var ojTreeUI = function() {
 	
 	return {
-		rootNode: function(node) {
+		treeInitialised: function(event) {
 			
 			var capture = {
-				func: 'rootNode',
-				args: arguments
+				func: 'nodeInitialised',
+				event: event
 			};
 			
 			ojTreeUI_capture.push(capture);
 		},
 		
-		insertChild: function(parentId, index, node) {
+		nodeInserted: function(event) {
 			
 			var capture = {
-					func: 'insertChild',
-					args: arguments
+					func: 'nodeInserted',
+					event: event
 				};
 				
 			ojTreeUI_capture.push(capture);
 		},
 		
- 		removeNode: function(nodeId) {
+ 		nodeRemoved: function(event) {
  			
 			var capture = {
-					func: 'removeNode',
-					args: arguments
+					func: 'nodeRemoved',
+					event: event
 				};
 				
 			ojTreeUI_capture.push(capture);
 		},
 		
-		expandNode: function(parentId, nodeList) {
+		nodeExpanded: function(event) {
 			
 			var capture = {
-					func: 'expandNode',
-					args: arguments
+					func: 'nodeExpanded',
+					event: event
 			};
 				
 			ojTreeUI_capture.push(capture);
 		},
 		
-		collapseNode: function(parentId) {
+		nodeCollapsed: function(event) {
 			
  			throw "Unexpected";
 		},
 		
-		updateNode: function(node) {
+		nodeUpdated: function(event) {
 			var capture = {
-					func: 'updateNode',
-					args: arguments
+					func: 'nodeUpdated',
+					event: event
 			};
 				
 			ojTreeUI_capture.push(capture);

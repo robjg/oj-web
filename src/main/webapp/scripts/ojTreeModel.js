@@ -2,7 +2,7 @@
  * 
  */
 
-var ojTreeModelFactory = function(ojTreeUI, ojTreeDao) {
+var ojTreeModelFactory = function(ojTreeDao) {
 	"use strict";
 	
 	var nodeDataById = {};
@@ -12,6 +12,105 @@ var ojTreeModelFactory = function(ojTreeUI, ojTreeDao) {
 	var pendingLeastSeq;
 	
 	var selectedNodeId;
+	
+	var selectionListeners = [];
+	
+	var changeListeners = [];
+	
+	function fireSelectionChanged(fromNodeId, toNodeId) {
+		var event = {
+			fromNodeId: fromNodeId,
+			toNodeId: toNodeId
+		};
+		
+		for (var i = 0; i < selectionListeners.length; ++i) {
+			var callback = selectionListeners[i].selectionChanged;
+			if (callback !== undefined) {
+				callback(event);
+			}
+		}
+	}
+	
+	function fireTreeInitialised(node) {
+		var event = {
+			rootNode: node
+		};
+		
+		for (var i = 0; i < changeListeners.length; ++i) {
+			var callback = changeListeners[i].treeInitialised;
+			if (callback !== undefined) {
+				callback(event);
+			}
+		}
+	}
+	
+	function fireNodeInserted(parentId, index, node) {
+		var event = {
+			parentId: parentId,
+			index: index,
+			node: node
+		};
+		
+		for (var i = 0; i < changeListeners.length; ++i) {
+			var callback = changeListeners[i].nodeInserted(event);
+			if (callback !== undefined) {
+				calback(event);
+			}
+		}
+	}
+	
+	function fireNodeRemoved(nodeId) {
+		var event = {
+			nodeId: nodeId
+		};
+		
+		for (var i = 0; i < changeListeners.length; ++i) {
+			var callback = changeListeners[i].nodeRemoved(event);
+			if (callback !== undefined) {
+				calback(event);
+			}
+		}
+	}
+	
+	function fireNodeExpanded(parentId, nodeArray) {
+		var event = {
+			parentId: parentId,
+			nodeList: nodeArray
+		};
+		
+		for (var i = 0; i < changeListeners.length; ++i) {
+			var callback = changeListeners[i].nodeExpanded;
+			if (callback !== undefined) {
+				callback(event);
+			}
+		}
+	}
+	
+	function fireNodeCollapsed(parentId) {
+		var event = {
+			parentId: parentId
+		};
+		
+		for (var i = 0; i < changeListeners.length; ++i) {
+			var callback = changeListeners[i].nodeCollapsed(event);
+			if (callback !== undefined) {
+				calback(event);
+			}
+		}
+	}
+	
+	function fireNodeUpdated(node) {
+		var event = {
+			node: node
+		};
+		
+		for (var i = 0; i < changeListeners.length; ++i) {
+			var callback = changeListeners[i].nodeUpdated(event);
+			if (callback !== undefined) {
+				calback(event);
+			}
+		}
+	}
 	
 	function compareNodeList(nodes1, nodes2, callbacks) {
 								
@@ -133,22 +232,22 @@ var ojTreeModelFactory = function(ojTreeUI, ojTreeDao) {
 		
 		var rootNode = data.nodeInfo[0];
 		
-		ojTreeUI.rootNode(rootNode);
+		fireTreeInitialised(rootNode);
 		
 		createNodeState(rootNode);
 		
 		lastSeq = data.eventSeq;
 	}
 	
-	function provideExpandCallback(parentNodeId) {
+	function provideExpandCallback(parentId) {
 		
 		return function(data) {
 			
 			var nodeArray = data.nodeInfo
 			
-			ojTreeUI.expandNode(parentNodeId, nodeArray);
+			fireNodeExpanded(parentId, nodeArray);
 			
-			updateNodeStateExpanded(parentNodeId, true);
+			updateNodeStateExpanded(parentId, true);
 			
 			createNodeState(nodeArray, true);
 			updatePendingSeq(data.eventSeq);
@@ -174,17 +273,17 @@ var ojTreeModelFactory = function(ojTreeUI, ojTreeDao) {
 				delete nodeDataById[childNodeId];
 			}
 			
-			ojTreeUI.collapseNode(nodeId);
+			fireNodeCollapsed(nodeId);
 			
 			nodeData.expanded = false;
 		});
 	}
 	
-	function insertNode(parentNodeId, index, node) {
+	function insertNode(parentId, index, node) {
 
 		createNodeState(node, true);
 		
-		ojTreeUI.insertChild(parentNodeId, index, node);
+		fireNodeInserted(parentId, index, node);
 	}
 	
 	function provideInsertedNodesCallback(childThings) {
@@ -230,14 +329,14 @@ var ojTreeModelFactory = function(ojTreeUI, ojTreeDao) {
 					childThings.nodeActions.push(function(childNode) {
 						recursiveCollapse(nodeId);
 						delete nodeDataById[nodeId];
-						ojTreeUI.removeNode(nodeId);
+						fireNodeRemoved(nodeId);
 						return 0;
 					});
 				}
 			});
 		}
 		
-		ojTreeUI.updateNode(node);
+		fireNodeUpdated(node);
 		updateNodeState(node);
 	}
 
@@ -326,20 +425,20 @@ var ojTreeModelFactory = function(ojTreeUI, ojTreeDao) {
 					pollCallback, lastSeq);
 		},
 		
-		select: function(nodeId, selectionChanged) {
+		select: function(nodeId) {
 			
 			if (nodeId !== selectedNodeId) {
-				if (selectedNodeId !== undefined) {
-					ojTreeUI.unselect(selectedNodeId)
-				}
-				
-				ojTreeUI.select(nodeId)
+				fireSelectionChanged(selectedNodeId, nodeId)
 				selectedNodeId = nodeId;
-				
-				if (selectionChanged !== undefined) {
-					selectionChanged(node);
-				}
 			}
-		}		
+		},		
+		
+		addSelectionListener: function(listener) {
+			selectionListeners.push(listener);
+		},
+		
+		addTreeChangeListener: function(listener) {
+			changeListeners.push(listener);
+		}
 	};
 };

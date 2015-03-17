@@ -42,7 +42,7 @@ public class OjTreeModelScript1Test {
 	    		"result1").getFirstByXPath(
 	    				"div[@class='ojTreeUI_capture']")).asText();
 	    
-	    assertEquals("rootNode: 0 Some Jobs", 
+	    assertEquals("treeInitialised: 0 Some Jobs", 
 	    		result1TreeCapture);
 	    
 	    // Test 2
@@ -83,7 +83,7 @@ public class OjTreeModelScript1Test {
 	    		"result3").getFirstByXPath(
 	    				"div[@class='ojTreeUI_capture']")).asText();
 	    
-	    assertEquals("expandNode: 0 12 13", 
+	    assertEquals("nodeExpanded: 0 12 13", 
 	    		result3TreeCapture);
 	    
 	    // Test 4
@@ -123,14 +123,14 @@ public class OjTreeModelScript1Test {
 	    		"result5").getFirstByXPath(
 	    				"div[@class='ojTreeUI_capture1']")).asText();
 	    
-	    assertEquals("updateNode: 12", 
+	    assertEquals("nodeUpdated: 12", 
 	    		result5TreeCapture1);
 	    
 	    String result5TreeCapture2 = ((HtmlElement) page.getElementById(
 	    		"result5").getFirstByXPath(
 	    				"div[@class='ojTreeUI_capture2']")).asText();
 	    
-	    assertEquals("updateNode: 13 81,82", 
+	    assertEquals("nodeUpdated: 13 81,82", 
 	    		result5TreeCapture2);
 	    
 	    String result5TreeCaptureLength = ((HtmlElement) page.getElementById(
@@ -164,35 +164,35 @@ public class OjTreeModelScript1Test {
 	    		"result6").getFirstByXPath(
 	    				"div[@class='ojTreeUI_capture1']")).asText();
 	    
-	    assertEquals("updateNode: 0 20,12,21,22", 
+	    assertEquals("nodeUpdated: 0 20,12,21,22", 
 	    		result6TreeCapture1);
 	    
 	    String result6TreeCapture2 = ((HtmlElement) page.getElementById(
 	    		"result6").getFirstByXPath(
 	    				"div[@class='ojTreeUI_capture2']")).asText();
 	    
-	    assertEquals("insertChild: 0 0 20", 
+	    assertEquals("nodeInserted: 0 0 20", 
 	    		result6TreeCapture2);
 	    
 	    String result6TreeCapture3 = ((HtmlElement) page.getElementById(
 	    		"result6").getFirstByXPath(
 	    				"div[@class='ojTreeUI_capture3']")).asText();
 	    
-	    assertEquals("insertChild: 0 2 21", 
+	    assertEquals("nodeInserted: 0 2 21", 
 	    		result6TreeCapture3);
 	    
 	    String result6TreeCapture4 = ((HtmlElement) page.getElementById(
 	    		"result6").getFirstByXPath(
 	    				"div[@class='ojTreeUI_capture4']")).asText();
 	    
-	    assertEquals("insertChild: 0 3 22", 
+	    assertEquals("nodeInserted: 0 3 22", 
 	    		result6TreeCapture4);
 	    
 	    String result6TreeCapture5 = ((HtmlElement) page.getElementById(
 	    		"result6").getFirstByXPath(
 	    				"div[@class='ojTreeUI_capture5']")).asText();
 	    
-	    assertEquals("removeNode: 13", 
+	    assertEquals("nodeRemoved: 13", 
 	    		result6TreeCapture5);
 	    
 	    

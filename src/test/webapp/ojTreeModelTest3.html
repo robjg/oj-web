@@ -30,7 +30,8 @@
 
 $(document).ready(function() {
 	
-	var test = ojTreeModelFactory(ojTreeUI, ojTreeDao);
+	var test = ojTreeModelFactory(ojTreeDao);
+	test.addTreeChangeListener(ojTreeUI);
 	
 	$("#runTestOne").click(function() {
 		test.init();
@@ -43,8 +44,9 @@ $(document).ready(function() {
 		
 		var treeUICapture = ojTreeUI_capture[0];
 		$('#result1').append("<div class='ojTreeUI_capture'>" +
-				treeUICapture.func + ": " + treeUICapture.args[0].nodeId + " " + 
-				treeUICapture.args[0].name + "</div>");
+				treeUICapture.func + ": " + 
+				treeUICapture.event.rootNode.nodeId + " " + 
+				treeUICapture.event.rootNode.name + "</div>");
 	});
 	
 	$("#runTestTwo").click(function() {
@@ -57,9 +59,10 @@ $(document).ready(function() {
 		$('#result2').append("<div class='makeNodeInfoRequest_callCount'>" +
 				"makeNodeInfoRequest_callCount: " + ojTreeDao.getCallCount() + "</div>");
 		
-		var treeUICapture = ojTreeUI_capture[1]
+		var treeUICapture = ojTreeUI_capture[1];
 		$('#result2').append("<div class='ojTreeUI_capture'>" +
-				treeUICapture.func + ": " + treeUICapture.args[0].nodeId + "</div>");
+				treeUICapture.func + ": " + 
+				treeUICapture.event.node.nodeId + "</div>");
 	});
 	
 	$("#runTestThree").click(function() {
@@ -74,9 +77,10 @@ $(document).ready(function() {
 		
 		var treeUICapture = ojTreeUI_capture[2];
 		$('#result3').append("<div class='ojTreeUI_capture'>" +
-				treeUICapture.func + ": " + treeUICapture.args[0] + " " +
-				treeUICapture.args[1][0].nodeId + " " + 
-				treeUICapture.args[1][1].nodeId + "</div>");
+				treeUICapture.func + ": " + 
+				treeUICapture.event.parentId + " " +
+				treeUICapture.event.nodeList[0].nodeId + " " + 
+				treeUICapture.event.nodeList[1].nodeId + "</div>");
 	});
 	
 	$("#runTestFour").click(function() {
@@ -88,10 +92,12 @@ $(document).ready(function() {
 		
 		var treeUICapture1 = ojTreeUI_capture[3];
 		$('#result4').append("<div class='ojTreeUI_capture1'>" +
-				treeUICapture1.func + ": " + treeUICapture1.args[0].nodeId + "</div>");
+				treeUICapture1.func + ": " + 
+				treeUICapture1.event.node.nodeId + "</div>");
 		var treeUICapture2 = ojTreeUI_capture[4];
 		$('#result4').append("<div class='ojTreeUI_capture2'>" +
-				treeUICapture2.func + ": " + treeUICapture2.args[0].nodeId + "</div>");
+				treeUICapture2.func + ": " + 
+				treeUICapture2.event.node.nodeId + "</div>");
 	});
 	
 	$("#runTestFive").click(function() {
@@ -106,7 +112,8 @@ $(document).ready(function() {
 		
 		var treeUICapture = ojTreeUI_capture[5];
 		$('#result5').append("<div class='ojTreeUI_capture'>" +
-				treeUICapture.func + ": " + treeUICapture.args[0].nodeId + "</div>");
+				treeUICapture.func + ": " + 
+				treeUICapture.event.node.nodeId + "</div>");
 	});
 	
 	$("#manualTest").click(function() {
@@ -121,7 +128,7 @@ $(document).ready(function() {
 });
 
 
-
+	
 
 
 </script>

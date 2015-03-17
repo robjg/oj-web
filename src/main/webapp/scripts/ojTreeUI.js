@@ -52,7 +52,7 @@ var ojTreeUIFactory = function(ojTreeController, idPrefix) {
 		
 		return $('<img>').attr(
 				{ class: 'icon',
-				  src: 'ojws/icon/' + iconName, 
+				  src: 'api/icon/' + iconName, 
 				  alt: iconName 
 				}
 		);
@@ -130,8 +130,10 @@ var ojTreeUIFactory = function(ojTreeController, idPrefix) {
 
 	return {
 		
-		rootNode: function(node) {
-						
+		treeInitialised: function(event) {
+			
+			var node = event.rootNode;
+			
 			insertChildFirst($(nodeIdSelector('Root')), node);
 		},
 		
@@ -139,7 +141,11 @@ var ojTreeUIFactory = function(ojTreeController, idPrefix) {
 		 * Create the DOM for a node and make it a child of the
 		 * given parent at the given index.
 		 */
-		insertChild: function(parentId, index, node) {
+		nodeInserted: function(event) {
+			
+			var parentId = event.parentId;
+			var index = event.index;
+			var node = event.node;
 			
 			var parent$ = $(nodeIdSelector(parentId));
 			
@@ -156,8 +162,10 @@ var ojTreeUIFactory = function(ojTreeController, idPrefix) {
 
 		},
 		
- 		removeNode: function(nodeId) {
+ 		nodeRemoved: function(event) {
 
+ 			var nodeId = event.nodeId;
+ 			
  			var node$ = $(nodeIdSelector(nodeId));
  			
  			var parent$ = node$.parent('ul').parent('li');
@@ -169,7 +177,10 @@ var ojTreeUIFactory = function(ojTreeController, idPrefix) {
 			}
 		},
 		
-		expandNode: function(parentId, nodeList) {
+		nodeExpanded: function(event) {
+			
+			var parentId = event.parentId;
+			var nodeList = event.nodeList;
 			
 			var parent$ = $(nodeIdSelector(parentId));
 			
@@ -180,8 +191,10 @@ var ojTreeUIFactory = function(ojTreeController, idPrefix) {
 			changeToggleImageToCollapse(parent$, parentId)
 		},
 		
-		collapseNode: function(parentId) {
+		nodeCollapsed: function(event) {
 
+			var parentId = event.parentId;
+			
 			var parent$ = $(nodeIdSelector(parentId));
 
 			parent$.find('>ul>li').remove();
@@ -189,7 +202,9 @@ var ojTreeUIFactory = function(ojTreeController, idPrefix) {
 			changeToggleImageToExpand(parent$, parentId);
 		},
 		
-		updateNode: function(node) {
+		nodeUpdated: function(event) {
+			
+			var node = event.node;
 			
 			var li$ = $(nodeIdSelector(node.nodeId));
 			
@@ -212,14 +227,20 @@ var ojTreeUIFactory = function(ojTreeController, idPrefix) {
 			// Todo: Change text.
 		},
 		
-		select: function(nodeId) {
-				$(nodeIdSelector(nodeId) + ">a").attr(
+		selectionChanged: function(event) {
+			var fromNodeId = event.fromNodeId;
+			var toNodeId = event.toNodeId;
+			
+			if (fromNodeId !== undefined) {
+				$(nodeIdSelector(fromNodeId) + ">a").removeAttr(
+				'class');
+			}
+			
+			if (toNodeId !== undefined) {
+				$(nodeIdSelector(toNodeId) + ">a").attr(
 						'class', 'selected');
+			}
 		},
 		
-		unselect: function(nodeId) {
-			$(nodeIdSelector(nodeId) + ">a").removeAttr(
-						'class');
-		}
 	};
 };

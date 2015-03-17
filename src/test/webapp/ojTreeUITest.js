@@ -50,11 +50,16 @@ ojTreeController = function() {
 					createNode(), createNode(), createNode()
 			];
 			
-			ojTreeUI.expandNode(nodeId, nodeList)
+			ojTreeUI.nodeExpanded({
+				parentId: nodeId, 
+				nodeList: nodeList
+			});
 		},
 	
 		collapseNode: function(nodeId) {
-			ojTreeUI.collapseNode(nodeId);
+			ojTreeUI.nodeCollapsed({ 
+				parentId: nodeId 
+			});
 		}
 	};
 	
