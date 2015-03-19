@@ -5,6 +5,7 @@ import java.util.concurrent.Executors;
 import javax.ws.rs.core.Response;
 
 import org.apache.log4j.Logger;
+import org.oddjob.rest.model.LogLines;
 import org.oddjob.rest.model.NodeInfos;
 import org.oddjob.rest.model.OddjobTracker;
 import org.oddjob.rest.model.WebAction;
@@ -81,5 +82,23 @@ public class OddjobApiImpl implements OddjobApi {
 		Object node = tracker.nodeFor(Integer.parseInt(nodeId));
 		
 		actionFactory.performAction(node, actionName);
+	}
+	
+	@Override
+	public Response logLines(String nodeId, String logSeq) {
+		
+		LogLines logLines = tracker.logLinesFor(
+				Integer.parseInt(nodeId),
+				Long.parseLong(logSeq));
+		
+		Gson gson = new Gson();
+		String json = gson.toJson(logLines);  
+	
+		if (logger.isDebugEnabled()) {
+			logger.debug("logLines(" + nodeId+ 
+					"), Response: " + json);
+		}
+		
+		return Response.status(200).entity(json).build();
 	}
 }

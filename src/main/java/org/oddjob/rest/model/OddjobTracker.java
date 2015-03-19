@@ -12,6 +12,10 @@ import org.oddjob.Iconic;
 import org.oddjob.Structural;
 import org.oddjob.images.IconEvent;
 import org.oddjob.images.IconListener;
+import org.oddjob.logging.LogArchiver;
+import org.oddjob.logging.LogEvent;
+import org.oddjob.logging.LogLevel;
+import org.oddjob.logging.LogListener;
 import org.oddjob.structural.StructuralEvent;
 import org.oddjob.structural.StructuralListener;
 
@@ -32,23 +36,25 @@ public class OddjobTracker {
 	
 	private final AtomicInteger nodeId = new AtomicInteger();
 	
-	private final Map<Integer, Tracker> nodes = new ConcurrentHashMap<>();
+	private final Map<Integer, NodeTracker> nodes = new ConcurrentHashMap<>();
 	
 	private final IconRegistry iconRegistry = new IconRegistry();
 
+	public int track(Object node) {
+		
+		return track(new NodeTracker(node, nodeId.getAndIncrement(), 
+				sequenceNumber.get()));
+	}
+	
 	/**
 	 * Track changes in a node node.
 	 * 
 	 * @param node The job node.
 	 * @return The nodeId create to reference the node by.
 	 */
-	public int track(Object node) {
+	int track(final NodeTracker tracker) {
 		
-		int nodeId = this.nodeId.getAndIncrement();
-		
-		final Tracker tracker = new Tracker(node, sequenceNumber.get());
-		
-		nodes.put(nodeId, tracker);
+		Object node = tracker.getNode(); 
 		
 		if (node instanceof Iconic) {
 			((Iconic) node).addIconListener(new IconListener() {
@@ -73,12 +79,15 @@ public class OddjobTracker {
 				
 				@Override
 				public void childAdded(StructuralEvent event) {
-					int childNode = track(event.getChild());
-					tracker.addChild(event.getIndex(), childNode, sequenceNumber.incrementAndGet());
+					track(tracker.addChild(event.getIndex(), event.getChild(), 
+							nodeId.getAndIncrement(), sequenceNumber.incrementAndGet()));
 				}
 			});
 		}
-		return nodeId;
+		
+		nodes.put(tracker.getNodeId(), tracker);
+		
+		return tracker.getNodeId();
 	}
 	
 	public NodeInfos infoFor(long fromSequence, int... nodeIds) {
@@ -90,14 +99,14 @@ public class OddjobTracker {
 		for (int i = 0; i < nodeIds.length; ++i) {
 			int nodeId = nodeIds[i];
 			
-			Tracker tracker = nodes.get(nodeId);
+			NodeTracker tracker = nodes.get(nodeId);
 			
 			if (tracker == null) {
 				logger.debug("Node Info request for unknown Id [" + nodeId + "]");
 				continue;
 			}
 			
-			NodeInfo nodeInfo = tracker.infoFor(nodeId, fromSequence);
+			NodeInfo nodeInfo = tracker.infoFor(fromSequence);
 			if (nodeInfo != null) {
 				nodeInfoList.add(nodeInfo);
 			}
@@ -119,7 +128,7 @@ public class OddjobTracker {
 	
 	public Object nodeFor(int nodeId) {
 		
-		Tracker tracker = nodes.get(nodeId);
+		NodeTracker tracker = nodes.get(nodeId);
 		
 		if (tracker == null) {
 			return null;
@@ -127,84 +136,40 @@ public class OddjobTracker {
 		
 		return tracker.getNode();
 	}
-
-	/**
-	 * Adds listeners to a node to track changes.
-	 */
-	static class Tracker {
+	
+	public LogLines logLinesFor(int nodeId, long logSeq) {
 		
-		private final Object node;
+		NodeTracker tracker = nodes.get(nodeId);
 		
-		private long nameSequence;
-				
-		private long iconSequence;
-		
-		private String icon;
-		
-		private long childrenSequence;
-		
-		private final List<Integer> children;
-		
-		public Tracker(Object node, long sequence) {
-			this.node = node;
-			this.nameSequence = sequence;
-			if (node instanceof Structural) {
-				this.children = new ArrayList<>();
-			}
-			else {
-				this.children = null;
-			}
+		if (tracker == null) {
+			return null;
 		}
 		
-		synchronized void updateIcon(String icon, long sequence) {
-			this.icon = icon;
-			this.iconSequence = sequence;
-		}
-		
-		
-		synchronized int removeChild(int index, long sequence) {
-			this.childrenSequence = sequence;
-			return children.remove(index);
-		}
-		
-		synchronized void addChild(int index, int nodeId, long sequence) {
-			this.childrenSequence = sequence;
-			this.children.add(index, nodeId);
-		}
-		
-		synchronized NodeInfo infoFor(int nodeId, long fromSequence) {
-			String name = null;
-			boolean hasInfo = false;
-			if (fromSequence < nameSequence) {
-				name = node.toString();
-				hasInfo = true;
-			}
-			String icon = null;
-			if (fromSequence < iconSequence) {
-				icon = this.icon;
-				hasInfo = true;
-			}
-			int[] children = null;
-			if (this.children != null &&
-					fromSequence < childrenSequence) {
-				children = new int[this.children.size()];
-				for (int i = 0; i < children.length; ++i) {
-					children[i] = this.children.get(i);
-				}
-				hasInfo = true;
-			}
+		class LL implements LogListener {
+			List<LogEvent> list = 
+				new ArrayList<LogEvent>();
 			
-			if (hasInfo) {
-				return new NodeInfo(nodeId, name, icon, children);
-			}
-			else {
-				return null;
+			public void logEvent(LogEvent logEvent) {
+				list.add(logEvent);
 			}
 		}
 		
-		public Object getNode() {
-			return node;
+		LL ll = new LL(); 
+		
+		Object node = tracker.getNode();
+		LogArchiver logArchiver = tracker.getLogArchiver();
+		
+		logArchiver.addLogListener(ll, node, LogLevel.DEBUG, -1, 1000);
+		logArchiver.removeLogListener(ll, node);
+		
+		LogLine[] lines = new LogLine[ll.list.size()];
+		int i = 0;
+		for (LogEvent logEvent : ll.list) {
+			lines[i++] = new LogLine(logEvent.getNumber(), 
+					logEvent.getLevel().toString(), logEvent.getMessage());
 		}
+		
+		return new LogLines(tracker.getNodeId(), lines);
 	}
 	
 }
