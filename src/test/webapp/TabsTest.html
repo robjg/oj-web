@@ -1,0 +1,70 @@
+<html>
+<head>
+	<style type="text/css">
+	@import url(../../main/webapp/css/detail.css?v=1.1.0);
+	</style>
+</head>
+<body>
+
+<div style="position: absolute; left: 0; top: 0; bottom: 0; right: 0; margin: 50px; padding: 50px; border: 2px solid #FF0000">
+<div id="oj-detail-tabs" class="tabbed-pane">
+
+	<div class="tabs">
+		<ul>
+			<li class="state notSelected"><a href="#">State</a></li>
+			<li class="console notSelected"><a href="#">Console</a></li>
+			<li class="log notSelected"><a href="#">Log</a></li>
+			<li class="properties notSelected"><a href="#">Properties</a></li>
+		</ul>
+	</div>
+		
+	<div class="tab-content">
+		<div class="state notSelected">
+		To Do State Panel
+		</div>
+		
+		<div class="console notSelected">
+			<pre class="textarea">
+Console Line 1
+Console Line 2
+			</pre>
+		</div>
+	
+		<div class="log notSelected">
+			<pre class="textarea">
+Log Line 1
+Log Line 2
+			</pre>
+		</div>
+
+		<div class="properties notSelected">
+		To Do Properties Panel
+		</div>
+	</div>		
+</div>
+</div>
+
+<script src="../../main/webapp/scripts/jquery-1.11.2.js"></script>
+<script src="../../main/webapp/scripts/ojTabsModel.js"></script>
+<script src="../../main/webapp/scripts/ojTabsUI.js"></script>
+
+
+
+<script>
+
+$(document).ready(function() {
+	
+	var model = ojTabsModel();
+	var ui = ojDetailTabs(model);
+	model.addTabSelectionListener(ui);
+	
+});
+
+
+
+
+
+</script>
+
+</body>
+</html>
