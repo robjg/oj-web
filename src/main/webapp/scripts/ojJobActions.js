@@ -50,7 +50,6 @@ var ojJobActions = function(ojActionsDao, divId) {
 	return {
 		selectionChanged: function(event) {
 			
-			var from = event.fromNodeId;
 			var to = event.toNodeId;
 			
 			removeActionButtons();
@@ -60,4 +59,4 @@ var ojJobActions = function(ojActionsDao, divId) {
 			}
 		}
 	};	
-}
+};

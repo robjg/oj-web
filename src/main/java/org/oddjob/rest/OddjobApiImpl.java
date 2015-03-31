@@ -77,9 +77,24 @@ public class OddjobApiImpl implements OddjobApi {
 	}
 	
 	@Override
-	public void performAction(String actionName, String nodeId) {
+	public void performAction(String nodeId, String actionName) {
 		
-		Object node = tracker.nodeFor(Integer.parseInt(nodeId));
+		int nodeIdInt;
+		try {
+			nodeIdInt = Integer.parseInt(nodeId);
+		}
+		catch (NumberFormatException e) {
+			logger.error("Failed parsing Node Id [" + nodeId + "]: " +
+					e.toString());
+			return;
+		}
+		
+		Object node = tracker.nodeFor(nodeIdInt);
+		
+		if (node == null) {
+			logger.error("No Node for Id [" + nodeId + "]: ");
+			return;
+		}
 		
 		actionFactory.performAction(node, actionName);
 	}
@@ -95,7 +110,7 @@ public class OddjobApiImpl implements OddjobApi {
 		String json = gson.toJson(logLines);  
 	
 		if (logger.isDebugEnabled()) {
-			logger.debug("logLines(" + nodeId+ 
+			logger.debug("logLines(" + nodeId+ ", " + logSeq +
 					"), Response: " + json);
 		}
 		

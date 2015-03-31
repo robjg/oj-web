@@ -159,7 +159,7 @@ public class OddjobTracker {
 		Object node = tracker.getNode();
 		LogArchiver logArchiver = tracker.getLogArchiver();
 		
-		logArchiver.addLogListener(ll, node, LogLevel.DEBUG, -1, 1000);
+		logArchiver.addLogListener(ll, node, LogLevel.DEBUG, logSeq, 1000);
 		logArchiver.removeLogListener(ll, node);
 		
 		LogLine[] lines = new LogLine[ll.list.size()];

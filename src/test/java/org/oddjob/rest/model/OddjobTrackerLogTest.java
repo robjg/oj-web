@@ -53,7 +53,7 @@ public class OddjobTrackerLogTest {
 		
 		logger2.info("Job2 - Log Line 1");
 		
-		LogLines result1 = test.logLinesFor(rootId, 0);
+		LogLines result1 = test.logLinesFor(rootId, -1);
 		
 		assertEquals(0, result1.getNodeId());
 		
@@ -71,7 +71,7 @@ public class OddjobTrackerLogTest {
 		assertTrue(job1Lines[1].getMessage(), 
 				job1Lines[1].getMessage().trim().endsWith("Job1 - Log Line 2"));
 		
-		LogLines result2 = test.logLinesFor(rootId + 1, 0);
+		LogLines result2 = test.logLinesFor(rootId + 1, -1);
 		
 		assertEquals(1, result2.getNodeId());
 		
@@ -82,7 +82,22 @@ public class OddjobTrackerLogTest {
 		assertEquals(0, job2Lines[0].getLogSeq());
 		assertEquals("INFO", job2Lines[0].getLevel());
 		assertTrue(job2Lines[0].getMessage(), 
-				job2Lines[0].getMessage().trim().endsWith("Job1 - Log Line 2"));
+				job2Lines[0].getMessage().trim().endsWith("Job2 - Log Line 1"));
+		
+		logger2.info("Job2 - Log Line 2");
+		
+		result2 = test.logLinesFor(rootId + 1, 0);
+		
+		assertEquals(1, result2.getNodeId());
+		
+		job2Lines = result2.getLogLines();
+		
+		assertEquals(1, job2Lines.length);		
+		
+		assertEquals(1, job2Lines[0].getLogSeq());
+		assertEquals("INFO", job2Lines[0].getLevel());
+		assertTrue(job2Lines[0].getMessage(), 
+				job2Lines[0].getMessage().trim().endsWith("Job2 - Log Line 2"));
 		
 	}
 }

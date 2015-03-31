@@ -1,0 +1,140 @@
+<html>
+<head>
+    <style>
+        #oj-detail-tabs .log-content {border: solid 2px}
+    </style>
+</head>
+<body>
+
+<div id='oj-detail-tabs'>
+<pre class='log-content'>
+
+</pre>
+</div>
+
+
+<button id="runTestOne">Test 1 (select node)</button>
+<div id=result1></div>
+
+<button id="runTestTwo">Test 2 (select log tab)</button>
+<div id=result2></div>
+
+<button id="runTestThree">Test 3 (poll)</button>
+<div id=result3></div>
+
+<button id="runTestFour">Test 4 (select console tab)</button>
+<div id=result4></div>
+
+<button id="runTestFive">Test 5 (select log tab)</button>
+<div id=result5></div>
+
+<button id="runTestSix">Test 6 (select new node)</button>
+<div id=result6></div>
+
+<button id="manualTest">Manual Test</button>
+
+
+<script src="../../main/webapp/scripts/jquery-1.11.2.js"></script>
+<script src="../../main/webapp/scripts/ojLogger.js"></script>
+<script src="ojLoggerTest.js"></script>
+
+
+
+<script>
+
+$(document).ready(function() {
+	
+	var test = ojLogger(ojLoggerDao);
+	
+	$("#runTestOne").click(function() {
+		
+		test.selectionChanged({
+			toNodeId: 457
+		});
+
+        $('#result1').append("<div class='logLinesCallIndex'>" +
+        "logLinesCallIndex: " +
+        logLinesCallIndex + "</div>");
+	});
+	
+	$("#runTestTwo").click(function() {
+		
+		test.tabChanged({
+			newTab: 'log'
+		});
+		
+		var request = fetchLogLines_argCapture[0];
+		$('#result2').append("<div class='fetchLogLines_argCapture'>" +
+				"makeNodeInfoRequest_argCapture: " + 
+				request.nodeId + " " + request.logSeq + "</div>");
+	});
+
+    $("#runTestThree").click(function() {
+
+        test.poll();
+
+        var request = fetchLogLines_argCapture[1];
+        $('#result3').append("<div class='fetchLogLines_argCapture'>" +
+        "makeNodeInfoRequest_argCapture: " +
+        request.nodeId + " " + request.logSeq + "</div>");
+    });
+
+    $("#runTestFour").click(function() {
+
+        test.tabChanged({
+            newTab: 'console'
+        });
+
+        $('#result4').append("<div class='logLinesCallIndex'>" +
+        "logLinesCallIndex: " +
+        logLinesCallIndex + "</div>");
+    });
+
+    $("#runTestFive").click(function() {
+
+        test.tabChanged({
+            newTab: 'log'
+        });
+
+        var request = fetchLogLines_argCapture[2];
+        $('#result5').append("<div class='fetchLogLines_argCapture'>" +
+        "makeNodeInfoRequest_argCapture: " +
+        request.nodeId + " " + request.logSeq + "</div>");
+
+        $('#result5').append("<div class='logLinesCallIndex'>" +
+        "logLinesCallIndex: " +
+        logLinesCallIndex + "</div>");
+    });
+
+    $("#runTestSix").click(function() {
+
+        test.selectionChanged({
+            toNodeId: 22
+        });
+
+        var request = fetchLogLines_argCapture[3];
+        $('#result6').append("<div class='fetchLogLines_argCapture'>" +
+        "makeNodeInfoRequest_argCapture: " +
+        request.nodeId + " " + request.logSeq + "</div>");
+
+        $('#result6').append("<div class='logLinesCallIndex'>" +
+        "logLinesCallIndex: " +
+        logLinesCallIndex + "</div>");
+    });
+
+    $("#manualTest").click(function() {
+
+        $("#runTestOne").click();
+        $("#runTestTwo").click();
+        $("#runTestThree").click();
+        $("#runTestFour").click();
+        $("#runTestFive").click();
+        $("#runTestSix").click();
+    });
+});
+
+
+
+</script>
+</body>
+</html>

@@ -16,8 +16,8 @@
 
 .tabbed-pane {
 	position: absolute;
-	left: 0px;
-	top: 155px;
+	left: 0;
+	top: 25px;
 	bottom: 0;
 	right: 0;	
 }
@@ -25,10 +25,10 @@
 
 .tab-content {
 	position: absolute;
-	left: 0px;
-	right: 0px;
+	left: 0;
+	right: 0;
 	top: 28px;
-	bottom: 0px;
+	bottom: 0;
 	overflow: auto;
 }
 
@@ -81,8 +81,6 @@
 	background: white;
 	border-radius: 7px;
 	-moz-border-radius: 7px;
-	border-radius: 7px;
-	-moz-border-radius: 7px;
 }
 
 .tab-content .notSelected {
@@ -107,7 +105,7 @@
 	background-color: #DDD;
 }
 
-.textarea {	
+.text-area {
 	margin: 0 0 0 0;
 	padding: 0 0 0 0;
 	font-size: 0.75em;

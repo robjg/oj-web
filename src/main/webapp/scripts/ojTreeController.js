@@ -25,6 +25,12 @@ ojTreeController = function(idPrefix) {
 			}
 		}
 	}
+
+    function doPoll() {
+
+        ojTreeModel.poll();
+        ojLog.poll();
+    }
 	
 	var ojTreeController = {
 		
@@ -64,8 +70,8 @@ ojTreeController = function(idPrefix) {
 			
 			var resume = stopRefresh();
 			
-			ojTreeModel.poll();
-			
+            doPoll();
+
 			resume();
 		},
 		
@@ -137,12 +143,30 @@ ojTreeController = function(idPrefix) {
 		},
 		
 		executeAction: function(actionName, nodeId) {
-			$.get('api/action/' + actionName + '/' + nodeId);
+			$.get('api/action/' +  nodeId +  '/' + actionName);
 		}
 	};
 	
 	var ojActions = ojJobActions(ojActionsDao);
 	ojTreeModel.addSelectionListener(ojActions);
-	
-	return ojTreeController;
+
+    var tabsModel = ojTabsModel();
+    var tabsUI = ojDetailTabs(tabsModel);
+    tabsModel.addTabSelectionListener(tabsUI);
+
+    var ojLoggerDao = {
+
+        fetchLogLines: function(nodeId, logSeq, ajaxCallback) {
+
+        $.get('api/logLines/' + nodeId, 'logSeq=' + logSeq,
+            ajaxCallback);
+        }
+    };
+
+    var ojLog = ojLogger(ojLoggerDao);
+
+    tabsModel.addTabSelectionListener(ojLog);
+    ojTreeModel.addSelectionListener(ojLog);
+
+    return ojTreeController;
 };

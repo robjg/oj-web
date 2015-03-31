@@ -61,7 +61,7 @@ public class OddjobWebServiceTest {
 		steps.startCheck(ParentState.COMPLETE, ParentState.READY);
 		
 		httpClient.setUrl("http://localhost:" + port + 
-				"/api/action/hard-reset/0");
+				"/api/action/0/hard-reset");
 		httpClient.call();
 		
 		content = httpClient.getContent();
@@ -76,7 +76,7 @@ public class OddjobWebServiceTest {
 				ParentState.COMPLETE);
 		
 		httpClient.setUrl("http://localhost:" + port + 
-				"/api/action/run/0");
+				"/api/action/0/run");
 		httpClient.call();
 		
 		assertEquals(204, httpClient.getStatus());

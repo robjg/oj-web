@@ -16,13 +16,13 @@ var ojDetailTabs = function(selectable, tabsId) {
 	function changeUITab(oldTab, newTab) {
 		if (oldTab !== undefined) {
 			$(tabSelector(oldTab)).attr(
-					{ class: oldTab + ' notSelected',
+					{ class: oldTab + ' notSelected'
 					});
 		}
 		
 		if (newTab !== undefined) {
 			$(tabSelector(newTab)).attr(
-					{ class: newTab + ' selected',
+					{ class: newTab + ' selected'
 					});
 		}
 	}
@@ -45,4 +45,4 @@ var ojDetailTabs = function(selectable, tabsId) {
 				changeUITab(event.oldTab, event.newTab);
 		}
 	}
-}
+};

@@ -1,6 +1,7 @@
 package org.oddjob.rest;
 
 import javax.ws.rs.GET;
+import javax.ws.rs.PUT;
 import javax.ws.rs.Path;
 import javax.ws.rs.PathParam;
 import javax.ws.rs.Produces;
@@ -27,12 +28,12 @@ public interface OddjobApi {
 	public Response actionsFor(@PathParam("nodeId") String nodeId);
 	
 	@GET
-	@Path("action/{actionName}/{nodeId}")
-	public void performAction(@PathParam("actionName") String actionName,
-			@PathParam("nodeId") String nodeId);
+	@Path("action/{nodeId}/{actionName}")
+	public void performAction(@PathParam("nodeId") String nodeId,
+			@PathParam("actionName") String actionName);
 	
 	@GET
-	@Path("action/{actionName}/{nodeId}")
+	@Path("logLines/{nodeId}")
 	@Produces("application/json")
 	public Response logLines(
 			@PathParam("nodeId") String nodeId,

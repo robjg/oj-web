@@ -1,40 +1,121 @@
 <!DOCTYPE html>
 <html>
 <head>
-<meta charset="ISO-8859-1">
+    <meta charset="ISO-8859-1">
+
 	<style type="text/css">
 	@import url(css/tree.css?v=1.1.0);
-	</style>	
+    @import url(css/detail.css?v=1.1.0);
+    @import url(css/control.css?v=1.1.0);
+    @import url(css/split-pane.css?v=1.1.0);
+
+    html, body {
+        height: 100%;
+        min-height: 100%;
+        margin: 0;
+        padding: 0;
+    }
+
+    .split-pane-divider {
+        background: #aaa;
+    }
+
+    #left-component {
+        right: 50%;
+        margin-right: 5px;
+    }
+
+    #my-divider {
+        right: 50%;
+        width: 5px;
+    }
+
+    #right-component {
+        width: 50%;
+    }
+
+    </style>
 	<title>Oddjob</title>
 </head>
 <body>
 
-	<p>Refresh Interval <input id="refresh" type="text"/></p>
+<div class="split-pane vertical-percent">
+    <div class="split-pane-component" id="left-component">
+        <div id='ojNodeRoot' class='tree'>
+            <ul>
+            </ul>
+        </div>
+    </div>
+    <div class="split-pane-divider" id="my-divider"></div>
+    <div class="split-pane-component" id="right-component">
+        <div class="control">
+            <div class="action-set" id="ojJobActions">
+            </div>
+            <div class="refresh-set">
+                <label for="refresh">Refresh Interval</label>
+                <input id="refresh" type="text"/>
+            </div>
+        </div>
+        <div id="oj-detail-tabs" class="tabbed-pane">
 
-	<div id="ojJobActions">
-	</div>
+            <div class="tabs">
+                <ul>
+                    <li class="state notSelected"><a href="#">State</a></li>
+                    <li class="console notSelected"><a href="#">Console</a></li>
+                    <li class="log notSelected"><a href="#">Log</a></li>
+                    <li class="properties notSelected"><a href="#">Properties</a></li>
+                </ul>
+            </div>
 
-	<div id='ojNodeRoot' class='tree'>
-		<ul>
-		</ul>
-	</div>
+            <div class="tab-content">
+                <div class="state notSelected">
+                    To Do State Panel
+                </div>
 
-	<script src="scripts/jquery-1.11.2.js"></script>
-	<script src="scripts/ojTreeUI.js"></script>
-	<script src="scripts/ojTreeModel.js"></script>
-	<script src="scripts/ojJobActions.js"></script>
-	<script src="scripts/ojTreeController.js"></script>
+                <div class="console notSelected">
+        <pre class="console-content text-area">
+Console Line 1
+Console Line 2
+        </pre>
+                </div>
+
+                <div class="log notSelected">
+        <pre class="log-content text-area">
+        </pre>
+                </div>
+
+                <div class="properties notSelected">
+                    To Do Properties Panel
+                </div>
+            </div>
+        </div>
+    </div>
+    </div>
+
+<script src="scripts/jquery-1.11.2.js"></script>
+<script src="scripts/split-pane.js"></script>
+<script src="scripts/ojTreeUI.js"></script>
+<script src="scripts/ojTreeModel.js"></script>
+<script src="scripts/ojTabsUI.js"></script>
+<script src="scripts/ojTabsModel.js"></script>
+<script src="scripts/ojLogger.js"></script>
+<script src="scripts/ojJobActions.js"></script>
+<script src="scripts/ojTreeController.js"></script>
 
 <script>
 
+$(function() {
+    $('div.split-pane').splitPane();
+});
+
 $(document).ready(function() {
-	
-	var controller = ojTreeController();
+
+    var controller = ojTreeController();
 	
 	$("#refresh").change(function(event) {
 		controller.start(event.currentTarget.value);
 	});
-	
+
 	controller.start();
 });
 
