@@ -100,6 +100,24 @@ public class OddjobApiImpl implements OddjobApi {
 	}
 	
 	@Override
+	public Response consoleLines(String nodeId, String logSeq) {
+		
+		LogLines logLines = tracker.consoleLinesFor(
+				Integer.parseInt(nodeId),
+				Long.parseLong(logSeq));
+		
+		Gson gson = new Gson();
+		String json = gson.toJson(logLines);  
+	
+		if (logger.isDebugEnabled()) {
+			logger.debug("consoleLines(" + nodeId+ ", " + logSeq +
+					"), Response: " + json);
+		}
+		
+		return Response.status(200).entity(json).build();
+	}
+	
+	@Override
 	public Response logLines(String nodeId, String logSeq) {
 		
 		LogLines logLines = tracker.logLinesFor(

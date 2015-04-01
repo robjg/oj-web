@@ -12,6 +12,7 @@ import org.oddjob.Iconic;
 import org.oddjob.Structural;
 import org.oddjob.images.IconEvent;
 import org.oddjob.images.IconListener;
+import org.oddjob.logging.ConsoleArchiver;
 import org.oddjob.logging.LogArchiver;
 import org.oddjob.logging.LogEvent;
 import org.oddjob.logging.LogLevel;
@@ -161,6 +162,41 @@ public class OddjobTracker {
 		
 		logArchiver.addLogListener(ll, node, LogLevel.DEBUG, logSeq, 1000);
 		logArchiver.removeLogListener(ll, node);
+		
+		LogLine[] lines = new LogLine[ll.list.size()];
+		int i = 0;
+		for (LogEvent logEvent : ll.list) {
+			lines[i++] = new LogLine(logEvent.getNumber(), 
+					logEvent.getLevel().toString(), logEvent.getMessage());
+		}
+		
+		return new LogLines(tracker.getNodeId(), lines);
+	}
+	
+	public LogLines consoleLinesFor(int nodeId, long logSeq) {
+		
+		NodeTracker tracker = nodes.get(nodeId);
+		
+		if (tracker == null) {
+			return null;
+		}
+		
+		class LL implements LogListener {
+			List<LogEvent> list = 
+				new ArrayList<LogEvent>();
+			
+			public void logEvent(LogEvent logEvent) {
+				list.add(logEvent);
+			}
+		}
+		
+		LL ll = new LL(); 
+		
+		Object node = tracker.getNode();
+		ConsoleArchiver consoleArchiver = tracker.getConsoleArchiver();
+		
+		consoleArchiver.addConsoleListener(ll, node, logSeq, 1000);
+		consoleArchiver.removeConsoleListener(ll, node);
 		
 		LogLine[] lines = new LogLine[ll.list.size()];
 		int i = 0;

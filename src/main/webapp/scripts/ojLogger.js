@@ -1,24 +1,25 @@
 
+function ojLogger(ojLoggerDao, tabName, divId) {
 
-function ojLogger(ojLoggerDao, divId) {
-
-	if (divId === undefined) {
-		divId = "oj-detail-tabs";
+	if (tabName === undefined) {
+        tabName = "log"
 	}
-	
+
+    if (divId === undefined) {
+        divId = "oj-detail-tabs";
+    }
+
+    var selector = '#' + divId + " ." + tabName + "-content";
+
 	var tabSelected;
 	
 	var selectedNodeId;
 	
 	var lastLogSeq = -1;
-	
-	function selector() {
-		return '#' + divId + " .log-content";
-	}
-	
+
 	function addLogLines(lines) {
 		
-		var container$ = $(selector());
+		var container$ = $(selector);
 		
 		for (var i = 0; i < lines.length; ++i) {
 			container$.append(lines[i].message);
@@ -31,7 +32,7 @@ function ojLogger(ojLoggerDao, divId) {
 	
 	function removeAll() {
 		
-		var container$ = $(selector());
+		var container$ = $(selector);
 		
 		container$.empty();
 	}
@@ -49,7 +50,7 @@ function ojLogger(ojLoggerDao, divId) {
 	
 	function fetchLogLines() {
 		
-		if (tabSelected !== "log") {
+		if (tabSelected !== tabName) {
 			return;
 		}
 		

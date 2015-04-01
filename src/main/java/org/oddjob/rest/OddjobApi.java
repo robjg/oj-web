@@ -33,6 +33,13 @@ public interface OddjobApi {
 			@PathParam("actionName") String actionName);
 	
 	@GET
+	@Path("consoleLines/{nodeId}")
+	@Produces("application/json")
+	public Response consoleLines(
+			@PathParam("nodeId") String nodeId,
+			@QueryParam("logSeq") String logSeq);
+	
+	@GET
 	@Path("logLines/{nodeId}")
 	@Produces("application/json")
 	public Response logLines(
