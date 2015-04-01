@@ -30,6 +30,7 @@ ojTreeController = function(idPrefix) {
 
         ojTreeModel.poll();
         ojLog.poll();
+        ojConsole.poll();
     }
 	
 	var ojTreeController = {
@@ -154,12 +155,26 @@ ojTreeController = function(idPrefix) {
     var tabsUI = ojDetailTabs(tabsModel);
     tabsModel.addTabSelectionListener(tabsUI);
 
+    var ojConsoleDao = {
+
+        fetchLogLines: function(nodeId, logSeq, ajaxCallback) {
+
+        $.get('api/consoleLines/' + nodeId, 'logSeq=' + logSeq,
+            ajaxCallback);
+        }
+    };
+
+    var ojConsole = ojLogger(ojConsoleDao, 'console');
+
+    tabsModel.addTabSelectionListener(ojConsole);
+    ojTreeModel.addSelectionListener(ojConsole);
+
     var ojLoggerDao = {
 
         fetchLogLines: function(nodeId, logSeq, ajaxCallback) {
 
-        $.get('api/logLines/' + nodeId, 'logSeq=' + logSeq,
-            ajaxCallback);
+            $.get('api/logLines/' + nodeId, 'logSeq=' + logSeq,
+                ajaxCallback);
         }
     };
 
