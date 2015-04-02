@@ -42,12 +42,13 @@ public class WebActionFactoryTest {
 		
 		WebAction[] actions = test.actionsFor(job);
 		
-		assertEquals(4, actions.length);
+		assertEquals(5, actions.length);
 		
 		assertEquals("run", actions[0].getName());
 		assertEquals("stop", actions[1].getName());
 		assertEquals("soft-reset", actions[2].getName());
 		assertEquals("hard-reset", actions[3].getName());
+		assertEquals("force", actions[4].getName());
 	}
 	
 	@Test

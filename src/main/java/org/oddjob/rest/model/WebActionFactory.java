@@ -7,6 +7,7 @@ import java.util.Map;
 import java.util.concurrent.Executor;
 
 import org.apache.log4j.Logger;
+import org.oddjob.rest.actions.Force;
 import org.oddjob.rest.actions.HardReset;
 import org.oddjob.rest.actions.Run;
 import org.oddjob.rest.actions.SoftReset;
@@ -28,11 +29,13 @@ public class WebActionFactory {
 		Stop stop = new Stop();
 		SoftReset softReset = new SoftReset();
 		HardReset hardReset = new HardReset();
+		Force force = new Force();
 		
 		actions.put(run.getName(), run);
 		actions.put(stop.getName(), stop);
 		actions.put(softReset.getName(), softReset);
 		actions.put(hardReset.getName(), hardReset);
+		actions.put(force.getName(), force);
 	}
 	
 	public WebAction[] actionsFor(Object node) {
