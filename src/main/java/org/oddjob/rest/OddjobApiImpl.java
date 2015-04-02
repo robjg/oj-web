@@ -5,9 +5,11 @@ import java.util.concurrent.Executors;
 import javax.ws.rs.core.Response;
 
 import org.apache.log4j.Logger;
+import org.oddjob.arooa.standard.StandardArooaSession;
 import org.oddjob.rest.model.LogLines;
 import org.oddjob.rest.model.NodeInfos;
 import org.oddjob.rest.model.OddjobTracker;
+import org.oddjob.rest.model.StateDTO;
 import org.oddjob.rest.model.WebAction;
 import org.oddjob.rest.model.WebActionFactory;
 
@@ -23,7 +25,7 @@ public class OddjobApiImpl implements OddjobApi {
 			new WebActionFactory(Executors.newFixedThreadPool(2));
 	
 	public OddjobApiImpl(Object rootNode) {
-		tracker = new OddjobTracker();
+		tracker = new OddjobTracker(new StandardArooaSession());
 		tracker.track(rootNode);
 	}
 
@@ -97,6 +99,21 @@ public class OddjobApiImpl implements OddjobApi {
 		}
 		
 		actionFactory.performAction(node, actionName);
+	}
+	
+	@Override
+	public Response state(String nodeId) {
+		StateDTO stateEvent = tracker.stateFor(Integer.parseInt(nodeId));
+		
+		Gson gson = new Gson();
+		String json = gson.toJson(stateEvent);  
+	
+		if (logger.isDebugEnabled()) {
+			logger.debug("consoleLines(" + nodeId + 
+					"), Response: " + json);
+		}
+		
+		return Response.status(200).entity(json).build();
 	}
 	
 	@Override

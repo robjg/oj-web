@@ -4,10 +4,11 @@
     <meta charset="ISO-8859-1">
 
 	<style type="text/css">
-	@import url(css/tree.css?v=1.1.0);
-    @import url(css/detail.css?v=1.1.0);
-    @import url(css/control.css?v=1.1.0);
-    @import url(css/split-pane.css?v=1.1.0);
+        @import url("css/global.css?v=1.1.0");
+        @import url(css/tree.css?v=1.1.0);
+        @import url(css/detail.css?v=1.1.0);
+        @import url(css/control.css?v=1.1.0);
+        @import url(css/split-pane.css?v=1.1.0);
 
     html, body {
         height: 100%;
@@ -41,7 +42,7 @@
 
 <div class="split-pane vertical-percent">
     <div class="split-pane-component" id="left-component">
-        <div id='ojNodeRoot' class='tree'>
+        <div id='ojNodeRoot' class='tree global-font'>
             <ul>
             </ul>
         </div>
@@ -58,7 +59,7 @@
         </div>
         <div id="oj-detail-tabs" class="tabbed-pane">
 
-            <div class="tabs">
+            <div class="tabs global-font">
                 <ul>
                     <li class="state notSelected"><a href="#">State</a></li>
                     <li class="console notSelected"><a href="#">Console</a></li>
@@ -69,7 +70,26 @@
 
             <div class="tab-content">
                 <div class="state notSelected">
-                    To Do State Panel
+                    <table class="global-font">
+                        <colgroup>
+                            <col class="title-col">
+                            <col class="value-col">
+                        </colgroup>
+                        <tbody>
+                        <tr>
+                            <td>State</td>
+                            <td class="state-state-cell">TBD</td>
+                        </tr>
+                        <tr>
+                            <td>Time</td>
+                            <td class="state-time-cell">TBD</td>
+                        </tr>
+                        <tr>
+                            <td>Exception</td>
+                            <td class="state-exception-cell">&nbsp;</td>
+                        </tr>
+                        </tbody></table>
+                    </table>
                 </div>
 
                 <div class="console notSelected">
@@ -82,7 +102,7 @@
                 </pre>
                 </div>
 
-                <div class="properties notSelected">
+                <div class="properties global-font notSelected">
                     To Do Properties Panel
                 </div>
             </div>

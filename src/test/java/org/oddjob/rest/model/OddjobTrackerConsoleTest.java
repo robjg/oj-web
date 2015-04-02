@@ -3,9 +3,11 @@ package org.oddjob.rest.model;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
 
+import org.apache.log4j.Logger;
 import org.junit.Test;
 import org.oddjob.Oddjob;
 import org.oddjob.Structural;
+import org.oddjob.arooa.standard.StandardArooaSession;
 import org.oddjob.logging.ConsoleOwner;
 import org.oddjob.logging.LogArchive;
 import org.oddjob.logging.LogArchiver;
@@ -16,6 +18,8 @@ import org.oddjob.structural.StructuralListener;
 
 public class OddjobTrackerConsoleTest {
 
+	private static final Logger logger = Logger.getLogger(OddjobTrackerConsoleTest.class);
+	
 	public static class Job1 implements Structural {
 		
 		Job2 job2 = new Job2();
@@ -45,7 +49,9 @@ public class OddjobTrackerConsoleTest {
 	@Test
 	public void testConsoleLines() throws ClassNotFoundException {
 		
-		OddjobTracker test = new OddjobTracker();
+		logger.info("-------------  testConsoleLines  -------------------");
+		
+		OddjobTracker test = new OddjobTracker(new StandardArooaSession());
 		
 		Job1 job1 = new Job1();
 		
@@ -65,17 +71,17 @@ public class OddjobTrackerConsoleTest {
 		
 		LogLine[] job1Lines = result1.getLogLines();
 		
-		assertEquals(2, job1Lines.length);
+		int lineCount = job1Lines.length;
 		
-		assertEquals(0, job1Lines[0].getLogSeq());
-		assertEquals("INFO", job1Lines[0].getLevel());
-		assertTrue(job1Lines[0].getMessage(), 
-				job1Lines[0].getMessage().trim().endsWith("Job1 - Console Line 1"));
+		assertEquals(lineCount - 2, job1Lines[lineCount - 2].getLogSeq());
+		assertEquals("INFO", job1Lines[lineCount - 2].getLevel());
+		assertTrue(job1Lines[lineCount - 2].getMessage(), 
+				job1Lines[lineCount - 2].getMessage().trim().endsWith("Job1 - Console Line 1"));
 		
-		assertEquals(1, job1Lines[1].getLogSeq());
-		assertEquals("INFO", job1Lines[1].getLevel());
-		assertTrue(job1Lines[1].getMessage(), 
-				job1Lines[1].getMessage().trim().endsWith("Job1 - Console Line 2"));
+		assertEquals(lineCount - 1, job1Lines[lineCount - 1].getLogSeq());
+		assertEquals("INFO", job1Lines[lineCount - 1].getLevel());
+		assertTrue(job1Lines[lineCount - 1].getMessage(), 
+				job1Lines[lineCount - 1].getMessage().trim().endsWith("Job1 - Console Line 2"));
 		
 		LogLines result2 = test.consoleLinesFor(rootId + 1, -1);
 		

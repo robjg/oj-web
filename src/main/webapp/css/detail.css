@@ -46,7 +46,7 @@
 	overflow: hidden;
 	display: block;	
 	padding: 4px 4px 4px 4px;
-	margin: 0 0 0 1em;
+	margin: 0 0 0 2px;
 	border-top-left-radius: 7px;
 	border-top-right-radius: 7px;
 	text-align: center;
@@ -93,16 +93,15 @@
 }
 
 .tab-content td {
-	font-size: 0.86em;
-	font-family: verdana helvetica, arial, sans-serif;
-	border: 1px solid black;
+	border: 1px solid #A5DF00;
 	overflow: auto;
  	padding: 0.3em; 
 }
 
-.tab-content table #name {
+.tab-content table .title-col {
 	width: 30%;
 	background-color: #DDD;
+    font-weight: bold;
 }
 
 .text-area {

@@ -5,6 +5,7 @@ import static org.mockito.Mockito.mock;
 
 import java.util.concurrent.Executor;
 
+import org.apache.log4j.Logger;
 import org.junit.Test;
 import org.oddjob.jobs.structural.SequentialJob;
 import org.oddjob.state.FlagState;
@@ -12,8 +13,12 @@ import org.oddjob.state.JobState;
 
 public class WebActionFactoryTest {
 
+	private static Logger logger = Logger.getLogger(WebActionFactoryTest.class);
+	
 	@Test
 	public void testActionsForRunnable() {
+		
+		logger.info("testActionsForRunnable");
 		
 		WebActionFactory test = new WebActionFactory(null);
 		
@@ -28,6 +33,8 @@ public class WebActionFactoryTest {
 	
 	@Test
 	public void testActionsAll() {
+		
+		logger.info("testActionsAll");
 		
 		SequentialJob job = new SequentialJob();
 		
@@ -45,6 +52,8 @@ public class WebActionFactoryTest {
 	
 	@Test
 	public void testPerformActions() {
+		
+		logger.info("testPerformActions");
 		
 		FlagState job = new FlagState();
 		

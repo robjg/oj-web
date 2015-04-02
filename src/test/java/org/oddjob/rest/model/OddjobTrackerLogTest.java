@@ -6,6 +6,7 @@ import static org.junit.Assert.assertTrue;
 import org.apache.log4j.Logger;
 import org.junit.Test;
 import org.oddjob.Structural;
+import org.oddjob.arooa.standard.StandardArooaSession;
 import org.oddjob.logging.LogEnabled;
 import org.oddjob.structural.StructuralEvent;
 import org.oddjob.structural.StructuralListener;
@@ -44,7 +45,7 @@ public class OddjobTrackerLogTest {
 	@Test
 	public void testLogLines() {
 		
-		OddjobTracker test = new OddjobTracker();
+		OddjobTracker test = new OddjobTracker(new StandardArooaSession());
 		
 		int rootId = test.track(new Job1());
 		

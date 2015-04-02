@@ -4,6 +4,7 @@ import java.io.File;
 import java.net.URL;
 import java.util.List;
 
+import org.apache.log4j.Logger;
 import org.junit.Assert;
 import org.junit.Test;
 
@@ -18,8 +19,12 @@ import com.gargoylesoftware.htmlunit.html.HtmlUnorderedList;
 
 public class OjTreeUIScriptTest {
 
+	private static Logger logger = Logger.getLogger(OjTreeUIScriptTest.class);
+	
 	@Test
 	public void testRootNode() throws Exception {
+		
+		logger.info("-----  testing OjTreeUITest.html  -----");
 		
 		File file = new File("src/test/webapp/OjTreeUITest.html");
 		

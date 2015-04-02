@@ -5,6 +5,7 @@ import static junit.framework.Assert.assertEquals;
 import java.io.File;
 import java.net.URL;
 
+import org.apache.log4j.Logger;
 import org.junit.Test;
 
 import com.gargoylesoftware.htmlunit.BrowserVersion;
@@ -14,8 +15,12 @@ import com.gargoylesoftware.htmlunit.html.HtmlPage;
 
 public class OjTreeModelScript1Test {
 
+	private static Logger logger = Logger.getLogger(OjTreeModelScript1Test.class);
+	
 	@Test
 	public void testAll() throws Exception {
+		
+		logger.info("-----  testing OjTreeModelTest.html ----- ");
 		
 		File file = new File("src/test/webapp/OjTreeModelTest.html");
 		

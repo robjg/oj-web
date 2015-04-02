@@ -9,7 +9,11 @@ import java.util.concurrent.atomic.AtomicLong;
 
 import org.apache.log4j.Logger;
 import org.oddjob.Iconic;
+import org.oddjob.Stateful;
 import org.oddjob.Structural;
+import org.oddjob.arooa.ArooaSession;
+import org.oddjob.describe.Describer;
+import org.oddjob.describe.UniversalDescriber;
 import org.oddjob.images.IconEvent;
 import org.oddjob.images.IconListener;
 import org.oddjob.logging.ConsoleArchiver;
@@ -33,6 +37,8 @@ public class OddjobTracker {
 
 	private static final Logger logger = Logger.getLogger(OddjobTracker.class);
 	
+	private final Describer describer;
+	
 	private final AtomicLong sequenceNumber = new AtomicLong();
 	
 	private final AtomicInteger nodeId = new AtomicInteger();
@@ -41,6 +47,10 @@ public class OddjobTracker {
 	
 	private final IconRegistry iconRegistry = new IconRegistry();
 
+	public OddjobTracker(ArooaSession session) {
+		this.describer = new UniversalDescriber(session);
+	}
+	
 	public int track(Object node) {
 		
 		return track(new NodeTracker(node, nodeId.getAndIncrement(), 
@@ -138,6 +148,22 @@ public class OddjobTracker {
 		return tracker.getNode();
 	}
 	
+	public StateDTO stateFor(int nodeId) {
+		
+		Object node = nodeFor(nodeId);
+
+		if (node == null) {
+			return null;
+		}
+				
+		if (!(node instanceof Stateful)) {
+			return null;
+		}
+
+		return new StateDTO(nodeId,
+				((Stateful) node).lastStateEvent());
+	}
+	
 	public LogLines logLinesFor(int nodeId, long logSeq) {
 		
 		NodeTracker tracker = nodes.get(nodeId);
@@ -206,6 +232,17 @@ public class OddjobTracker {
 		}
 		
 		return new LogLines(tracker.getNodeId(), lines);
-	}
+	}	
 	
+	public PropertiesDTO propertiesFor(int nodeId) {
+		Object node = nodeFor(nodeId);
+		
+		if (node == null) {
+			return null;
+		}
+		
+		Map<String, String> properties = describer.describe(node);
+		
+		return new PropertiesDTO(nodeId, properties);
+	}
 }

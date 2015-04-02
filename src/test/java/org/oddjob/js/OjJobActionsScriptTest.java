@@ -6,6 +6,7 @@ import java.io.File;
 import java.net.URL;
 import java.util.List;
 
+import org.apache.log4j.Logger;
 import org.junit.Test;
 
 import com.gargoylesoftware.htmlunit.BrowserVersion;
@@ -16,8 +17,12 @@ import com.gargoylesoftware.htmlunit.html.HtmlPage;
 
 public class OjJobActionsScriptTest {
 
+	private static Logger logger = Logger.getLogger(OjJobActionsScriptTest.class);
+			
 	@Test
 	public void testAll() throws Exception {
+		
+		logger.info("----- testing OjJobActionsTest.html ----" );
 		
 		File file = new File("src/test/webapp/OjJobActionsTest.html");
 		

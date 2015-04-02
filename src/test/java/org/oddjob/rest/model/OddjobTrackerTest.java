@@ -1,21 +1,28 @@
 package org.oddjob.rest.model;
 
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertSame;
+import static org.junit.Assert.assertTrue;
 
+import org.apache.log4j.Logger;
 import org.junit.Assert;
 import org.junit.Test;
 import org.oddjob.Oddjob;
+import org.oddjob.arooa.standard.StandardArooaSession;
 import org.oddjob.arooa.xml.XMLConfiguration;
 import org.oddjob.state.FlagState;
 
 public class OddjobTrackerTest {
 	
+	private static final Logger logger = Logger.getLogger(OddjobTrackerTest.class);
+	
 	@Test
 	public void testSimleIconEvents() {
 		FlagState flagJob = new FlagState();
 		
-		OddjobTracker tracker = new OddjobTracker();
+		OddjobTracker tracker = new OddjobTracker(
+				new StandardArooaSession());
 		
 		int nodeId = tracker.track(flagJob);
 		
@@ -95,7 +102,8 @@ public class OddjobTrackerTest {
 		
 		oddjob.load();
 		
-		OddjobTracker test = new OddjobTracker();
+		OddjobTracker test = new OddjobTracker(
+				new StandardArooaSession());
 		
 		int oddjobId = test.track(oddjob);
 		Assert.assertEquals(0, oddjobId);
@@ -160,5 +168,60 @@ public class OddjobTrackerTest {
 		Assert.assertEquals(null, sequentialNodeInfo.getName());
 		Assert.assertEquals("complete", sequentialNodeInfo.getIcon());
 		Assert.assertEquals(null, sequentialNodeInfo.getChildren());
+	}
+	
+	@Test
+	public void testState() {
+		
+		String xml = 
+				"<oddjob>"
+				+ "<job>"
+				+ "	<echo>A Job</echo>"
+				+ "</job>"
+				+ "</oddjob>";
+		
+		Oddjob oddjob = new Oddjob();
+		oddjob.setConfiguration(new XMLConfiguration("XML", xml));
+		
+		oddjob.run();
+		
+		OddjobTracker test = new OddjobTracker(
+				new StandardArooaSession());
+		
+		int oddjobId = test.track(oddjob);
+		
+		StateDTO result = test.stateFor(oddjobId);
+		
+		assertEquals(0, result.getNodeId());
+		assertEquals("COMPLETE", result.getState());
+		assertTrue(result.getTime() > 0);
+		assertNull(result.getException());
+	}
+	
+	@Test
+	public void testProperties() {
+		
+		String xml = 
+				"<oddjob>"
+				+ "<job>"
+				+ "	<echo>A Job</echo>"
+				+ "</job>"
+				+ "</oddjob>";
+		
+		Oddjob oddjob = new Oddjob();
+		oddjob.setConfiguration(new XMLConfiguration("XML", xml));
+		
+		oddjob.run();
+		
+		OddjobTracker test = new OddjobTracker(
+				new StandardArooaSession());
+		
+		test.track(oddjob);
+		
+		PropertiesDTO result = test.propertiesFor(1);
+		
+		assertEquals(1, result.getNodeId());
+		
+		logger.info(result.getProperties());
 	}
 }
