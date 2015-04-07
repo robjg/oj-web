@@ -155,6 +155,20 @@ ojTreeController = function(idPrefix) {
     var tabsUI = ojDetailTabs(tabsModel);
     tabsModel.addTabSelectionListener(tabsUI);
 
+    var ojStateDao = {
+
+        fetchState: function(nodeId, ajaxCallback) {
+
+            $.get('api/state/' + nodeId,
+                ajaxCallback);
+        }
+    };
+
+    var ojState = ojStateFactory(ojStateDao);
+
+    tabsModel.addTabSelectionListener(ojState);
+    ojTreeModel.addSelectionListener(ojState);
+
     var ojConsoleDao = {
 
         fetchLogLines: function(nodeId, logSeq, ajaxCallback) {

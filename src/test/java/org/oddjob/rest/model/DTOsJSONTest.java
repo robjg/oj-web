@@ -13,6 +13,7 @@ import org.oddjob.state.JobState;
 import org.oddjob.state.StateEvent;
 
 import com.google.gson.Gson;
+import com.google.gson.GsonBuilder;
 
 public class DTOsJSONTest {
 
@@ -98,13 +99,13 @@ public class DTOsJSONTest {
 		
 		PropertiesDTO test = new PropertiesDTO(456, properties);
 		
-		
-		Gson gson = new Gson();
+		Gson gson = new GsonBuilder().serializeNulls().create();
+
 		String json = gson.toJson(test);  
 		
 		logger.info(json);
 		
-		String expected = "{\"nodeId\":456,\"properties\":{\"favourite.fruit\":\"apples\",\"favourite.colour\":\"green\"}}";
+		String expected = "{\"nodeId\":456,\"properties\":{\"favourite.fruit\":\"apples\",\"favourite.colour\":null}}";
 		
 		Assert.assertEquals(expected, json);
 	}

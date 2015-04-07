@@ -4,7 +4,6 @@ import java.util.concurrent.Executor;
 
 import org.apache.log4j.Logger;
 import org.oddjob.Forceable;
-import org.oddjob.Resetable;
 import org.oddjob.rest.model.WebAction;
 
 public class Force implements WebAction {

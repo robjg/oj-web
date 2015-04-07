@@ -1,0 +1,168 @@
+<html>
+<head>
+    <style>
+        @import url("../../main/webapp/css/global.css?v=1.1.0");
+        @import url(../../main/webapp/css/detail.css?v=1.1.0);
+
+        #oj-detail-tabs {
+            position: fixed;
+            top: 0;
+            right: 0;
+            bottom: 0;
+            left: 500px;
+        }
+    </style>
+</head>
+<body>
+
+<div id='oj-detail-tabs'>
+    <div class="tab-content">
+        <div class="state selected">
+            <table class="state-content global-font">
+                <colgroup>
+                    <col class="title-col">
+                    <col class="value-col">
+                </colgroup>
+                <tbody>
+                <tr>
+                    <td>State</td>
+                    <td class="state-state-cell">TBD</td>
+                </tr>
+                <tr>
+                    <td>Time</td>
+                    <td class="state-time-cell">TBD</td>
+                </tr>
+                <tr>
+                    <td>Exception</td>
+                    <td class="state-exception-cell">&nbsp;</td>
+                </tr>
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>
+
+
+<button id="runTestOne">Test 1 (select node)</button>
+<div id=result1></div>
+
+<button id="runTestTwo">Test 2 (select state tab)</button>
+<div id=result2></div>
+
+<button id="runTestThree">Test 3 (poll)</button>
+<div id=result3></div>
+
+<button id="runTestFour">Test 4 (select console tab)</button>
+<div id=result4></div>
+
+<button id="runTestFive">Test 5 (select state tab)</button>
+<div id=result5></div>
+
+<button id="runTestSix">Test 6 (select new node)</button>
+<div id=result6></div>
+
+<button id="manualTest">Manual Test</button>
+
+
+<script src="../../main/webapp/scripts/jquery-1.11.2.js"></script>
+<script src="../../main/webapp/scripts/ojState.js"></script>
+<script src="ojStateTest.js"></script>
+
+
+
+<script>
+
+$(document).ready(function() {
+	
+	var test = ojStateFactory(ojStateDao);
+	
+	$("#runTestOne").click(function() {
+		
+		test.selectionChanged({
+			toNodeId: 457
+		});
+
+        $('#result1').append("<div class='stateCallIndex'>" +
+        "stateCallIndex: " +
+        stateCallIndex + "</div>");
+	});
+	
+	$("#runTestTwo").click(function() {
+		
+		test.tabChanged({
+			newTab: 'state'
+		});
+		
+		var request = fetchState_argCapture[0];
+		$('#result2').append("<div class='fetchState_argCapture'>" +
+				"fetchState_argCapture: " +
+				request.nodeId + "</div>");
+	});
+
+    $("#runTestThree").click(function() {
+
+        test.poll();
+
+        var request = fetchState_argCapture[1];
+        $('#result3').append("<div class='fetchState_argCapture'>" +
+        "fetchState_argCapture: " +
+        request.nodeId + "</div>");
+    });
+
+    $("#runTestFour").click(function() {
+
+        test.tabChanged({
+            newTab: 'console'
+        });
+
+        $('#result4').append("<div class='stateCallIndex'>" +
+        "stateCallIndex: " +
+        stateCallIndex + "</div>");
+    });
+
+    $("#runTestFive").click(function() {
+
+        test.tabChanged({
+            newTab: 'state'
+        });
+
+        var request = fetchState_argCapture[2];
+        $('#result5').append("<div class='fetchState_argCapture'>" +
+        "fetchState_argCapture: " +
+        request.nodeId + " " + request.logSeq + "</div>")
+                .append("<div class='stateCallIndex'>" +
+        "stateCallIndex: " +
+        stateCallIndex + "</div>");
+    });
+
+    $("#runTestSix").click(function() {
+
+        test.selectionChanged({
+            toNodeId: 22
+        });
+
+        var request = fetchState_argCapture[3];
+        $('#result6').append("<div class='fetchState_argCapture'>" +
+        "fetchState_argCapture: " +
+        request.nodeId + " " + request.logSeq + "</div>")
+                .append("<div class='stateCallIndex'>" +
+        "stateCallIndex: " +
+        stateCallIndex + "</div>");
+    });
+
+    $("#manualTest").click(function() {
+
+        $("#runTestOne").click();
+        $("#runTestTwo").click();
+        $("#runTestThree").click();
+        $("#runTestFour").click();
+        $("#runTestFive").click();
+        $("#runTestSix").click();
+    });
+});
+
+
+
+</script>
+</body>
+</html>
