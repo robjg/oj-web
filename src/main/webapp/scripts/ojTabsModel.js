@@ -1,7 +1,7 @@
 
-var ojTabsModel = function() {
+var ojTabsModel = function(selectedTab) {
 	
-	var currentTab;
+	var currentTab = selectedTab;
 	
 	var tabSelectionListeners = [];
 	

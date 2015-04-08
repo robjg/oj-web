@@ -9,11 +9,13 @@ import org.oddjob.arooa.standard.StandardArooaSession;
 import org.oddjob.rest.model.LogLines;
 import org.oddjob.rest.model.NodeInfos;
 import org.oddjob.rest.model.OddjobTracker;
+import org.oddjob.rest.model.PropertiesDTO;
 import org.oddjob.rest.model.StateDTO;
 import org.oddjob.rest.model.WebAction;
 import org.oddjob.rest.model.WebActionFactory;
 
 import com.google.gson.Gson;
+import com.google.gson.GsonBuilder;
 
 public class OddjobApiImpl implements OddjobApi {
 
@@ -109,7 +111,7 @@ public class OddjobApiImpl implements OddjobApi {
 		String json = gson.toJson(stateEvent);  
 	
 		if (logger.isDebugEnabled()) {
-			logger.debug("consoleLines(" + nodeId + 
+			logger.debug("state(" + nodeId + 
 					"), Response: " + json);
 		}
 		
@@ -146,6 +148,21 @@ public class OddjobApiImpl implements OddjobApi {
 	
 		if (logger.isDebugEnabled()) {
 			logger.debug("logLines(" + nodeId+ ", " + logSeq +
+					"), Response: " + json);
+		}
+		
+		return Response.status(200).entity(json).build();
+	}
+	
+	@Override
+	public Response properties(String nodeId) {
+		PropertiesDTO propertiesEvent = tracker.propertiesFor(Integer.parseInt(nodeId));
+		
+		Gson gson = new GsonBuilder().serializeNulls().create();
+		String json = gson.toJson(propertiesEvent);  
+	
+		if (logger.isDebugEnabled()) {
+			logger.debug("properties(" + nodeId + 
 					"), Response: " + json);
 		}
 		

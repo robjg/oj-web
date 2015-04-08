@@ -61,7 +61,7 @@
 
             <div class="tabs global-font">
                 <ul>
-                    <li class="state notSelected"><a href="#">State</a></li>
+                    <li class="state selected"><a href="#">State</a></li>
                     <li class="console notSelected"><a href="#">Console</a></li>
                     <li class="log notSelected"><a href="#">Log</a></li>
                     <li class="properties notSelected"><a href="#">Properties</a></li>
@@ -69,7 +69,7 @@
             </div>
 
             <div class="tab-content">
-                <div class="state notSelected">
+                <div class="state selected">
                     <table class="state-content global-font">
                         <colgroup>
                             <col class="title-col">
@@ -86,9 +86,9 @@
                         </tr>
                         <tr>
                             <td>Exception</td>
-                            <td class="state-exception-cell">&nbsp;</td>
+                            <td ><pre class="state-exception-cell"></pre></td>
                         </tr>
-                        </tbody></table>
+                        </tbody>
                     </table>
                 </div>
 
@@ -102,8 +102,15 @@
                 </pre>
                 </div>
 
-                <div class="properties global-font notSelected">
-                    To Do Properties Panel
+                <div class="properties notSelected">
+                    <table class="global-font">
+                        <colgroup>
+                            <col class="title-col">
+                            <col class="value-col">
+                        </colgroup>
+                        <tbody class="properties-content">
+                        </tbody>
+                    </table>
                 </div>
             </div>
         </div>
@@ -112,6 +119,7 @@
 
 <script src="scripts/jquery-1.11.2.js"></script>
 <script src="scripts/split-pane.js"></script>
+<script src="scripts/ojDao.js"></script>
 <script src="scripts/ojTreeUI.js"></script>
 <script src="scripts/ojTreeModel.js"></script>
 <script src="scripts/ojTabsUI.js"></script>
@@ -119,6 +127,7 @@
 <script src="scripts/ojState.js"></script>
 <script src="scripts/ojLogger.js"></script>
 <script src="scripts/ojJobActions.js"></script>
+<script src="scripts/ojProperties.js"></script>
 <script src="scripts/ojTreeController.js"></script>
 
 <script>

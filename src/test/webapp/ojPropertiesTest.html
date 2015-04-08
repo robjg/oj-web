@@ -1,0 +1,153 @@
+<html>
+<head>
+    <style>
+        @import url("../../main/webapp/css/global.css?v=1.1.0");
+        @import url(../../main/webapp/css/detail.css?v=1.1.0);
+
+        #oj-detail-tabs {
+            position: fixed;
+            top: 0;
+            right: 0;
+            bottom: 0;
+            left: 500px;
+        }
+    </style>
+</head>
+<body>
+
+<div id='oj-detail-tabs'>
+    <div class="properties selected">
+        <table class="global-font">
+            <colgroup>
+                <col class="title-col">
+                <col class="value-col">
+            </colgroup>
+            <tbody class="properties-content">
+            </tbody>
+        </table>
+    </div>
+</div>
+
+
+<button id="runTestOne">Test 1 (select node)</button>
+<div id=result1></div>
+
+<button id="runTestTwo">Test 2 (select properties tab)</button>
+<div id=result2></div>
+
+<button id="runTestThree">Test 3 (poll)</button>
+<div id=result3></div>
+
+<button id="runTestFour">Test 4 (select console tab)</button>
+<div id=result4></div>
+
+<button id="runTestFive">Test 5 (select properties tab)</button>
+<div id=result5></div>
+
+<button id="runTestSix">Test 6 (select new node)</button>
+<div id=result6></div>
+
+<button id="manualTest">Manual Test</button>
+
+
+<script src="../../main/webapp/scripts/jquery-1.11.2.js"></script>
+<script src="../../main/webapp/scripts/ojProperties.js"></script>
+<script src="ojPropertiesTest.js"></script>
+
+
+<script>
+
+$(document).ready(function() {
+	
+	var test = ojPropertiesFactory(ojPropertiesDao);
+	
+	$("#runTestOne").click(function() {
+		
+		test.selectionChanged({
+			toNodeId: 457
+		});
+
+        $('#result1').append("<div class='propertiesCallIndex'>" +
+        "propertiesCallIndex: " +
+        propertiesCallIndex + "</div>");
+	});
+	
+	$("#runTestTwo").click(function() {
+		
+		test.tabChanged({
+			newTab: 'properties'
+		});
+		
+		var request = fetchProperties_argCapture[0];
+		$('#result2').append("<div class='fetchProperties_argCapture'>" +
+				"fetchProperties_argCapture: " +
+				request.nodeId + "</div>");
+	});
+
+    $("#runTestThree").click(function() {
+
+        test.poll();
+
+        var request = fetchProperties_argCapture[1];
+        $('#result3').append("<div class='fetchProperties_argCapture'>" +
+        "fetchProperties_argCapture: " +
+        request.nodeId + "</div>");
+    });
+
+    $("#runTestFour").click(function() {
+
+        test.tabChanged({
+            newTab: 'console'
+        });
+
+        $('#result4').append("<div class='propertiesCallIndex'>" +
+        "propertiesCallIndex: " +
+        propertiesCallIndex + "</div>");
+    });
+
+    $("#runTestFive").click(function() {
+
+        test.tabChanged({
+            newTab: 'properties'
+        });
+
+        var request = fetchProperties_argCapture[2];
+        $('#result5').append("<div class='fetchProperties_argCapture'>" +
+        "fetchProperties_argCapture: " +
+        request.nodeId + " " + request.logSeq + "</div>")
+                .append("<div class='propertiesCallIndex'>" +
+        "propertiesCallIndex: " +
+        propertiesCallIndex + "</div>");
+    });
+
+    $("#runTestSix").click(function() {
+
+        test.selectionChanged({
+            toNodeId: 22
+        });
+
+        var request = fetchProperties_argCapture[3];
+        $('#result6').append("<div class='fetchProperties_argCapture'>" +
+        "fetchProperties_argCapture: " +
+        request.nodeId + " " + request.logSeq + "</div>")
+                .append("<div class='PropertiesCallIndex'>" +
+        "propertiesCallIndex: " +
+        propertiesCallIndex + "</div>");
+    });
+
+    $("#manualTest").click(function() {
+
+        $("#runTestOne").click();
+        $("#runTestTwo").click();
+        $("#runTestThree").click();
+        $("#runTestFour").click();
+        $("#runTestFive").click();
+        $("#runTestSix").click();
+    });
+});
+
+
+
+</script>
+</body>
+</html>

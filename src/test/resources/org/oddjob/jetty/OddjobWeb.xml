@@ -4,17 +4,16 @@
         <sequential>
             <jobs>
                 <properties>
-                  <values>
-                    <file key="project.root" file="."/>
-                  </values>
+                    <values>
+                        <file file="." key="project.root"/>
+                    </values>
                 </properties>
-                <web:server xmlns:web="oddjob:web" id="server" port="${server.port}">
+                <web:server id="server" port="${server.port}" xmlns:web="oddjob:web">
                     <handlers>
-                        <web:files baseDir="${basedir}/src/main/webapp/"
-                            directoriesListed="true" minMemoryMappedContentLength="-1">
-                          <welcomeFiles>
-                            <value value="index.html"/>
-                          </welcomeFiles>
+                        <web:files baseDir="${basedir}/src/main/webapp/" directoriesListed="true" minMemoryMappedContentLength="-1">
+                            <welcomeFiles>
+                                <value value="index.html"/>
+                            </welcomeFiles>
                         </web:files>
                         <web:oddjob-ws>
                             <root>
@@ -27,6 +26,13 @@
                     <jobs>
                         <echo name="Echo 1"><![CDATA[Hello]]></echo>
                         <echo name="Echo 2"><![CDATA[Hello]]></echo>
+                        <sequential id="jobs">
+                            <jobs>
+                                <echo name="Echo 1"><![CDATA[Hello]]></echo>
+                                <echo name="Echo 2"><![CDATA[Hello]]></echo>
+                                <state:flag state="EXCEPTION" xmlns:state="http://rgordon.co.uk/oddjob/state"/>
+                            </jobs>
+                        </sequential>
                     </jobs>
                 </sequential>
             </jobs>

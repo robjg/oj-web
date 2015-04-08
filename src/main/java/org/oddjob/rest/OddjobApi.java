@@ -50,4 +50,11 @@ public interface OddjobApi {
 	public Response logLines(
 			@PathParam("nodeId") String nodeId,
 			@QueryParam("logSeq") String logSeq);
+	
+	@GET
+	@Path("properties/{nodeId}")
+	@Produces("application/json")
+	public Response properties(
+			@PathParam("nodeId") String nodeId);
+
 }

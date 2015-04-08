@@ -122,80 +122,40 @@ ojTreeController = function(idPrefix) {
 	
 	var ojTreeUI = ojTreeUIFactory(ojTreeController, idPrefix);
 	
-	var ojTreeDao = {
-			
-			makeNodeInfoRequest: function(nodeIds, ajaxCallback, eventSeq) {
-			
-			$.get('api/nodeInfo', 'nodeIds=' + nodeIds + '&eventSeq=' + eventSeq,
-					ajaxCallback);
-		}
-	};
-	
-	var ojTreeModel = ojTreeModelFactory(ojTreeDao);
+	var ojTreeModel = ojTreeModelFactory(ojDao);
 	ojTreeModel.addTreeChangeListener(ojTreeUI);
 	ojTreeModel.addSelectionListener(ojTreeUI);
-	
-	var ojActionsDao = {
-			
-		actionsFor: function(nodeId, ajaxCallback) {
-			
-			$.get('api/actionsFor/' + nodeId,
-					ajaxCallback);
-		},
-		
-		executeAction: function(actionName, nodeId) {
-			$.get('api/action/' +  nodeId +  '/' + actionName);
-		}
-	};
-	
-	var ojActions = ojJobActions(ojActionsDao);
+
+	var ojActions = ojJobActions(ojDao);
 	ojTreeModel.addSelectionListener(ojActions);
 
-    var tabsModel = ojTabsModel();
+    var tabsModel = ojTabsModel("state");
     var tabsUI = ojDetailTabs(tabsModel);
     tabsModel.addTabSelectionListener(tabsUI);
 
-    var ojStateDao = {
-
-        fetchState: function(nodeId, ajaxCallback) {
-
-            $.get('api/state/' + nodeId,
-                ajaxCallback);
-        }
-    };
-
-    var ojState = ojStateFactory(ojStateDao);
+    var ojState = ojStateFactory(ojDao, { selected: true });
 
     tabsModel.addTabSelectionListener(ojState);
     ojTreeModel.addSelectionListener(ojState);
 
-    var ojConsoleDao = {
-
+    var ojConsole = ojLogger({
         fetchLogLines: function(nodeId, logSeq, ajaxCallback) {
-
-        $.get('api/consoleLines/' + nodeId, 'logSeq=' + logSeq,
-            ajaxCallback);
+            ojDao.fetchConsoleLines(nodeId, logSeq, ajaxCallback);
         }
-    };
-
-    var ojConsole = ojLogger(ojConsoleDao, 'console');
+    }, 'console');
 
     tabsModel.addTabSelectionListener(ojConsole);
     ojTreeModel.addSelectionListener(ojConsole);
 
-    var ojLoggerDao = {
-
-        fetchLogLines: function(nodeId, logSeq, ajaxCallback) {
-
-            $.get('api/logLines/' + nodeId, 'logSeq=' + logSeq,
-                ajaxCallback);
-        }
-    };
-
-    var ojLog = ojLogger(ojLoggerDao);
+    var ojLog = ojLogger(ojDao);
 
     tabsModel.addTabSelectionListener(ojLog);
     ojTreeModel.addSelectionListener(ojLog);
+
+    var ojProperties = ojPropertiesFactory(ojDao);
+
+    tabsModel.addTabSelectionListener(ojProperties);
+    ojTreeModel.addSelectionListener(ojProperties);
 
     return ojTreeController;
 };

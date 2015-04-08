@@ -78,7 +78,7 @@ public class IconRegistry {
 			rendered = buffered;
 		}
 		try {
-			ImageIO.write((BufferedImage) rendered, "jpg", out);
+			ImageIO.write((BufferedImage) rendered, "gif", out);
 			out.close();
 		} catch (IOException e) {
 			throw new RuntimeException(e);

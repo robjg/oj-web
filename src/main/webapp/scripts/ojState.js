@@ -1,18 +1,27 @@
 
-function ojStateFactory(ojStateDao, tabName, divId) {
+function ojStateFactory(ojStateDao, options) {
 
+    if (options === undefined) {
+        options = {};
+    }
+
+    var tabName = options.tabName;
 	if (tabName === undefined) {
         tabName = "state"
 	}
 
+    var divId = options.divId;
     if (divId === undefined) {
         divId = "oj-detail-tabs";
     }
 
+    var tabSelected;
+    if (options.selected) {
+        tabSelected = tabName;
+    }
+
     var selector = '#' + divId + " ." + tabName + "-content";
 
-	var tabSelected;
-	
 	var selectedNodeId;
 	
 	function setStateInTable(state) {
