@@ -1,7 +1,9 @@
 package org.oddjob.rest;
 
+import java.util.Properties;
 import java.util.concurrent.Executors;
 
+import javax.ws.rs.core.MultivaluedMap;
 import javax.ws.rs.core.Response;
 
 import org.apache.log4j.Logger;
@@ -67,7 +69,7 @@ public class OddjobApiImpl implements OddjobApi {
 		
 		Object node = tracker.nodeFor(Integer.parseInt(nodeId));
 		
-		WebAction[] actions = actionFactory.actionsFor(node);
+		WebAction<?>[] actions = actionFactory.actionsFor(node);
 		
 		Gson gson = new Gson();
 		String json = gson.toJson(actions);  
@@ -100,7 +102,37 @@ public class OddjobApiImpl implements OddjobApi {
 			return;
 		}
 		
-		actionFactory.performAction(node, actionName);
+		actionFactory.performAction(node, actionName, null);
+	}
+	
+	@Override
+	public void performWith(String nodeId, String actionName,
+			MultivaluedMap<String, String> formParams) {
+		
+		int nodeIdInt;
+		try {
+			nodeIdInt = Integer.parseInt(nodeId);
+		}
+		catch (NumberFormatException e) {
+			logger.error("Failed parsing Node Id [" + nodeId + "]: " +
+					e.toString());
+			return;
+		}
+		
+		Object node = tracker.nodeFor(nodeIdInt);
+		
+		if (node == null) {
+			logger.error("No Node for Id [" + nodeId + "]: ");
+			return;
+		}
+		
+		Properties properties = new Properties();		
+		for (String key : formParams.keySet()) {
+			// Don't support multiple values yet...
+			properties.setProperty(key, formParams.getFirst(key));
+		}
+		
+		actionFactory.performAction(node, actionName, properties);
 	}
 	
 	@Override

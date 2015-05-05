@@ -17,19 +17,23 @@ public class WebActionFactory {
 	
 	private static final Logger logger = Logger.getLogger(WebActionFactory.class);
 	
-	private final Executor executor;
-
-	private final Map<String, WebAction> actions = 
-			new LinkedHashMap<String, WebAction>();
+	private final Map<String, WebAction<?>> actions = 
+			new LinkedHashMap<>();
 	
 	public WebActionFactory(Executor executor) {
-		this.executor = executor;
+		
+		// this will happen in configuration one day
 		
 		Run run = new Run();
+		run.setExecutor(executor);
 		Stop stop = new Stop();
+		stop.setExecutor(executor);
 		SoftReset softReset = new SoftReset();
+		softReset.setExecutor(executor);
 		HardReset hardReset = new HardReset();
+		hardReset.setExecutor(executor);
 		Force force = new Force();
+		force.setExecutor(executor);
 		
 		actions.put(run.getName(), run);
 		actions.put(stop.getName(), stop);
@@ -38,11 +42,11 @@ public class WebActionFactory {
 		actions.put(force.getName(), force);
 	}
 	
-	public WebAction[] actionsFor(Object node) {
+	public WebAction<?>[] actionsFor(Object node) {
 
-		List<WebAction> results = new ArrayList<WebAction>();
+		List<WebAction<?>> results = new ArrayList<>();
 		
-		for (WebAction action : actions.values()) {
+		for (WebAction<?> action : actions.values()) {
 			if (action.isFor(node)) {
 				results.add(action);
 			};
@@ -51,13 +55,21 @@ public class WebActionFactory {
 		return results.toArray(new WebAction[results.size()]);		
 	}
 	
-	public void performAction(Object node, String actionName) {
-		WebAction action = actions.get(actionName.toLowerCase());
+	public void performAction(Object node, String actionName,
+			Object params) {
+		
+		WebAction<?> action = actions.get(actionName.toLowerCase());
+		
 		if (action == null) {
 			logger.info("No Action [" + action + "]");
 		}
 		else {
-			action.actOn(node, executor);
+			performWithInferredType(node, action, params);
 		}
+	}
+	
+	protected <T> void performWithInferredType(Object node, 
+			WebAction<T> action, Object params) {
+		action.actOn(node, action.castParams(params));
 	}
 }

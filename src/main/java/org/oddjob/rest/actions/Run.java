@@ -1,10 +1,8 @@
 package org.oddjob.rest.actions;
 
-import java.util.concurrent.Executor;
+import org.oddjob.jobs.job.ResetActions;
 
-import org.oddjob.rest.model.WebAction;
-
-public class Run implements WebAction {
+public class Run extends NoParamsAction {
 
 	private final String name = "run";
 	
@@ -21,9 +19,15 @@ public class Run implements WebAction {
 	}
 
 	@Override
-	public void actOn(Object node, Executor executor) {
+	public void actOn(final Object node) {
 		if (node instanceof Runnable) {
-			executor.execute((Runnable) node);
+			getExecutor().execute(new Runnable() {
+				@Override
+				public void run() {
+					ResetActions.AUTO.doWith(node);
+					((Runnable) node).run();
+				};
+			});
 		}
 	}
 
@@ -31,5 +35,4 @@ public class Run implements WebAction {
 	public boolean isFor(Object node) {
 		return node instanceof Runnable;
 	}
-
 }

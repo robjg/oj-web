@@ -1,12 +1,9 @@
 package org.oddjob.rest.actions;
 
-import java.util.concurrent.Executor;
-
 import org.apache.log4j.Logger;
 import org.oddjob.Resetable;
-import org.oddjob.rest.model.WebAction;
 
-public class SoftReset implements WebAction {
+public class SoftReset extends NoParamsAction {
 
 	private static final Logger logger = Logger.getLogger(SoftReset.class);
 	
@@ -25,9 +22,9 @@ public class SoftReset implements WebAction {
 	}
 
 	@Override
-	public void actOn(final Object node, Executor executor) {
+	public void actOn(final Object node) {
 		if (node instanceof Resetable) {
-			executor.execute(
+			getExecutor().execute(
 				new Runnable() {
 					@Override
 					public void run() {

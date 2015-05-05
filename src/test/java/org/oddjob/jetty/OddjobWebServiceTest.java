@@ -54,7 +54,8 @@ public class OddjobWebServiceTest {
 		assertEquals("[{\"name\":\"run\",\"displayName\":\"Run\"},"
 				+ "{\"name\":\"stop\",\"displayName\":\"Stop\"},"
 				+ "{\"name\":\"soft-reset\",\"displayName\":\"Soft Reset\"},"
-				+ "{\"name\":\"hard-reset\",\"displayName\":\"Hard Reset\"}]",
+				+ "{\"name\":\"hard-reset\",\"displayName\":\"Hard Reset\"},"
+				+ "{\"name\":\"force\",\"displayName\":\"Force\"}]",
 				content);
 		
 		StateSteps steps = new StateSteps(sequential);

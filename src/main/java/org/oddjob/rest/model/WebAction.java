@@ -1,14 +1,17 @@
 package org.oddjob.rest.model;
 
-import java.util.concurrent.Executor;
 
-public interface WebAction {
+public interface WebAction<T> {
 
 	String getName();
 	
 	String getDisplayName();
 	
-	void actOn(Object node, Executor executor);
+	public Class<?> getParamsType();
+	
+	public T castParams(Object params);
+	
+	void actOn(Object node, T params);
 	
 	boolean isFor(Object node);
 }

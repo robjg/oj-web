@@ -110,4 +110,22 @@ public class DTOsJSONTest {
 		Assert.assertEquals(expected, json);
 	}
 	
+	@Test
+	public void testWebForm() throws ParseException {
+		
+		WebForm test = new WebForm();
+		
+		test.prompt("Favourite Fruit", "apple");
+		test.password("Your Secret");
+				
+		Gson gson = new Gson();
+		String json = gson.toJson(test);  
+		
+		logger.info(json);		
+		
+		String expected = "{\"fields\":[{\"type\":\"text\",\"label\":\"Favourite Fruit\",\"value\":\"apple\"},"
+				+ "{\"type\":\"password\",\"label\":\"Your Secret\"}]}";
+		
+		Assert.assertEquals(expected, json);
+	}
 }

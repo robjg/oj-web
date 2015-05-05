@@ -1,13 +1,10 @@
 package org.oddjob.rest.actions;
 
-import java.util.concurrent.Executor;
-
 import org.apache.log4j.Logger;
 import org.oddjob.FailedToStopException;
 import org.oddjob.Stoppable;
-import org.oddjob.rest.model.WebAction;
 
-public class Stop implements WebAction {
+public class Stop extends NoParamsAction {
 
 	private static final Logger logger = Logger.getLogger(Stop.class);
 	
@@ -26,9 +23,9 @@ public class Stop implements WebAction {
 	}
 
 	@Override
-	public void actOn(final Object node, Executor executor) {
+	public void actOn(final Object node) {
 		if (node instanceof Stoppable) {
-			executor.execute(
+			getExecutor().execute(
 				new Runnable() {
 					@Override
 					public void run() {

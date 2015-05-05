@@ -26,13 +26,6 @@
                     <jobs>
                         <echo name="Echo 1"><![CDATA[Hello]]></echo>
                         <echo name="Echo 2"><![CDATA[Hello]]></echo>
-                        <sequential id="jobs">
-                            <jobs>
-                                <echo name="Echo 1"><![CDATA[Hello]]></echo>
-                                <echo name="Echo 2"><![CDATA[Hello]]></echo>
-                                <state:flag state="EXCEPTION" xmlns:state="http://rgordon.co.uk/oddjob/state"/>
-                            </jobs>
-                        </sequential>
                     </jobs>
                 </sequential>
             </jobs>

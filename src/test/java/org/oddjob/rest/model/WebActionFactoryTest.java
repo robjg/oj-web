@@ -24,7 +24,7 @@ public class WebActionFactoryTest {
 		
 		Runnable runnable = mock(Runnable.class);
 		
-		WebAction[] actions = test.actionsFor(runnable);
+		WebAction<?>[] actions = test.actionsFor(runnable);
 		
 		assertEquals(1, actions.length);
 		
@@ -40,7 +40,7 @@ public class WebActionFactoryTest {
 		
 		WebActionFactory test = new WebActionFactory(null);
 		
-		WebAction[] actions = test.actionsFor(job);
+		WebAction<?>[] actions = test.actionsFor(job);
 		
 		assertEquals(5, actions.length);
 		
@@ -68,11 +68,11 @@ public class WebActionFactoryTest {
 		
 		assertEquals(JobState.READY, job.lastStateEvent().getState());
 		
-		test.performAction(job, "run");
+		test.performAction(job, "run", null);
 		
 		assertEquals(JobState.COMPLETE, job.lastStateEvent().getState());
 		
-		test.performAction(job, "hard-reset");
+		test.performAction(job, "hard-reset", null);
 		
 		assertEquals(JobState.READY, job.lastStateEvent().getState());
 	}
