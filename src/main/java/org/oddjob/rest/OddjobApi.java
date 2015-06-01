@@ -14,6 +14,11 @@ import javax.ws.rs.core.Response;
 public interface OddjobApi {
 
 	@GET
+	@Path("summariesFor")
+	@Produces("application/json")
+	public Response summariesFor(@QueryParam("paths") String componentPaths);
+	
+	@GET
 	@Path("nodeInfo")
 	@Produces("application/json")
 	public Response nodeInfo(@QueryParam("nodeIds") String nodeIds, 
@@ -36,8 +41,9 @@ public interface OddjobApi {
 	
 	@POST
 	@Consumes("application/x-www-form-urlencoded")
-	@Path("runParameterised/{nodeId}/{actionName}")
-	public void performWith(@PathParam("nodeId") String nodeId, 
+	@Path("actionForm/{nodeId}/{actionName}")
+	@Produces("application/json")
+	public Response actionForm(@PathParam("nodeId") String nodeId, 
 			@PathParam("actionName") String actionName,
 			MultivaluedMap<String, String> formParams);
 	

@@ -24,11 +24,17 @@
                 </web:server>
                 <sequential id="jobs">
                     <jobs>
-                        <echo name="Echo 1"><![CDATA[Hello]]></echo>
-                        <echo name="Echo 2"><![CDATA[Hello]]></echo>
+                        <task-service id="echo-task">
+                            <job>
+                                <echo name="Echo Properties"><![CDATA[Favourite Fruit: ${favourite.fruit}
+A Secret: ${some.secret}
+]]></echo>
+                            </job>
+                        </task-service>
                     </jobs>
                 </sequential>
             </jobs>
         </sequential>
     </job>
 </oddjob>
+

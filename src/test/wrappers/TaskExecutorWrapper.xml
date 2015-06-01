@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<oddjob id="this">
+    <job>
+        <sequential>
+            <jobs>
+                <properties>
+                    <values>
+                        <value key="server.port" value="8090"/>
+                        <file file="${this.dir}/../../.." key="basedir"/>
+                    </values>
+                </properties>
+                <oddjob file="${basedir}/src/test/resources/org/oddjob/jetty/TaskExecutor.xml"/>
+            </jobs>
+        </sequential>
+    </job>
+</oddjob>

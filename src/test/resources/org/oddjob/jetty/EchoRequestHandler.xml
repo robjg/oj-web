@@ -1,0 +1,9 @@
+<oddjob id="this">
+  <job>
+    <web:server xmlns:web="oddjob:web" id="server">
+      <handlers>
+        <bean class="org.oddjob.jetty.EchoRequestHandler"/>
+      </handlers>
+    </web:server>
+  </job>
+</oddjob>

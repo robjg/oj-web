@@ -51,7 +51,7 @@ public class OddjobWebServiceTest {
 		
 		assertEquals(200, httpClient.getStatus());
 				
-		assertEquals("[{\"name\":\"run\",\"displayName\":\"Run\"},"
+		assertEquals("[{\"name\":\"start\",\"displayName\":\"Start\"},"
 				+ "{\"name\":\"stop\",\"displayName\":\"Stop\"},"
 				+ "{\"name\":\"soft-reset\",\"displayName\":\"Soft Reset\"},"
 				+ "{\"name\":\"hard-reset\",\"displayName\":\"Hard Reset\"},"
@@ -77,7 +77,7 @@ public class OddjobWebServiceTest {
 				ParentState.COMPLETE);
 		
 		httpClient.setUrl("http://localhost:" + port + 
-				"/api/action/0/run");
+				"/api/action/0/start");
 		httpClient.call();
 		
 		assertEquals(204, httpClient.getStatus());

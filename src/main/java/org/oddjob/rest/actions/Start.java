@@ -2,11 +2,11 @@ package org.oddjob.rest.actions;
 
 import org.oddjob.jobs.job.ResetActions;
 
-public class Run extends NoParamsAction {
+public class Start extends NoParamsAction {
 
-	private final String name = "run";
+	private final String name = "start";
 	
-	private final String displayName = "Run";
+	private final String displayName = "Start";
 
 	@Override
 	public String getName() {

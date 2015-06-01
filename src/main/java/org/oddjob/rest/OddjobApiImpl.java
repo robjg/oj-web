@@ -7,7 +7,7 @@ import javax.ws.rs.core.MultivaluedMap;
 import javax.ws.rs.core.Response;
 
 import org.apache.log4j.Logger;
-import org.oddjob.arooa.standard.StandardArooaSession;
+import org.oddjob.rest.model.ComponentSummary;
 import org.oddjob.rest.model.LogLines;
 import org.oddjob.rest.model.NodeInfos;
 import org.oddjob.rest.model.OddjobTracker;
@@ -28,11 +28,34 @@ public class OddjobApiImpl implements OddjobApi {
 	private final WebActionFactory actionFactory =
 			new WebActionFactory(Executors.newFixedThreadPool(2));
 	
-	public OddjobApiImpl(Object rootNode) {
-		tracker = new OddjobTracker(new StandardArooaSession());
-		tracker.track(rootNode);
+	public OddjobApiImpl(WebRoot webExport) {
+		if (webExport == null) {
+			throw new NullPointerException("No " + OddjobApplication.ROOT_ATTRIBUTE_NAME + 
+					" in Servlet Context.");
+		}
+		tracker = new OddjobTracker(webExport.getArooaSession());
+		tracker.track(webExport.getRootComponent());
 	}
 
+	@Override
+	public Response summariesFor(String componentPaths) {
+		
+		String[] componentPathsArray = componentPaths.split(",");
+		
+		ComponentSummary[] summaries = tracker.nodeIdFor(
+				componentPathsArray);
+		
+		Gson gson = new Gson();
+		String json = gson.toJson(summaries);  
+	
+		if (logger.isDebugEnabled()) {
+			logger.debug("summariesFor(" + componentPaths + 
+					"), Response: " + json);
+		}
+		
+		return Response.status(200).entity(json).build();
+	}
+	
 	@Override
 	public Response nodeInfo(String nodeIds, long eventSeq) {
 
@@ -106,7 +129,7 @@ public class OddjobApiImpl implements OddjobApi {
 	}
 	
 	@Override
-	public void performWith(String nodeId, String actionName,
+	public Response actionForm(String nodeId, String actionName,
 			MultivaluedMap<String, String> formParams) {
 		
 		int nodeIdInt;
@@ -116,14 +139,14 @@ public class OddjobApiImpl implements OddjobApi {
 		catch (NumberFormatException e) {
 			logger.error("Failed parsing Node Id [" + nodeId + "]: " +
 					e.toString());
-			return;
+			return Response.status(200).entity("{\"status\":\"failed\"}").build();
 		}
 		
 		Object node = tracker.nodeFor(nodeIdInt);
 		
 		if (node == null) {
 			logger.error("No Node for Id [" + nodeId + "]: ");
-			return;
+			return Response.status(200).entity("{\"status\":\"failed\"}").build();
 		}
 		
 		Properties properties = new Properties();		
@@ -133,6 +156,8 @@ public class OddjobApiImpl implements OddjobApi {
 		}
 		
 		actionFactory.performAction(node, actionName, properties);
+		
+		return Response.status(200).entity("{\"status\":\"OK\"}").build();
 	}
 	
 	@Override

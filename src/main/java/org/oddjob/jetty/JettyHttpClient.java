@@ -1,5 +1,6 @@
 package org.oddjob.jetty;
 
+import java.util.Properties;
 import java.util.concurrent.Callable;
 
 import org.eclipse.jetty.client.HttpClient;
@@ -16,6 +17,8 @@ public class JettyHttpClient implements Callable<Integer> {
 	private volatile int status;
 	
 	private volatile String content;
+	
+	private volatile Properties properties;
 	
 	@Override
 	public Integer call() throws Exception {
@@ -38,6 +41,12 @@ public class JettyHttpClient implements Callable<Integer> {
 			request.scheme("http");
 		}
 		
+		Properties properties = this.properties;
+		if (properties != null) {
+			for (String property : properties.stringPropertyNames()) {
+				request.param(property, properties.getProperty(property));
+			}
+		}
 		
 		ContentResponse response = request.send();
 		
@@ -64,5 +73,21 @@ public class JettyHttpClient implements Callable<Integer> {
 	
 	public String getContent() {
 		return content;
+	}
+
+	public HttpMethod getHttpMethod() {
+		return httpMethod;
+	}
+
+	public void setHttpMethod(HttpMethod httpMethod) {
+		this.httpMethod = httpMethod;
+	}
+
+	public Properties getProperties() {
+		return properties;
+	}
+
+	public void setProperties(Properties properties) {
+		this.properties = properties;
 	}
 }

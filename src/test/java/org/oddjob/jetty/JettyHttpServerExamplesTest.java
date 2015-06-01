@@ -1,7 +1,6 @@
 package org.oddjob.jetty;
 
 import java.io.File;
-import java.util.Properties;
 
 import junit.framework.TestCase;
 
@@ -19,6 +18,12 @@ public class JettyHttpServerExamplesTest extends TestCase {
 	private static final Logger logger = 
 			Logger.getLogger(JettyHttpServerExamplesTest.class);
 	
+	/**
+	 * Test loading the whole Oddjob web application.
+	 * <p>
+	 * 
+	 * @throws Exception
+	 */
 	public void testOddjobWebExample() throws Exception {
 
 		File file = new File(getClass().getResource(
@@ -27,12 +32,6 @@ public class JettyHttpServerExamplesTest extends TestCase {
 		Oddjob oddjob = new Oddjob();
 		oddjob.setName("My Oddjob");
 		oddjob.setFile(file);
-		
-		if (System.getProperty("basedir") == null) {
-			Properties properties = new Properties();
-			properties.setProperty("basedir", new File(".").getCanonicalPath());
-			oddjob.setProperties(properties);
-		}		
 		
 		oddjob.run();
 		
@@ -51,6 +50,8 @@ public class JettyHttpServerExamplesTest extends TestCase {
 		logger.info(content);
 		
 		Assert.assertEquals(200, httpClient.getStatus());
+		
+		// Todo use HtmlUnit to do a whole load more testing.
 		
 		oddjob.stop();
 		

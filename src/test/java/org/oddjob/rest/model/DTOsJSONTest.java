@@ -1,5 +1,7 @@
 package org.oddjob.rest.model;
 
+import static org.junit.Assert.assertEquals;
+
 import java.text.ParseException;
 import java.util.LinkedHashMap;
 import java.util.Map;
@@ -48,7 +50,11 @@ public class DTOsJSONTest {
 		
 		String expected = "{\"nodeId\":0,\"icon\":\"executing\"}";
 		
-		Assert.assertEquals(expected, json);
+		assertEquals(expected, json);
+		
+		NodeInfo back = gson.fromJson(json, NodeInfo.class);
+		
+		assertEquals(0, back.getNodeId());
 	}
 
 	@Test

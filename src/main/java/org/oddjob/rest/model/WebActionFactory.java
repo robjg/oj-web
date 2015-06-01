@@ -9,7 +9,8 @@ import java.util.concurrent.Executor;
 import org.apache.log4j.Logger;
 import org.oddjob.rest.actions.Force;
 import org.oddjob.rest.actions.HardReset;
-import org.oddjob.rest.actions.Run;
+import org.oddjob.rest.actions.Start;
+import org.oddjob.rest.actions.Execute;
 import org.oddjob.rest.actions.SoftReset;
 import org.oddjob.rest.actions.Stop;
 
@@ -24,7 +25,7 @@ public class WebActionFactory {
 		
 		// this will happen in configuration one day
 		
-		Run run = new Run();
+		Start run = new Start();
 		run.setExecutor(executor);
 		Stop stop = new Stop();
 		stop.setExecutor(executor);
@@ -34,12 +35,15 @@ public class WebActionFactory {
 		hardReset.setExecutor(executor);
 		Force force = new Force();
 		force.setExecutor(executor);
+		Execute runWith = new Execute();
+		runWith.setExecutor(executor);
 		
-		actions.put(run.getName(), run);
-		actions.put(stop.getName(), stop);
-		actions.put(softReset.getName(), softReset);
-		actions.put(hardReset.getName(), hardReset);
-		actions.put(force.getName(), force);
+		actions.put(run.getName().toLowerCase(), run);
+		actions.put(stop.getName().toLowerCase(), stop);
+		actions.put(softReset.getName().toLowerCase(), softReset);
+		actions.put(hardReset.getName().toLowerCase(), hardReset);
+		actions.put(force.getName().toLowerCase(), force);
+		actions.put(runWith.getName().toLowerCase(), runWith);
 	}
 	
 	public WebAction<?>[] actionsFor(Object node) {
@@ -61,7 +65,7 @@ public class WebActionFactory {
 		WebAction<?> action = actions.get(actionName.toLowerCase());
 		
 		if (action == null) {
-			logger.info("No Action [" + action + "]");
+			logger.info("No Action [" + actionName + "]");
 		}
 		else {
 			performWithInferredType(node, action, params);
