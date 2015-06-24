@@ -6,17 +6,14 @@ import java.util.List;
 import java.util.Map;
 import java.util.concurrent.Executor;
 
-import org.apache.log4j.Logger;
+import org.oddjob.rest.actions.Execute;
 import org.oddjob.rest.actions.Force;
 import org.oddjob.rest.actions.HardReset;
-import org.oddjob.rest.actions.Start;
-import org.oddjob.rest.actions.Execute;
 import org.oddjob.rest.actions.SoftReset;
+import org.oddjob.rest.actions.Start;
 import org.oddjob.rest.actions.Stop;
 
 public class WebActionFactory {
-	
-	private static final Logger logger = Logger.getLogger(WebActionFactory.class);
 	
 	private final Map<String, WebAction<?>> actions = 
 			new LinkedHashMap<>();
@@ -59,17 +56,18 @@ public class WebActionFactory {
 		return results.toArray(new WebAction[results.size()]);		
 	}
 	
-	public void performAction(Object node, String actionName,
+	public ActionStatus performAction(Object node, String actionName,
 			Object params) {
 		
 		WebAction<?> action = actions.get(actionName.toLowerCase());
 		
 		if (action == null) {
-			logger.info("No Action [" + actionName + "]");
+			return ActionStatus.failure("No Action [" + actionName + "]");
 		}
 		else {
 			performWithInferredType(node, action, params);
-		}
+			return ActionStatus.ok();
+		}	
 	}
 	
 	protected <T> void performWithInferredType(Object node, 

@@ -3,13 +3,19 @@ package org.oddjob.jetty;
 import java.util.Properties;
 import java.util.concurrent.Callable;
 
+import org.apache.log4j.Logger;
 import org.eclipse.jetty.client.HttpClient;
 import org.eclipse.jetty.client.api.ContentResponse;
 import org.eclipse.jetty.client.api.Request;
 import org.eclipse.jetty.http.HttpMethod;
+import org.eclipse.jetty.http.HttpStatus;
 
 public class JettyHttpClient implements Callable<Integer> {
 
+	private static final Logger logger = Logger.getLogger(JettyHttpClient.class);
+	
+	private volatile String name;
+	
 	private volatile String url;
 	
 	private volatile HttpMethod httpMethod;
@@ -19,6 +25,8 @@ public class JettyHttpClient implements Callable<Integer> {
 	private volatile String content;
 	
 	private volatile Properties properties;
+	
+	private volatile String contentType;
 	
 	@Override
 	public Integer call() throws Exception {
@@ -48,11 +56,24 @@ public class JettyHttpClient implements Callable<Integer> {
 			}
 		}
 		
+		if (contentType != null) {
+			request.header("Content-Type", contentType);
+		}
+				
+		logger.info("Making " + request.getMethod() + " to " + request.getURI());
+		
 		ContentResponse response = request.send();
 		
 		status = response.getStatus();
-		
 		content = response.getContentAsString();
+		
+		if (HttpStatus.OK_200  == status) {
+			logger.info("Response OK, response content length " + content.length());
+		}
+		else {
+			logger.info("Response " + HttpStatus.getCode(status) + 
+					", reason" + response.getReason());
+		}
 		
 		httpClient.stop();
 		
@@ -89,5 +110,23 @@ public class JettyHttpClient implements Callable<Integer> {
 
 	public void setProperties(Properties properties) {
 		this.properties = properties;
+	}
+
+	public String getContentType() {
+		return contentType;
+	}
+
+	public void setContentType(String contentType) {
+		this.contentType = contentType;
+	}
+	
+	@Override
+	public String toString() {
+		if (name == null) {
+			return getClass().getSimpleName();
+		}
+		else {
+			return name;
+		}
 	}
 }

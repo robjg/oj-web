@@ -1,8 +1,7 @@
 package org.oddjob.jetty;
 
-import static org.junit.Assert.assertEquals;
-
 import java.io.File;
+import java.util.Map;
 import java.util.Properties;
 
 import junit.framework.TestCase;
@@ -11,12 +10,8 @@ import org.apache.log4j.Logger;
 import org.eclipse.jetty.client.HttpClient;
 import org.eclipse.jetty.client.api.ContentResponse;
 import org.eclipse.jetty.http.HttpMethod;
-import org.junit.Assert;
 import org.oddjob.Oddjob;
 import org.oddjob.OddjobLookup;
-import org.oddjob.Stateful;
-import org.oddjob.rest.model.ComponentSummary;
-import org.oddjob.rest.model.NodeInfos;
 import org.oddjob.state.ParentState;
 
 import com.google.gson.Gson;
@@ -46,46 +41,37 @@ public class EchoRequestHandlerTest extends TestCase {
 		
 		JettyHttpClient httpClient = new JettyHttpClient();
 				
-//		httpClient.setUrl("http://localhost:" + port + 
-//				"/api/formAction/" + nodeId);
-//		httpClient.setHttpMethod(HttpMethod.POST);
-//		
-//		properties = new Properties();
-//		properties.setProperty("favourite.fruit", "Apples");
-//		properties.setProperty("some.secret", "password123");
-//		
-//		httpClient.setProperties(properties);
-//		
-//		httpClient.call();
+		httpClient.setUrl("http://localhost:" + port + 
+				"/api/formAction/1234");
+		httpClient.setHttpMethod(HttpMethod.POST);
 		
-		HttpClient c = new HttpClient();
-		c.start();
-		ContentResponse r = c.POST("http://localhost:" + port + 
-				"/anything/")
-				.param("favourite.fruit", "Apples")
-				.send();
-		c.stop();
+		Properties properties = new Properties();
+		properties.setProperty("favourite.fruit", "Apples");
+		properties.setProperty("some.secret", "password123");
 		
-		System.out.println(r.getContentAsString());
-		System.out.println(r.getReason());
-		assertEquals(200, r.getStatus());
-//		content = httpClient.getContent();
-//				
-//		logger.info(content);
-//		
-//		assertEquals(200, httpClient.getStatus());
-//				
-//		assertEquals("", content);
-//						
+		httpClient.setProperties(properties);
+		httpClient.setContentType("application/x-www-form-urlencoded");
+		
+		httpClient.call();
 		
 		String content = httpClient.getContent();
+				
+		logger.info(content);
 		
+		assertEquals(200, httpClient.getStatus());
+						
 		Gson gson = new Gson();
 		
 		EchoRequestBean request = gson.fromJson(content, 
 				EchoRequestBean.class);
 		
-//		Thread.sleep(60 * 60 * 1000L);
+		assertEquals("application/x-www-form-urlencoded", 
+				request.getContentType());
+		
+		Map<String, String[]> parameterMap = request.getParameterMap();
+		assertEquals("Apples", parameterMap.get("favourite.fruit")[0]);
+		assertEquals("password123", parameterMap.get("some.secret")[0]);
+		
 		
 		oddjob.stop();
 		
@@ -93,4 +79,21 @@ public class EchoRequestHandlerTest extends TestCase {
 				oddjob.lastStateEvent().getState());
 	}
 	
+	public void xtestClient() throws Exception {
+		
+		HttpClient c = new HttpClient();
+		c.start();
+		ContentResponse r = c.POST("http://localhost:8090" + 
+					"/api/actionForm/1234/execute")
+				.param("favourite.fruit", "Apples")
+				.param("some.secret", "foo")
+				.header("Content-Type", "application/x-www-form-urlencoded")
+				.send();
+				
+		System.out.println("[" + r.getStatus() + "]");
+		System.out.println(r.getReason());
+		System.out.println(r.getContentAsString());
+		
+		c.stop();
+	}
 }

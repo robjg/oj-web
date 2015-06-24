@@ -26,8 +26,7 @@
                     <jobs>
                         <task-service id="echo-task">
                             <job>
-                                <echo name="Echo Properties"><![CDATA[Favourite Fruit: ${favourite.fruit}
-A Secret: ${some.secret}
+                                <echo id="echo" name="Echo Properties"><![CDATA[Favourite Fruit: ${favourite.fruit}, A Secret: ${some.secret}
 ]]></echo>
                             </job>
                         </task-service>

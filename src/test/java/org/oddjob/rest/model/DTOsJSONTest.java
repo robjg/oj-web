@@ -134,4 +134,24 @@ public class DTOsJSONTest {
 		
 		Assert.assertEquals(expected, json);
 	}
+	
+	@Test
+	public void testActionStatusJSON() {
+		
+		ActionStatus test = ActionStatus.failure("Something went wrong.");
+		
+		Gson gson = new Gson();
+		String json = gson.toJson(test);  
+		
+		logger.info(json);		
+		
+		String expected = "{\"code\":\"FAILURE\",\"message\":\"Something went wrong.\"}";
+		
+		Assert.assertEquals(expected, json);
+		
+		ActionStatus copy = gson.fromJson(expected, ActionStatus.class);
+		
+		assertEquals(ActionStatus.Code.FAILURE, copy.getCode());
+		assertEquals("Something went wrong.", copy.getMessage());
+	}
 }

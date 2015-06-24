@@ -4,22 +4,28 @@ import java.util.Map;
 
 public class EchoRequestBean {
 	
-	private String authType;
+	private String protocol;
+	private String scheme;
 	
-	private String characterEncoding; 
+	private String method;
 	
+	private String authType;	
+	private String userPrincipalName;
+	
+	private String contextPath; 
+	private String queryString;
+	private String pathInfo;
+	private String pathTranslated;
+	
+	private Map<String, String[]> headerMap;
+	
+	private String characterEncoding; 	
 	private long contentLength;
 	
 	private String contentType; 
 	
-	private String contextPath; 
-	
-	private String method;
-	
 	private Map<String, String[]> parameterMap;
 
-	private Map<String, String[]> headerMap;
-	
 	private String content;
 	
 	public String getAuthType() {
@@ -92,6 +98,54 @@ public class EchoRequestBean {
 
 	public void setContent(String content) {
 		this.content = content;
+	}
+
+	public String getProtocol() {
+		return protocol;
+	}
+
+	public void setProtocol(String protocol) {
+		this.protocol = protocol;
+	}
+
+	public String getScheme() {
+		return scheme;
+	}
+
+	public void setScheme(String scheme) {
+		this.scheme = scheme;
+	}
+
+	public String getUserPrincipalName() {
+		return userPrincipalName;
+	}
+
+	public void setUserPrincipalName(String userPrincipalName) {
+		this.userPrincipalName = userPrincipalName;
+	}
+
+	public String getQueryString() {
+		return queryString;
+	}
+
+	public void setQueryString(String queryString) {
+		this.queryString = queryString;
+	}
+
+	public String getPathInfo() {
+		return pathInfo;
+	}
+
+	public void setPathInfo(String pathInfo) {
+		this.pathInfo = pathInfo;
+	}
+
+	public String getPathTranslated() {
+		return pathTranslated;
+	}
+
+	public void setPathTranslated(String pathTranslated) {
+		this.pathTranslated = pathTranslated;
 	} 
 	
 }

@@ -1,9 +1,10 @@
 package org.oddjob.jetty;
 
+import java.io.ByteArrayOutputStream;
 import java.io.IOException;
+import java.io.InputStream;
 import java.io.PrintWriter;
-import java.io.Reader;
-import java.io.StringWriter;
+import java.security.Principal;
 import java.util.Collections;
 import java.util.Enumeration;
 import java.util.LinkedHashMap;
@@ -24,6 +25,10 @@ import com.google.gson.GsonBuilder;
 public class EchoRequestHandler extends AbstractHandler {
 
 	private static final Logger logger = Logger.getLogger(EchoRequestHandler.class);
+	
+	/** The parameter map will use up the content so you either see either/or.
+	 */
+	private boolean parameterMap;
 	
 	@Override
 	public void handle(String target, Request baseRequest,
@@ -52,10 +57,19 @@ public class EchoRequestHandler extends AbstractHandler {
 
 //		Enumeration<String> attributeNames = request.getAttributeNames();
 		
+		bean.setMethod(request.getMethod());
+		bean.setProtocol(request.getProtocol());
+		bean.setScheme(request.getScheme());
+		
 		bean.setAuthType(request.getAuthType());
-		bean.setCharacterEncoding(request.getCharacterEncoding());
-		bean.setContentLength(request.getContentLengthLong());
+		Principal principal = request.getUserPrincipal();
+		bean.setUserPrincipalName(principal == null ? 
+				null : principal.getName());
+		
 		bean.setContextPath(request.getContextPath());
+		bean.setQueryString(request.getQueryString());
+		bean.setPathInfo(request.getPathInfo());
+		bean.setPathTranslated(request.getPathTranslated());
 		
 		Map<String, String[]> headerMap = new LinkedHashMap<>();
 		
@@ -66,19 +80,33 @@ public class EchoRequestHandler extends AbstractHandler {
 			headerMap.put(headerName, headers.toArray(new String[headers.size()]));
 		}		
 		bean.setHeaderMap(headerMap);
-		
-		bean.setMethod(request.getMethod());
-		bean.setParameterMap(request.getParameterMap());
+				
+		bean.setCharacterEncoding(request.getCharacterEncoding());
+		bean.setContentLength(request.getContentLengthLong());
 		bean.setContentType(request.getContentType());
 		
-		
-		try (Reader input = request.getReader(); StringWriter writer = new StringWriter()) {
-			for (char[] buff = new char[1024]; input.read(buff) > 0; ) {
-				writer.write(buff);
-			};
-			bean.setContent(writer.toString());
-		} 		
-		
+		if (parameterMap || request.getContentLengthLong() == 0L) {
+			bean.setParameterMap(request.getParameterMap());
+		}
+		else {
+			try (InputStream input = request.getInputStream(); 
+					ByteArrayOutputStream output = new ByteArrayOutputStream()) {
+				byte[] buff = new byte[1024];
+				for (int i = input.read(buff); i > 0; i = input.read(buff)) {
+					output.write(buff, 0, i);
+				};
+				bean.setContent(new String(output.toByteArray()));
+			} 		
+		}
+				
 		return bean;
+	}
+
+	public boolean isParameterMap() {
+		return parameterMap;
+	}
+
+	public void setParameterMap(boolean parameterMap) {
+		this.parameterMap = parameterMap;
 	}		
 }

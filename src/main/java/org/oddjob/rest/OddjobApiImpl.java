@@ -7,6 +7,7 @@ import javax.ws.rs.core.MultivaluedMap;
 import javax.ws.rs.core.Response;
 
 import org.apache.log4j.Logger;
+import org.oddjob.rest.model.ActionStatus;
 import org.oddjob.rest.model.ComponentSummary;
 import org.oddjob.rest.model.LogLines;
 import org.oddjob.rest.model.NodeInfos;
@@ -155,9 +156,17 @@ public class OddjobApiImpl implements OddjobApi {
 			properties.setProperty(key, formParams.getFirst(key));
 		}
 		
-		actionFactory.performAction(node, actionName, properties);
+		ActionStatus status = actionFactory.performAction(node, actionName, properties);
 		
-		return Response.status(200).entity("{\"status\":\"OK\"}").build();
+		Gson gson = new Gson();
+		String json = gson.toJson(status);  
+	
+		if (logger.isDebugEnabled()) {
+			logger.debug("actionForm(" + nodeId+ 
+					"), Response: " + json);
+		}
+		
+		return Response.status(200).entity(json).build();
 	}
 	
 	@Override

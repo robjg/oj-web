@@ -13,8 +13,11 @@ import org.junit.Test;
 import org.oddjob.Oddjob;
 import org.oddjob.OddjobLookup;
 import org.oddjob.Stateful;
+import org.oddjob.rest.model.ActionStatus;
 import org.oddjob.rest.model.ComponentSummary;
+import org.oddjob.state.JobState;
 import org.oddjob.state.ParentState;
+import org.oddjob.tools.StateSteps;
 
 import com.google.gson.Gson;
 
@@ -32,12 +35,20 @@ public class TaskExecutorTest {
 		oddjob.setName("My Oddjob");
 		oddjob.setFile(file);
 		
+		oddjob.load();
+		
+		OddjobLookup lookup = new OddjobLookup(oddjob);
+		
+		Stateful echo = lookup.lookup("echo", Stateful.class);
+		
+		StateSteps echoState = new StateSteps(echo);
+		echoState.startCheck(JobState.READY, 
+				JobState.EXECUTING, JobState.COMPLETE);
+		
 		oddjob.run();
 		
 		assertEquals(ParentState.STARTED, 
 				oddjob.lastStateEvent().getState());
-		
-		OddjobLookup lookup = new OddjobLookup(oddjob);
 		
 		Stateful sequential = lookup.lookup("jobs", Stateful.class);
 		
@@ -67,8 +78,10 @@ public class TaskExecutorTest {
 		
 		int nodeId = summaries[0].getNodeId();
 		
-//		httpClient.setUrl("http://localhost:" + port + 
-//				"/api/formAction/" + nodeId);
+		String executeUrl = "http://localhost:" + port + 
+				"/api/actionForm/" + nodeId + "/execute";
+
+//		httpClient.setUrl(executeUrl);
 //		httpClient.setHttpMethod(HttpMethod.POST);
 //		
 //		properties = new Properties();
@@ -77,28 +90,36 @@ public class TaskExecutorTest {
 //		
 //		httpClient.setProperties(properties);
 //		
+//		httpClient.setContentType("application/x-www-form-urlencoded");
+//		
 //		httpClient.call();
-		
-		HttpClient c = new HttpClient();
-		c.start();
-		ContentResponse r = c.POST("http://localhost:" + port + 
-				"/api/actionForm/" + nodeId + "/execute")
-				.param("favourite.fruit", "Apples")
-				.param("some.secret", "foo")
-				.send();
-		c.stop();
-		
-		System.out.println(r.getContentAsString());
-		System.out.println(r.getReason());
-		assertEquals(200, r.getStatus());
+//				
 //		content = httpClient.getContent();
 //				
 //		logger.info(content);
 //		
 //		assertEquals(200, httpClient.getStatus());
 //				
-//		assertEquals("", content);
-//						
+//		ActionStatus actionStatus = gson.fromJson(content, ActionStatus.class);
+//		
+//		assertEquals(ActionStatus.Code.OK, actionStatus.getCode());
+		
+		HttpClient c = new HttpClient();
+		c.start();
+		ContentResponse r = c.POST(executeUrl)
+				.param("favourite.fruit", "Apples")
+				.param("some.secret", "foo")
+				.header("Content-Type", "application/x-www-form-urlencoded")
+				.send();
+		System.out.println(r.getContentAsString());
+		c.stop();
+
+		
+		echoState.checkWait();
+		
+		assertEquals("Favourite Fruit: Apples, A Secret: foo",
+				lookup.lookup("echo.text", String.class));
+		
 		oddjob.stop();
 		
 		assertEquals(ParentState.COMPLETE, 
