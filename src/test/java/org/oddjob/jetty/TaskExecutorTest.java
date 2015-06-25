@@ -3,12 +3,10 @@ package org.oddjob.jetty;
 import static org.junit.Assert.assertEquals;
 
 import java.io.File;
-import java.util.Properties;
+import java.util.LinkedHashMap;
+import java.util.Map;
 
 import org.apache.log4j.Logger;
-import org.eclipse.jetty.client.HttpClient;
-import org.eclipse.jetty.client.api.ContentResponse;
-import org.eclipse.jetty.http.HttpMethod;
 import org.junit.Test;
 import org.oddjob.Oddjob;
 import org.oddjob.OddjobLookup;
@@ -61,12 +59,11 @@ public class TaskExecutorTest {
 		
 		httpClient.setUrl("http://localhost:" + port + 
 				"/api/summariesFor");
-		httpClient.setHttpMethod(HttpMethod.GET);
 		
-		Properties properties = new Properties();
-		properties.setProperty("paths", "echo-task");
+		Map<String, String> parameters = new LinkedHashMap<>();
+		parameters.put("paths", "echo-task");
 		
-		httpClient.setProperties(properties);
+		httpClient.setParameters(parameters);
 		httpClient.call();
 		
 		String content = httpClient.getContent();
@@ -81,43 +78,32 @@ public class TaskExecutorTest {
 		String executeUrl = "http://localhost:" + port + 
 				"/api/actionForm/" + nodeId + "/execute";
 
-//		httpClient.setUrl(executeUrl);
-//		httpClient.setHttpMethod(HttpMethod.POST);
-//		
-//		properties = new Properties();
-//		properties.setProperty("favourite.fruit", "Apples");
-//		properties.setProperty("some.secret", "password123");
-//		
-//		httpClient.setProperties(properties);
-//		
-//		httpClient.setContentType("application/x-www-form-urlencoded");
-//		
-//		httpClient.call();
-//				
-//		content = httpClient.getContent();
-//				
-//		logger.info(content);
-//		
-//		assertEquals(200, httpClient.getStatus());
-//				
-//		ActionStatus actionStatus = gson.fromJson(content, ActionStatus.class);
-//		
-//		assertEquals(ActionStatus.Code.OK, actionStatus.getCode());
+		httpClient.setUrl(executeUrl);
+		httpClient.setMethod(JettyHttpClient.RequestMethod.POST);
 		
-		HttpClient c = new HttpClient();
-		c.start();
-		ContentResponse r = c.POST(executeUrl)
-				.param("favourite.fruit", "Apples")
-				.param("some.secret", "foo")
-				.header("Content-Type", "application/x-www-form-urlencoded")
-				.send();
-		System.out.println(r.getContentAsString());
-		c.stop();
-
+		parameters = new LinkedHashMap<>();
+		parameters.put("favourite.fruit", "Apples");
+		parameters.put("some.secret", "password123");
+		
+		httpClient.setParameters(parameters);
+		
+		httpClient.setContentType("application/x-www-form-urlencoded");
+		
+		httpClient.call();
+				
+		content = httpClient.getContent();
+				
+		logger.info(content);
+		
+		assertEquals(200, httpClient.getStatus());
+				
+		ActionStatus actionStatus = gson.fromJson(content, ActionStatus.class);
+		
+		assertEquals(ActionStatus.Code.OK, actionStatus.getCode());
 		
 		echoState.checkWait();
 		
-		assertEquals("Favourite Fruit: Apples, A Secret: foo",
+		assertEquals("Favourite Fruit: Apples, A Secret: password123",
 				lookup.lookup("echo.text", String.class));
 		
 		oddjob.stop();

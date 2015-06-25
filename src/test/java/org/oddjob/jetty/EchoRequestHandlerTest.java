@@ -1,15 +1,15 @@
 package org.oddjob.jetty;
 
 import java.io.File;
+import java.util.LinkedHashMap;
 import java.util.Map;
-import java.util.Properties;
 
 import junit.framework.TestCase;
 
 import org.apache.log4j.Logger;
 import org.eclipse.jetty.client.HttpClient;
 import org.eclipse.jetty.client.api.ContentResponse;
-import org.eclipse.jetty.http.HttpMethod;
+import org.eclipse.jetty.util.Fields;
 import org.oddjob.Oddjob;
 import org.oddjob.OddjobLookup;
 import org.oddjob.state.ParentState;
@@ -43,14 +43,13 @@ public class EchoRequestHandlerTest extends TestCase {
 				
 		httpClient.setUrl("http://localhost:" + port + 
 				"/api/formAction/1234");
-		httpClient.setHttpMethod(HttpMethod.POST);
+		httpClient.setMethod(JettyHttpClient.RequestMethod.POST);
 		
-		Properties properties = new Properties();
-		properties.setProperty("favourite.fruit", "Apples");
-		properties.setProperty("some.secret", "password123");
+		Map<String, String> parameters = new LinkedHashMap<>();
+		parameters.put("favourite.fruit", "Apples");
+		parameters.put("some.secret", "password123");
 		
-		httpClient.setProperties(properties);
-		httpClient.setContentType("application/x-www-form-urlencoded");
+		httpClient.setParameters(parameters);
 		
 		httpClient.call();
 		
@@ -68,10 +67,8 @@ public class EchoRequestHandlerTest extends TestCase {
 		assertEquals("application/x-www-form-urlencoded", 
 				request.getContentType());
 		
-		Map<String, String[]> parameterMap = request.getParameterMap();
-		assertEquals("Apples", parameterMap.get("favourite.fruit")[0]);
-		assertEquals("password123", parameterMap.get("some.secret")[0]);
-		
+		assertEquals("favourite.fruit\u003dApples\u0026some.secret\u003dpassword123",
+				request.getContent());
 		
 		oddjob.stop();
 		
@@ -79,7 +76,7 @@ public class EchoRequestHandlerTest extends TestCase {
 				oddjob.lastStateEvent().getState());
 	}
 	
-	public void xtestClient() throws Exception {
+	public void xtestClientPost() throws Exception {
 		
 		HttpClient c = new HttpClient();
 		c.start();
@@ -89,6 +86,25 @@ public class EchoRequestHandlerTest extends TestCase {
 				.param("some.secret", "foo")
 				.header("Content-Type", "application/x-www-form-urlencoded")
 				.send();
+				
+		System.out.println("[" + r.getStatus() + "]");
+		System.out.println(r.getReason());
+		System.out.println(r.getContentAsString());
+		
+		c.stop();
+	}
+	
+	public void xtestFormContent() throws Exception {
+		
+		HttpClient c = new HttpClient();
+		c.start();
+		
+		Fields fields = new Fields();
+		fields.put("favourite.fruit", "Apples");
+		fields.put("some.secret", "foo");
+		
+		ContentResponse r = c.FORM("http://localhost:8090" + 
+					"/api/actionForm/1234/execute", fields);
 				
 		System.out.println("[" + r.getStatus() + "]");
 		System.out.println(r.getReason());

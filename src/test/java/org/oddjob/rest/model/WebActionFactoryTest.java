@@ -28,7 +28,7 @@ public class WebActionFactoryTest {
 		
 		assertEquals(1, actions.length);
 		
-		assertEquals("run", actions[0].getName());
+		assertEquals("start", actions[0].getName());
 	}
 	
 	@Test
@@ -44,7 +44,7 @@ public class WebActionFactoryTest {
 		
 		assertEquals(5, actions.length);
 		
-		assertEquals("run", actions[0].getName());
+		assertEquals("start", actions[0].getName());
 		assertEquals("stop", actions[1].getName());
 		assertEquals("soft-reset", actions[2].getName());
 		assertEquals("hard-reset", actions[3].getName());
@@ -68,7 +68,7 @@ public class WebActionFactoryTest {
 		
 		assertEquals(JobState.READY, job.lastStateEvent().getState());
 		
-		test.performAction(job, "run", null);
+		test.performAction(job, "start", null);
 		
 		assertEquals(JobState.COMPLETE, job.lastStateEvent().getState());
 		
