@@ -36,7 +36,12 @@ public interface OddjobApi {
 	
 	@GET
 	@Path("action/{nodeId}/{actionName}")
-	public void performAction(@PathParam("nodeId") String nodeId,
+	public Response performAction(@PathParam("nodeId") String nodeId,
+			@PathParam("actionName") String actionName);
+	
+	@GET
+	@Path("form/{nodeId}/{actionName}")
+	public Response formFor(@PathParam("nodeId") String nodeId,
 			@PathParam("actionName") String actionName);
 	
 	@POST

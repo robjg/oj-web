@@ -3,7 +3,7 @@ package org.oddjob.rest.actions;
 import org.apache.log4j.Logger;
 import org.oddjob.Resetable;
 
-public class HardReset extends NoParamsAction {
+public class HardReset extends SimpleAction {
 
 	private static final Logger logger = Logger.getLogger(HardReset.class);
 

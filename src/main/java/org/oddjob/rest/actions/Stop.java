@@ -4,7 +4,7 @@ import org.apache.log4j.Logger;
 import org.oddjob.FailedToStopException;
 import org.oddjob.Stoppable;
 
-public class Stop extends NoParamsAction {
+public class Stop extends SimpleAction {
 
 	private static final Logger logger = Logger.getLogger(Stop.class);
 	

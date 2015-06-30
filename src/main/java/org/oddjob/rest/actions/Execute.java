@@ -2,11 +2,13 @@ package org.oddjob.rest.actions;
 
 import java.util.Properties;
 
+import org.oddjob.input.InputRequest;
 import org.oddjob.jobs.tasks.BasicTask;
 import org.oddjob.jobs.tasks.TaskException;
 import org.oddjob.jobs.tasks.TaskExecutor;
+import org.oddjob.rest.model.WebForm;
 
-public class Execute extends PropertiesAction {
+public class Execute extends FormAction {
 
 	private final String name = "execute";
 	
@@ -25,6 +27,17 @@ public class Execute extends PropertiesAction {
 	@Override
 	public boolean isFor(Object node) {
 		return node instanceof TaskExecutor;
+	}
+	
+	@Override
+	public WebForm dialogFor(Object node) {
+		InputRequest[] requests = ((TaskExecutor) node).getParameterInfo();
+		
+		if (requests == null) {
+			return null;
+		}
+		
+		return WebForm.createFrom(requests);
 	}
 	
 	@Override

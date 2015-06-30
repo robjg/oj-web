@@ -7,15 +7,17 @@ import javax.ws.rs.core.MultivaluedMap;
 import javax.ws.rs.core.Response;
 
 import org.apache.log4j.Logger;
+import org.oddjob.rest.model.ActionBean;
 import org.oddjob.rest.model.ActionStatus;
 import org.oddjob.rest.model.ComponentSummary;
+import org.oddjob.rest.model.ExceptionBean;
 import org.oddjob.rest.model.LogLines;
 import org.oddjob.rest.model.NodeInfos;
 import org.oddjob.rest.model.OddjobTracker;
 import org.oddjob.rest.model.PropertiesDTO;
 import org.oddjob.rest.model.StateDTO;
-import org.oddjob.rest.model.WebAction;
 import org.oddjob.rest.model.WebActionFactory;
+import org.oddjob.rest.model.WebDialog;
 
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
@@ -60,21 +62,30 @@ public class OddjobApiImpl implements OddjobApi {
 	@Override
 	public Response nodeInfo(String nodeIds, long eventSeq) {
 
-		String[] nodeIdsStrArray = nodeIds.split(",");
-		int[] nodeIdsArray = new int[nodeIdsStrArray.length];
-		for (int i = 0; i < nodeIdsArray.length; ++i) {
-			nodeIdsArray[i] = Integer.parseInt(nodeIdsStrArray[i]);
-		}
-		NodeInfos nodeInfos = tracker.infoFor(eventSeq, nodeIdsArray);
 		Gson gson = new Gson();
-		String json = gson.toJson(nodeInfos);  
-	
-		if (logger.isDebugEnabled()) {
-			logger.debug("nodeInfo(" + nodeIds + ", " + eventSeq + 
-					"), Response: " + json);
-		}
 		
-		return Response.status(200).entity(json).build();
+		try {
+			String[] nodeIdsStrArray = nodeIds.split(",");
+			int[] nodeIdsArray = new int[nodeIdsStrArray.length];
+			for (int i = 0; i < nodeIdsArray.length; ++i) {
+				nodeIdsArray[i] = Integer.parseInt(nodeIdsStrArray[i]);
+			}
+			
+			NodeInfos nodeInfos = tracker.infoFor(eventSeq, nodeIdsArray);
+			
+			String json = gson.toJson(nodeInfos);  
+		
+			if (logger.isDebugEnabled()) {
+				logger.debug("nodeInfo(" + nodeIds + ", " + eventSeq + 
+						"), Response: " + json);
+			}
+			
+			return Response.status(200).entity(json).build();
+		}
+		catch (Exception e) {
+			return Response.status(400).entity(gson.toJson(
+					ExceptionBean.createFrom(e))).build();
+		}
 	}
 	
 	
@@ -91,82 +102,113 @@ public class OddjobApiImpl implements OddjobApi {
 	@Override
 	public Response actionsFor(String nodeId) {
 		
-		Object node = tracker.nodeFor(Integer.parseInt(nodeId));
-		
-		WebAction<?>[] actions = actionFactory.actionsFor(node);
-		
 		Gson gson = new Gson();
-		String json = gson.toJson(actions);  
-	
-		if (logger.isDebugEnabled()) {
-			logger.debug("actionsFor(" + nodeId+ 
-					"), Response: " + json);
-		}
 		
-		return Response.status(200).entity(json).build();
+		try {
+			Object node = tracker.nodeFor(Integer.parseInt(nodeId));
+		
+			ActionBean[] actions = ActionBean.createManyFrom(
+					actionFactory.actionsFor(node));
+			
+			String json = gson.toJson(actions);  
+		
+			if (logger.isDebugEnabled()) {
+				logger.debug("actionsFor(" + nodeId+ 
+						"), Response: " + json);
+			}
+			
+			return Response.status(200).entity(json).build();
+		}
+		catch (Exception e) {
+			return Response.status(400).entity(gson.toJson(
+					ExceptionBean.createFrom(e))).build();
+		}
 	}
 	
 	@Override
-	public void performAction(String nodeId, String actionName) {
+	public Response performAction(String nodeId, String actionName) {
 		
-		int nodeIdInt;
+		Gson gson = new Gson();
+		
 		try {
-			nodeIdInt = Integer.parseInt(nodeId);
+			Object node = nodeFor(nodeId);
+			
+			ActionStatus status = actionFactory.performAction(
+					node, actionName, null);
+			
+			String json = gson.toJson(status);  
+			
+			if (logger.isDebugEnabled()) {
+				logger.debug("performAction(" + nodeId+ 
+						"), Response: " + json);
+			}
+			
+			return Response.status(200).entity(json).build();
+		}		
+		catch (Exception e) {
+			return Response.status(400).entity(gson.toJson(
+					ExceptionBean.createFrom(e))).build();
 		}
-		catch (NumberFormatException e) {
-			logger.error("Failed parsing Node Id [" + nodeId + "]: " +
-					e.toString());
-			return;
+	}
+	
+	@Override
+	public Response formFor(String nodeId, String actionName) {
+		
+		Gson gson = new Gson();
+		
+		try {
+			Object node = nodeFor(nodeId);
+			
+			WebDialog dialog = actionFactory.dialogFor(node, actionName);
+			
+			String json = gson.toJson(dialog);  
+			
+			if (logger.isDebugEnabled()) {
+				logger.debug("formFor(" + nodeId+ 
+						"), Response: " + json);
+			}
+			
+			return Response.status(200).entity(json).build();
+		}		
+		catch (Exception e) {
+			return Response.status(400).entity(gson.toJson(
+					ExceptionBean.createFrom(e))).build();
 		}
-		
-		Object node = tracker.nodeFor(nodeIdInt);
-		
-		if (node == null) {
-			logger.error("No Node for Id [" + nodeId + "]: ");
-			return;
-		}
-		
-		actionFactory.performAction(node, actionName, null);
 	}
 	
 	@Override
 	public Response actionForm(String nodeId, String actionName,
 			MultivaluedMap<String, String> formParams) {
 		
-		int nodeIdInt;
-		try {
-			nodeIdInt = Integer.parseInt(nodeId);
-		}
-		catch (NumberFormatException e) {
-			logger.error("Failed parsing Node Id [" + nodeId + "]: " +
-					e.toString());
-			return Response.status(200).entity("{\"status\":\"failed\"}").build();
-		}
-		
-		Object node = tracker.nodeFor(nodeIdInt);
-		
-		if (node == null) {
-			logger.error("No Node for Id [" + nodeId + "]: ");
-			return Response.status(200).entity("{\"status\":\"failed\"}").build();
-		}
-		
-		Properties properties = new Properties();		
-		for (String key : formParams.keySet()) {
-			// Don't support multiple values yet...
-			properties.setProperty(key, formParams.getFirst(key));
-		}
-		
-		ActionStatus status = actionFactory.performAction(node, actionName, properties);
-		
 		Gson gson = new Gson();
-		String json = gson.toJson(status);  
-	
-		if (logger.isDebugEnabled()) {
-			logger.debug("actionForm(" + nodeId+ 
-					"), Response: " + json);
+		
+		try {
+			Object node = nodeFor(nodeId);
+			
+			Properties properties = new Properties();
+			
+			for (String key : formParams.keySet()) {
+				// Don't support multiple values yet...
+				properties.setProperty(key, formParams.getFirst(key));
+			}
+		
+			ActionStatus status = actionFactory.performAction(
+					node, actionName, properties);
+			
+			String json = gson.toJson(status);  
+		
+			if (logger.isDebugEnabled()) {
+				logger.debug("actionForm(" + nodeId+ 
+						"), Response: " + json);
+			}
+			
+			return Response.status(200).entity(json).build();
+		}		
+		catch (Exception e) {
+			return Response.status(400).entity(gson.toJson(
+					ExceptionBean.createFrom(e))).build();
 		}
 		
-		return Response.status(200).entity(json).build();
 	}
 	
 	@Override
@@ -234,4 +276,22 @@ public class OddjobApiImpl implements OddjobApi {
 		
 		return Response.status(200).entity(json).build();
 	}
+	
+	protected Object nodeFor(String nodeIdString) {
+		int nodeId;
+		try {
+			nodeId = Integer.parseInt(nodeIdString);
+		}
+		catch (NumberFormatException e) {
+			throw new IllegalArgumentException("Failed parsing Node Id [" + 
+					nodeIdString + "]: " + e.getMessage());
+		}
+		Object node = tracker.nodeFor(nodeId);
+		
+		if (node == null) {
+			throw new IllegalArgumentException("Node does not exist.");
+		}
+		return node;
+	}
+	
 }

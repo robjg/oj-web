@@ -2,7 +2,7 @@ package org.oddjob.rest.actions;
 
 import org.oddjob.jobs.job.ResetActions;
 
-public class Start extends NoParamsAction {
+public class Start extends SimpleAction {
 
 	private final String name = "start";
 	

@@ -9,12 +9,12 @@ public class ActionStatus {
 		;
 	}
 	
-	private final Code code;
+	private final Code status;
 	
 	private final String message;
 	
 	private ActionStatus(Code code, String message) {
-		this.code = code;
+		this.status = code;
 		this.message = message;
 	}
 	
@@ -26,8 +26,8 @@ public class ActionStatus {
 		return new ActionStatus(Code.FAILURE, message);
 	}
 	
-	public Code getCode() {
-		return code;
+	public Code getStatus() {
+		return status;
 	}	
 	
 	public String getMessage() {

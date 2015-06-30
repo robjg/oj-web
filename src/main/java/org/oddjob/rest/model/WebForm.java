@@ -4,10 +4,29 @@ import java.util.ArrayList;
 
 import org.oddjob.arooa.design.screem.FileSelectionOptions;
 import org.oddjob.input.InputMedium;
+import org.oddjob.input.InputRequest;
 
-public class WebForm implements InputMedium {
+public class WebForm implements InputMedium, WebDialog {
 
+	public static WebForm createFrom(InputRequest[] requests) {
+
+		WebForm form = new WebForm();
+		
+		for (InputRequest request : requests) {
+			request.render(form);
+		}
+		
+		return form;
+	}
+	
+	private final WebDialog.Type dialogType = WebDialog.Type.FORM;
+	
 	private final ArrayList<WebField> fields = new ArrayList<WebField>();
+	
+	@Override
+	public Type getDialogType() {
+		return dialogType;
+	}
 	
 	@Override
 	public void prompt(String prompt, String defaultValue) {

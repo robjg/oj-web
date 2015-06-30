@@ -4,7 +4,7 @@ import java.util.Properties;
 
 import org.oddjob.rest.model.WebAction;
 
-abstract public class PropertiesAction extends BaseAction 
+abstract public class FormAction extends BaseAction 
 implements WebAction<Properties> {
 
 	@Override
@@ -16,5 +16,4 @@ implements WebAction<Properties> {
 	public Class<?> getParamsType() {
 		return Properties.class;
 	}
-	
 }

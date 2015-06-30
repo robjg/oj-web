@@ -51,11 +51,13 @@ public class OddjobWebServiceTest {
 		
 		assertEquals(200, httpClient.getStatus());
 				
-		assertEquals("[{\"name\":\"start\",\"displayName\":\"Start\"},"
-				+ "{\"name\":\"stop\",\"displayName\":\"Stop\"},"
-				+ "{\"name\":\"soft-reset\",\"displayName\":\"Soft Reset\"},"
-				+ "{\"name\":\"hard-reset\",\"displayName\":\"Hard Reset\"},"
-				+ "{\"name\":\"force\",\"displayName\":\"Force\"}]",
+		assertEquals("["
+				+ "{\"actionType\":\"SIMPLE\",\"name\":\"start\",\"displayName\":\"Start\"},"
+				+ "{\"actionType\":\"SIMPLE\",\"name\":\"stop\",\"displayName\":\"Stop\"},"
+				+ "{\"actionType\":\"SIMPLE\",\"name\":\"soft-reset\",\"displayName\":\"Soft Reset\"},"
+				+ "{\"actionType\":\"SIMPLE\",\"name\":\"hard-reset\",\"displayName\":\"Hard Reset\"},"
+				+ "{\"actionType\":\"SIMPLE\",\"name\":\"force\",\"displayName\":\"Force\"}"
+				+ "]",
 				content);
 		
 		StateSteps steps = new StateSteps(sequential);
@@ -65,11 +67,13 @@ public class OddjobWebServiceTest {
 				"/api/action/0/hard-reset");
 		httpClient.call();
 		
+		assertEquals(200, httpClient.getStatus());
+		
 		content = httpClient.getContent();
 		
 		logger.info(content);
 		
-		assertEquals(204, httpClient.getStatus());
+		assertEquals("{\"status\":\"OK\"}", content);
 		
 		steps.checkWait();
 				
@@ -80,7 +84,13 @@ public class OddjobWebServiceTest {
 				"/api/action/0/start");
 		httpClient.call();
 		
-		assertEquals(204, httpClient.getStatus());
+		assertEquals(200, httpClient.getStatus());
+		
+		content = httpClient.getContent();
+		
+		logger.info(content);
+		
+		assertEquals("{\"status\":\"OK\"}", content);
 		
 		steps.checkWait();
 		

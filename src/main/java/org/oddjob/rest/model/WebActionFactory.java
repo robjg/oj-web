@@ -62,12 +62,22 @@ public class WebActionFactory {
 		WebAction<?> action = actions.get(actionName.toLowerCase());
 		
 		if (action == null) {
-			return ActionStatus.failure("No Action [" + actionName + "]");
+			throw new IllegalArgumentException("No Action [" + actionName + "]");
 		}
-		else {
-			performWithInferredType(node, action, params);
-			return ActionStatus.ok();
-		}	
+		
+		performWithInferredType(node, action, params);
+		return ActionStatus.ok();
+	}
+	
+	public WebDialog dialogFor(Object node, String actionName) {
+		
+		WebAction<?> action = actions.get(actionName.toLowerCase());
+		
+		if (action == null) {
+			throw new IllegalArgumentException("No Action [" + actionName + "]");
+		}
+		
+		return action.dialogFor(node);
 	}
 	
 	protected <T> void performWithInferredType(Object node, 

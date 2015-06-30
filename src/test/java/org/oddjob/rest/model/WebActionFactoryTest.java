@@ -32,7 +32,7 @@ public class WebActionFactoryTest {
 	}
 	
 	@Test
-	public void testActionsAll() {
+	public void testActionsForSequentialJob() {
 		
 		logger.info("testActionsAll");
 		
@@ -52,7 +52,7 @@ public class WebActionFactoryTest {
 	}
 	
 	@Test
-	public void testPerformActions() {
+	public void testPerformActionsStartAndReset() {
 		
 		logger.info("testPerformActions");
 		

@@ -1,6 +1,7 @@
 package org.oddjob.jetty;
 
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNotNull;
 
 import java.io.File;
 import java.util.LinkedHashMap;
@@ -11,6 +12,7 @@ import org.junit.Test;
 import org.oddjob.Oddjob;
 import org.oddjob.OddjobLookup;
 import org.oddjob.Stateful;
+import org.oddjob.rest.model.ActionBean;
 import org.oddjob.rest.model.ActionStatus;
 import org.oddjob.rest.model.ComponentSummary;
 import org.oddjob.state.JobState;
@@ -57,6 +59,8 @@ public class TaskExecutorTest {
 		
 		JettyHttpClient httpClient = new JettyHttpClient();
 		
+		// Get id for echo-task. 
+		
 		httpClient.setUrl("http://localhost:" + port + 
 				"/api/summariesFor");
 		
@@ -66,6 +70,8 @@ public class TaskExecutorTest {
 		httpClient.setParameters(parameters);
 		httpClient.call();
 		
+		assertEquals(200, httpClient.getStatus());
+				
 		String content = httpClient.getContent();
 		
 		Gson gson = new Gson();
@@ -74,6 +80,33 @@ public class TaskExecutorTest {
 				ComponentSummary[].class);
 		
 		int nodeId = summaries[0].getNodeId();
+	
+		// Actions for
+		
+		httpClient.setUrl("http://localhost:" + port + 
+			"/api/actionsFor/" + nodeId);
+		httpClient.setParameters(null);
+		httpClient.call();
+		
+		assertEquals(200, httpClient.getStatus());
+		
+		content = httpClient.getContent();
+		
+		ActionBean[] actions = gson.fromJson(content, 
+				ActionBean[].class);
+		
+		ActionBean execute = null;
+		for (ActionBean action : actions) {
+			if ("execute".equals(action.getName())) {
+				execute = action;
+			}
+		}
+		
+		assertNotNull("Execute action", execute);
+
+		assertEquals(ActionBean.Type.FORM, execute.getActionType());
+		
+		// Execute action
 		
 		String executeUrl = "http://localhost:" + port + 
 				"/api/actionForm/" + nodeId + "/execute";
@@ -87,8 +120,6 @@ public class TaskExecutorTest {
 		
 		httpClient.setParameters(parameters);
 		
-		httpClient.setContentType("application/x-www-form-urlencoded");
-		
 		httpClient.call();
 				
 		content = httpClient.getContent();
@@ -99,7 +130,7 @@ public class TaskExecutorTest {
 				
 		ActionStatus actionStatus = gson.fromJson(content, ActionStatus.class);
 		
-		assertEquals(ActionStatus.Code.OK, actionStatus.getCode());
+		assertEquals(ActionStatus.Code.OK, actionStatus.getStatus());
 		
 		echoState.checkWait();
 		

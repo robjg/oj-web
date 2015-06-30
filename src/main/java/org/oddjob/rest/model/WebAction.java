@@ -7,11 +7,13 @@ public interface WebAction<T> {
 	
 	String getDisplayName();
 	
-	public Class<?> getParamsType();
+	boolean isFor(Object node);
 	
-	public T castParams(Object params);
+	Class<?> getParamsType();
+	
+	T castParams(Object params);
+	
+	WebForm	dialogFor(Object node);
 	
 	void actOn(Object node, T params);
-	
-	boolean isFor(Object node);
 }

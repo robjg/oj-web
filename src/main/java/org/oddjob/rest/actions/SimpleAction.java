@@ -1,8 +1,9 @@
 package org.oddjob.rest.actions;
 
 import org.oddjob.rest.model.WebAction;
+import org.oddjob.rest.model.WebForm;
 
-abstract public class NoParamsAction extends BaseAction 
+abstract public class SimpleAction extends BaseAction 
 implements WebAction<Void> {
 
 	@Override
@@ -18,6 +19,11 @@ implements WebAction<Void> {
 	@Override
 	public Class<?> getParamsType() {
 		return Void.class;
+	}
+	
+	@Override
+	public WebForm dialogFor(Object node) {
+		return null;
 	}
 	
 	@Override

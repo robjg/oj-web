@@ -9,6 +9,8 @@ import java.util.Map;
 import org.apache.log4j.Logger;
 import org.junit.Assert;
 import org.junit.Test;
+import org.oddjob.FailedToStopException;
+import org.oddjob.Stoppable;
 import org.oddjob.arooa.utils.DateHelper;
 import org.oddjob.state.FlagState;
 import org.oddjob.state.JobState;
@@ -116,6 +118,40 @@ public class DTOsJSONTest {
 		Assert.assertEquals(expected, json);
 	}
 	
+	@Test 
+	public 	void testWebActions() {
+		
+		class Foo implements Runnable, Stoppable {
+			@Override
+			public void run() {
+			}
+			@Override
+			public void stop() throws FailedToStopException {
+			}
+		}
+		
+		WebActionFactory factory = new WebActionFactory(null);
+
+		ActionBean[] test = ActionBean.createManyFrom(
+				factory.actionsFor(new Foo()));
+		
+		Gson gson = new Gson();
+		String json = gson.toJson(test);  
+		
+		logger.info(json);		
+		
+		String expected = "["
+				+ "{\"actionType\":\"SIMPLE\",\"name\":\"start\",\"displayName\":\"Start\"},"
+				+ "{\"actionType\":\"SIMPLE\",\"name\":\"stop\",\"displayName\":\"Stop\"}"
+				+ "]";
+		
+		Assert.assertEquals(expected, json);
+		
+		ActionBean[] copy = gson.fromJson(json, ActionBean[].class);
+		
+		assertEquals(2, copy.length);
+	}
+	
 	@Test
 	public void testWebForm() throws ParseException {
 		
@@ -129,7 +165,7 @@ public class DTOsJSONTest {
 		
 		logger.info(json);		
 		
-		String expected = "{\"fields\":[{\"type\":\"text\",\"label\":\"Favourite Fruit\",\"value\":\"apple\"},"
+		String expected = "{\"dialogType\":\"FORM\",\"fields\":[{\"type\":\"text\",\"label\":\"Favourite Fruit\",\"value\":\"apple\"},"
 				+ "{\"type\":\"password\",\"label\":\"Your Secret\"}]}";
 		
 		Assert.assertEquals(expected, json);
@@ -145,13 +181,13 @@ public class DTOsJSONTest {
 		
 		logger.info(json);		
 		
-		String expected = "{\"code\":\"FAILURE\",\"message\":\"Something went wrong.\"}";
+		String expected = "{\"status\":\"FAILURE\",\"message\":\"Something went wrong.\"}";
 		
 		Assert.assertEquals(expected, json);
 		
 		ActionStatus copy = gson.fromJson(expected, ActionStatus.class);
 		
-		assertEquals(ActionStatus.Code.FAILURE, copy.getCode());
+		assertEquals(ActionStatus.Code.FAILURE, copy.getStatus());
 		assertEquals("Something went wrong.", copy.getMessage());
 	}
 }
