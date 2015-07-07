@@ -42,7 +42,7 @@ public class OjJobActionsScriptTest {
 	    
 	    List<?> actionButtons = ojActionsDiv.getByXPath("button");
 	    
-	    assertEquals(3, actionButtons.size());
+	    assertEquals(4, actionButtons.size());
 	    
 	    // Test 2
 	    
@@ -54,7 +54,7 @@ public class OjJobActionsScriptTest {
 	    		"result2").getFirstByXPath(
 	    				"div[@class='actionExecuted']")).asText();
 	    
-	    assertEquals("actionExecuted: run/3", 
+	    assertEquals("actionExecuted: start/3", 
 	    		result2);
 	    
 	    // Cleanup

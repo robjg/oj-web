@@ -12,6 +12,9 @@ import org.junit.Test;
 import org.oddjob.FailedToStopException;
 import org.oddjob.Stoppable;
 import org.oddjob.arooa.utils.DateHelper;
+import org.oddjob.input.InputRequest;
+import org.oddjob.input.requests.InputPassword;
+import org.oddjob.input.requests.InputText;
 import org.oddjob.state.FlagState;
 import org.oddjob.state.JobState;
 import org.oddjob.state.StateEvent;
@@ -155,18 +158,28 @@ public class DTOsJSONTest {
 	@Test
 	public void testWebForm() throws ParseException {
 		
-		WebForm test = new WebForm();
+		InputText input1 = new InputText();
+		input1.setProperty("favourite.fruit");
+		input1.setPrompt("Favourite Fruit");
+		input1.setDefault("Apples");
 		
-		test.prompt("Favourite Fruit", "apple");
-		test.password("Your Secret");
+		InputPassword input2 = new InputPassword();
+		input2.setPrompt("A Secret");
+		input2.setProperty("some.secret");
+		
+		InputRequest[] requests = new InputRequest[] {
+				input1, input2 };
 				
+		WebForm test = WebForm.createFrom(requests);
+		
 		Gson gson = new Gson();
 		String json = gson.toJson(test);  
 		
 		logger.info(json);		
 		
-		String expected = "{\"dialogType\":\"FORM\",\"fields\":[{\"type\":\"text\",\"label\":\"Favourite Fruit\",\"value\":\"apple\"},"
-				+ "{\"type\":\"password\",\"label\":\"Your Secret\"}]}";
+		String expected = "{\"dialogType\":\"FORM\",\"fields\":["
+				+ "{\"fieldType\":\"TEXT\",\"label\":\"Favourite Fruit\",\"name\":\"favourite.fruit\",\"value\":\"Apples\"},"
+				+ "{\"fieldType\":\"PASSWORD\",\"label\":\"A Secret\",\"name\":\"some.secret\"}]}";
 		
 		Assert.assertEquals(expected, json);
 	}

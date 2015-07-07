@@ -126,7 +126,9 @@ ojTreeController = function(idPrefix) {
 	ojTreeModel.addTreeChangeListener(ojTreeUI);
 	ojTreeModel.addSelectionListener(ojTreeUI);
 
-	var ojActions = ojJobActions(ojDao);
+    var ojForm = ojFormFactory();
+
+	var ojActions = ojJobActions(ojDao, ojForm);
 	ojTreeModel.addSelectionListener(ojActions);
 
     var tabsModel = ojTabsModel("state");

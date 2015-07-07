@@ -29,6 +29,10 @@
                                 <echo id="echo" name="Echo Properties"><![CDATA[Favourite Fruit: ${favourite.fruit}, A Secret: ${some.secret}
 ]]></echo>
                             </job>
+                            <requests>
+                                <input-text default="Apples" prompt="Favourite Fruit" property="favourite.fruit"/>
+                                <input-password prompt="A Secret" property="some.secret"/>
+                            </requests>
                         </task-service>
                     </jobs>
                 </sequential>
@@ -36,4 +40,3 @@
         </sequential>
     </job>
 </oddjob>
-

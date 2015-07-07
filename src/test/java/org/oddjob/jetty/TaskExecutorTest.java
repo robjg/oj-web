@@ -109,7 +109,7 @@ public class TaskExecutorTest {
 		// Execute action
 		
 		String executeUrl = "http://localhost:" + port + 
-				"/api/actionForm/" + nodeId + "/execute";
+				"/api/formAction/" + nodeId + "/execute";
 
 		httpClient.setUrl(executeUrl);
 		httpClient.setMethod(JettyHttpClient.RequestMethod.POST);

@@ -152,7 +152,7 @@ public class OddjobApiImpl implements OddjobApi {
 	}
 	
 	@Override
-	public Response formFor(String nodeId, String actionName) {
+	public Response dialogFor(String nodeId, String actionName) {
 		
 		Gson gson = new Gson();
 		
@@ -286,6 +286,7 @@ public class OddjobApiImpl implements OddjobApi {
 			throw new IllegalArgumentException("Failed parsing Node Id [" + 
 					nodeIdString + "]: " + e.getMessage());
 		}
+		
 		Object node = tracker.nodeFor(nodeId);
 		
 		if (node == null) {

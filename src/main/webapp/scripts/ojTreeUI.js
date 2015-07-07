@@ -240,7 +240,7 @@ var ojTreeUIFactory = function(ojTreeController, idPrefix) {
 				$(nodeIdSelector(toNodeId) + ">a").attr(
 						'class', 'selected');
 			}
-		},
+		}
 		
 	};
 };

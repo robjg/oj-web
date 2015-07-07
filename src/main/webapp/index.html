@@ -4,10 +4,11 @@
     <meta charset="ISO-8859-1">
 
 	<style type="text/css">
-        @import url("css/global.css?v=1.1.0");
+        @import url(css/global.css?v=1.1.0);
         @import url(css/tree.css?v=1.1.0);
         @import url(css/detail.css?v=1.1.0);
         @import url(css/control.css?v=1.1.0);
+        @import url(css/form.css?v=1.1.0);
         @import url(css/split-pane.css?v=1.1.0);
 
     html, body {
@@ -39,6 +40,9 @@
 	<title>Oddjob</title>
 </head>
 <body>
+
+<div id="ojForm" class="form-box">
+</div>
 
 <div class="split-pane vertical-percent">
     <div class="split-pane-component" id="left-component">
@@ -127,6 +131,7 @@
 <script src="scripts/ojState.js"></script>
 <script src="scripts/ojLogger.js"></script>
 <script src="scripts/ojJobActions.js"></script>
+<script src="scripts/ojForm.js"></script>
 <script src="scripts/ojProperties.js"></script>
 <script src="scripts/ojTreeController.js"></script>
 

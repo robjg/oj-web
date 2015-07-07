@@ -1,26 +1,43 @@
 
-var ojJobActions = function(ojActionsDao, divId) {
+var ojJobActions = function(ojActionsDao, ojForm, divId) {
 	
 	if (divId === undefined) {
 		divId = 'ojJobActions';
 	}
-	
-	function htmlForAction(action, nodeId) {
-		
+
+    function statusCallback(data) {
+
+        // todo
+    }
+
+	function htmlForAction(nodeId, action) {
+
+        var clickFunction;
+
+        if (action.actionType === 'FORM') {
+            clickFunction = function() {
+                actionDialog(nodeId, action.name);
+            }
+        }
+        else {
+            clickFunction = function() {
+                return ojActionsDao.executeAction(
+                    nodeId, action.name, statusCallback);
+            }
+        }
+
 		return $('<button>').attr(
 				{ class: action.name +'_action' }
-			).click(function() {
-				return ojActionsDao.executeAction(
-						action.name, nodeId);
-			}).append(action.displayName);
+			).click(clickFunction
+			).append(action.displayName);
 	}	
 	
-	function createActionButtons(actionList, nodeId) {
+	function createActionButtons(nodeId, actionList) {
 		
 		var actionsDiv$ = $('#' + divId);
 		
 		for (var i = 0; i < actionList.length; ++i) {
-			actionsDiv$.append(htmlForAction(actionList[i], nodeId));
+			actionsDiv$.append(htmlForAction(nodeId, actionList[i]));
 		}
 	}
 	
@@ -28,13 +45,13 @@ var ojJobActions = function(ojActionsDao, divId) {
 		
 		$('#' + divId).empty();
 	}
-	
+
 	function actionsChanged(event) {
 		var actionList = event.actionList;
 		var nodeId = event.nodeId;
 		
 		if (actionList !== undefined) {
-			createActionButtons(actionList, nodeId);
+			createActionButtons(nodeId, actionList);
 		}
 	}
 	
@@ -46,7 +63,19 @@ var ojJobActions = function(ojActionsDao, divId) {
 				actionList: data });
 		};
 	}
-	
+
+    function actionDialog(nodeId, actionName) {
+
+        var submitForm = function(form$) {
+            ojActionsDao.formAction(nodeId, actionName, form$, statusCallback);
+        };
+
+        ojActionsDao.dialogFor(nodeId, actionName, function(data) {
+
+            ojForm.doForm(data, submitForm);
+        });
+    }
+
 	return {
 		selectionChanged: function(event) {
 			

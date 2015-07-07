@@ -36,17 +36,19 @@ public interface OddjobApi {
 	
 	@GET
 	@Path("action/{nodeId}/{actionName}")
+	@Produces("application/json")
 	public Response performAction(@PathParam("nodeId") String nodeId,
 			@PathParam("actionName") String actionName);
 	
 	@GET
-	@Path("form/{nodeId}/{actionName}")
-	public Response formFor(@PathParam("nodeId") String nodeId,
+	@Path("dialogFor/{nodeId}/{actionName}")
+	@Produces("application/json")
+	public Response dialogFor(@PathParam("nodeId") String nodeId,
 			@PathParam("actionName") String actionName);
 	
 	@POST
 	@Consumes("application/x-www-form-urlencoded")
-	@Path("actionForm/{nodeId}/{actionName}")
+	@Path("formAction/{nodeId}/{actionName}")
 	@Produces("application/json")
 	public Response actionForm(@PathParam("nodeId") String nodeId, 
 			@PathParam("actionName") String actionName,

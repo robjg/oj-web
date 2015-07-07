@@ -19,8 +19,24 @@ var ojDao = function() {
                 ajaxCallback);
         },
 
-        executeAction: function(actionName, nodeId) {
-            $.get('api/action/' +  nodeId +  '/' + actionName);
+        dialogFor: function(nodeId, actionName, ajaxCallback) {
+            $.get('api/dialogFor/' +  nodeId +  '/' + actionName, ajaxCallback);
+        },
+
+        executeAction: function(nodeId, actionName, statusCallback) {
+            $.get('api/action/' +  nodeId +  '/' + actionName, statusCallback);
+        },
+
+        formAction: function(nodeId, actionName, form$, statusCallback) {
+
+            var url = 'api/formAction/' +  nodeId +  '/' + actionName;
+
+            $.ajax({
+                type: "POST",
+                url: url,
+                data: form$.serialize(), // serializes the form's elements.
+                success: statusCallback
+            });
         },
 
         // State

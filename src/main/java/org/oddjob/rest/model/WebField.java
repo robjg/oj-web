@@ -2,18 +2,27 @@ package org.oddjob.rest.model;
 
 public class WebField {
 
-	private String type;
+	public enum Type {
+		TEXT,
+		MESSAGE,
+		CHECKBOX,
+		PASSWORD
+	}
+	
+	private Type fieldType;
 	
 	private String label;
 	
+	private String name;
+	
 	private String value;
 
-	public String getType() {
-		return type;
+	public Type getFieldType() {
+		return fieldType;
 	}
 
-	public void setType(String type) {
-		this.type = type;
+	public void setFieldType(Type type) {
+		this.fieldType = type;
 	}
 
 	public String getLabel() {
@@ -24,6 +33,14 @@ public class WebField {
 		this.label = label;
 	}
 
+	public String getName() {
+		return name;
+	}
+
+	public void setName(String name) {
+		this.name = name;
+	}
+	
 	public String getValue() {
 		return value;
 	}
@@ -31,6 +48,5 @@ public class WebField {
 	public void setValue(String value) {
 		this.value = value;
 	}
-	
 	
 }

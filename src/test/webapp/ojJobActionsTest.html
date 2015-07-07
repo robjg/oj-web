@@ -1,9 +1,15 @@
 <html>
 <head>
+    <style type="text/css">
+        @import url(../../main/webapp/css/form.css?v=1.1.0);
+    </style>
 </head>
 <body>
 
 <div id="ojJobActions">
+</div>
+
+<div id="ojForm" class="form-box">
 </div>
 
 <button id="runTestOne">Test 1 (Select)</button>
@@ -12,30 +18,63 @@
 <button id="runTestTwo">Test 2 (Click Run)</button>
 <div id=result2></div>
 
+<button id="runTestThree">Test 3 (Click Execute)</button>
+<div id=result3></div>
+
+<button id="runTestFour">Test 4 (Fill Form)</button>
+<div id=result4></div>
+
+<button id="runTestFive">Test 5 (Submit Form)</button>
+<div id=result5></div>
 
 <script src="../../main/webapp/scripts/jquery-1.11.2.js"></script>
 <script src="../../main/webapp/scripts/ojJobActions.js"></script>
+<script src="../../main/webapp/scripts/ojForm.js"></script>
 <script src="ojJobActionsTest.js"></script>
 
 <script>
 
 $(document).ready(function() {
 
-	var test = ojJobActions(testActionsDao)
-	testTreeModel.addSelectionListener(test);
-	
-	$("#runTestOne").click(function() {
-		testTreeModel.fireSelectionChanged(undefined, 3);
-	});
+    var ojForm = ojFormFactory();
 
-	$("#runTestTwo").click(function() {
-		$('#ojJobActions .run_action').click();
-		
-		$('#result2').append("<div class='actionExecuted'>" +
-				"actionExecuted: " + 
-				actionsExecuted[0].actionName + "/" +
-				actionsExecuted[0].nodeId + "</div>");
-	});
+    var test = ojJobActions(testActionsDao, ojForm);
+    testTreeModel.addSelectionListener(test);
+
+    $("#runTestOne").click(function () {
+        testTreeModel.fireSelectionChanged(undefined, 3);
+    });
+
+    $("#runTestTwo").click(function () {
+        $('#ojJobActions .start_action').click();
+
+        $('#result2').append("<div class='actionExecuted'>" +
+        "actionExecuted: " +
+        actionsExecuted[0].actionName + "/" +
+        actionsExecuted[0].nodeId + "</div>");
+    });
+
+    $("#runTestThree").click(function () {
+
+        $('#ojJobActions .execute_action').click();
+    });
+
+    $("#runTestFour").click(function () {
+
+        $('#ojFormField0').val('Apples');
+        $('#ojFormField1').val('Lawrie');
+    });
+
+    $("#runTestFive").click(function () {
+
+        $('#ojForm form').submit();
+
+        $('#result5').append("<div class='actionExecuted'>" +
+        "actionExecuted: " +
+        actionsExecuted[1].actionName + "/" +
+        actionsExecuted[1].nodeId +
+        actionsExecuted[1].form + "</div>");
+    });
 
 });
 </script>

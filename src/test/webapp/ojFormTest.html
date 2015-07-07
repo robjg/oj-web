@@ -1,0 +1,40 @@
+<html>
+<head>
+    <style type="text/css">
+        @import url(../../main/webapp/css/form.css?v=1.1.0);
+    </style>
+</head>
+<body>
+
+<div id="ojForm" class="form-box">
+</div>
+
+<button id="runTestOne">Test 1 (Form)</button>
+<div id=result1></div>
+
+
+<script src="../../main/webapp/scripts/jquery-1.11.2.js"></script>
+<script src="../../main/webapp/scripts/ojForm.js"></script>
+
+<script>
+
+$(document).ready(function() {
+
+	var test = ojFormFactory()
+
+	$("#runTestOne").click(function() {
+		test.doForm({ dialogType: "FORM",
+            fields: [
+                { fieldType: "TEXT", label: "Favourite Fruit",  name: "favourite.fruit", value: "Apples" },
+                { fieldType: "PASSWORD", label: "A Secret", name: "some.secret" }
+            ]}, function(form$) {
+                $('#result1').append('<p>Submitted: ' + form$.serialize() + '</p>');
+        });
+	});
+
+
+});
+</script>
+
+</body>
+</html>
