@@ -1,0 +1,47 @@
+<ivy-module version="2.0">
+  <info organisation="uk.co.rgordon" module="oj-web"/>
+
+	<configurations>
+        <conf name="default" visibility="public"></conf>
+        <conf name="provided" visibility="public"></conf>
+        <conf name="test" visibility="public"></conf>
+	</configurations>  
+        
+	<dependencies>
+	
+	    <dependency org="uk.co.rgordon" name="oddjob" rev="latest.integration"
+	    			conf="provided->default" />
+	    	
+	    <dependency org="org.eclipse.jetty" name="jetty-server" rev="9.2.6.v20141205"
+	    			conf="default->default" />
+	      
+	    <dependency org="org.eclipse.jetty" name="jetty-servlet" rev="9.2.6.v20141205"
+	    			conf="default->default" />
+	    			
+	    <dependency org="org.eclipse.jetty" name="jetty-webapp" rev="9.2.6.v20141205"
+	    			conf="default->default" />
+	    			
+	    <dependency org="org.eclipse.jetty" name="jetty-client" rev="9.2.6.v20141205"
+	    			conf="default->default" />
+	    
+	    <dependency org="com.google.code.gson" name="gson" rev="2.3.1"
+	    			conf="default->default" />
+	    			
+	    <dependency org="org.jboss.resteasy" name="resteasy-servlet-initializer" rev="3.0.9.Final"
+	    			conf="default->default" />
+	
+	    <dependency org="uk.co.rgordon" name="oddjob" rev="latest.integration"
+	    			conf="test->tools" />
+	    	
+	    <dependency org="junit" name="junit" rev="4.7"
+	    			conf="test->default" />
+	
+	    <dependency org="net.sourceforge.htmlunit" name="htmlunit" rev="2.15"
+	    			conf="test->default" />
+	    			
+	    <dependency org="org.mockito" name="mockito-all" rev="1.9.5"
+	    			conf="test->default" />
+
+	</dependencies>
+  
+</ivy-module>
