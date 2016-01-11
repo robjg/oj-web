@@ -2,4 +2,13 @@
   <properties file="${ivy.default.ivy.user.dir}/ivy.properties"/>
   <property name="ivy.global.settings.dir" value="${ivy.default.settings.dir}" override="false"/>
   <include url="${ivy.global.settings.dir}/ivysettings.xml"/>
+  
+  <property name="jetty.version" value="9.2.6.v20141205" override="false" /> 
+  <!-- Jetty 9.3.6.v20151106 required java 8 -->
+  <property name="gson.version" value="2.3.1" override="false" />
+  <property name="resteasy.version" value="3.0.14.Final" override="false" />
+  <property name="junit.version" value="4.7" override="false" /> 
+  <property name="htmlunit.version" value="2.19" override="false" /> 
+  <property name="mockito.version" value="1.9.5" override="false" />
+  
 </ivysettings>

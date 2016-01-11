@@ -8,6 +8,7 @@ import java.util.List;
 
 import org.apache.log4j.Logger;
 import org.junit.Test;
+import org.oddjob.tools.OurDirs;
 
 import com.gargoylesoftware.htmlunit.BrowserVersion;
 import com.gargoylesoftware.htmlunit.WebClient;
@@ -24,7 +25,8 @@ public class OjJobActionsScriptTest {
 		
 		logger.info("----- testing OjJobActionsTest.html ----" );
 		
-		File file = new File("src/test/webapp/OjJobActionsTest.html");
+		OurDirs ourDirs = new OurDirs();
+		File file = ourDirs.relative("src/test/webapp/OjJobActionsTest.html");
 		
 		URL url = file.toURI().toURL();
 		

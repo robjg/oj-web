@@ -4,7 +4,7 @@
 	<configurations>
         <conf name="default" visibility="public"></conf>
         <conf name="provided" visibility="public"></conf>
-        <conf name="test" visibility="public"></conf>
+        <conf name="test" extends="default,provided" visibility="public"></conf>
 	</configurations>  
         
 	<dependencies>
@@ -12,34 +12,34 @@
 	    <dependency org="uk.co.rgordon" name="oddjob" rev="latest.integration"
 	    			conf="provided->default" />
 	    	
-	    <dependency org="org.eclipse.jetty" name="jetty-server" rev="9.2.6.v20141205"
+	    <dependency org="org.eclipse.jetty" name="jetty-server" rev="${jetty.version}"
 	    			conf="default->default" />
 	      
-	    <dependency org="org.eclipse.jetty" name="jetty-servlet" rev="9.2.6.v20141205"
+	    <dependency org="org.eclipse.jetty" name="jetty-servlet" rev="${jetty.version}"
 	    			conf="default->default" />
 	    			
-	    <dependency org="org.eclipse.jetty" name="jetty-webapp" rev="9.2.6.v20141205"
+	    <dependency org="org.eclipse.jetty" name="jetty-webapp" rev="${jetty.version}"
 	    			conf="default->default" />
 	    			
-	    <dependency org="org.eclipse.jetty" name="jetty-client" rev="9.2.6.v20141205"
+	    <dependency org="org.eclipse.jetty" name="jetty-client" rev="${jetty.version}"
 	    			conf="default->default" />
 	    
-	    <dependency org="com.google.code.gson" name="gson" rev="2.3.1"
+	    <dependency org="com.google.code.gson" name="gson" rev="${gson.version}"
 	    			conf="default->default" />
 	    			
-	    <dependency org="org.jboss.resteasy" name="resteasy-servlet-initializer" rev="3.0.9.Final"
+	    <dependency org="org.jboss.resteasy" name="resteasy-servlet-initializer" rev="${resteasy.version}"
 	    			conf="default->default" />
 	
 	    <dependency org="uk.co.rgordon" name="oddjob" rev="latest.integration"
 	    			conf="test->tools" />
 	    	
-	    <dependency org="junit" name="junit" rev="4.7"
+	    <dependency org="junit" name="junit" rev="${junit.version}"
 	    			conf="test->default" />
 	
-	    <dependency org="net.sourceforge.htmlunit" name="htmlunit" rev="2.15"
+	    <dependency org="net.sourceforge.htmlunit" name="htmlunit" rev="${htmlunit.version}"
 	    			conf="test->default" />
 	    			
-	    <dependency org="org.mockito" name="mockito-all" rev="1.9.5"
+	    <dependency org="org.mockito" name="mockito-all" rev="${mockito.version}"
 	    			conf="test->default" />
 
 	</dependencies>

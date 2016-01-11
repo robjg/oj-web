@@ -7,6 +7,7 @@ import java.util.List;
 import org.apache.log4j.Logger;
 import org.junit.Assert;
 import org.junit.Test;
+import org.oddjob.tools.OurDirs;
 
 import com.gargoylesoftware.htmlunit.BrowserVersion;
 import com.gargoylesoftware.htmlunit.WebClient;
@@ -26,7 +27,8 @@ public class OjTreeUIScriptTest {
 		
 		logger.info("-----  testing OjTreeUITest.html  -----");
 		
-		File file = new File("src/test/webapp/OjTreeUITest.html");
+		OurDirs ourDirs = new OurDirs();
+		File file = ourDirs.relative("src/test/webapp/OjTreeUITest.html");
 		
 		URL url = file.toURI().toURL();
 		

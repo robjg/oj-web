@@ -1,5 +1,5 @@
 <project xmlns:ivy="antlib:org.apache.ivy.ant"
-	default="jar" basedir="." name="Net Oddball">
+	default="jar" basedir="." name="Web Oddball">
 
 	<taskdef resource="org/apache/ivy/ant/antlib.xml"
 	                 uri="antlib:org.apache.ivy.ant" 
@@ -38,17 +38,19 @@
 		<property name="src.dir"      	value="./src/main"/>
 		<property name="src.java"     	value="${src.dir}/java"/>
 		<property name="src.resources"  value="${src.dir}/resources"/>
+		<property name="webapp.dir"		value="${src.dir}/webapp"/>
 		<property name="test.dir"     	value="./src/test"/>
 		<property name="test.java"     	value="${test.dir}/java"/>
 		<property name="test.resources" value="${test.dir}/resources"/>
 		<property name="work.dir"     	value="./work"/>
 		<property name="lib.dir"      	value="./lib"/>
 
-		<property name="build.dir"       value="./build"/>
-		<property name="build.src"       value="${build.dir}/src"/>
-		<property name="build.test"      value="${build.dir}/test"/>
-		<property name="build.classes"   value="${build.dir}/classes"/>
-		<property name="build.lib"       value="${build.dir}/lib"/>
+		<property name="build.dir"       	value="./build"/>
+		<property name="build.src"       	value="${build.dir}/src"/>
+		<property name="build.classes"   	value="${build.dir}/classes"/>
+		<property name="build.test"      	value="${build.dir}/test"/>
+		<property name="build.test.classes" value="${build.test}/classes"/>
+		<property name="build.lib"       	value="${build.dir}/lib"/>
 
 		<property name="test.reports" value="${build.test}/reports"/>
 		
@@ -117,13 +119,6 @@
 				<exclude name="**/*.xml"/>
 			</fileset>
 		</copy>
-		<copy todir="${build.src}" filtering="off">
-			<fileset dir="${src.resources}">
-				<include name="**/*.gif"/>
-				<include name="**/*.properties"/>
-				<include name="**/*.xml"/>
-			</fileset>
-		</copy>
 	</target>
 
 	<!-- =================================================================== -->
@@ -133,10 +128,8 @@
           description="Compiles the source code">
 
 		<copy todir="${build.classes}">
-			<fileset dir="${build.src}">
-				<include name="**/*.gif"/>
-				<include name="**/*.properties"/>
-				<include name="**/*.xml"/>
+			<fileset dir="${src.resources}">
+				<include name="**/*"/>
 			</fileset>
 		</copy>
 
@@ -165,22 +158,21 @@
 	</target>
 
 	<!-- =================================================================== -->
-	<!-- Test targets                                                       -->
+	<!-- Compile Tests                                                       -->
 	<!-- =================================================================== -->
 	
 	<target name="compile-tests" depends="compile" description="Compile jUnit tests">
 		<mkdir dir="${build.test}"/>
 
-		<copy todir="${build.test}" filtering="off">
+		<copy todir="${build.test.classes}" filtering="off">
 			<fileset dir="${test.resources}">
-				<include name="**/*.xml"/>
-				<include name="**/*.properties"/>
+				<include name="**/*"/>
 			</fileset>
 		</copy>
 		
 		<!-- Compile tests -->
 		<javac srcdir="${test.java}"
-            destdir="${build.test}"
+            destdir="${build.test.classes}"
             debug="${debug}"
             optimize="${optimize}"
             deprecation="${deprecation}">
@@ -191,6 +183,10 @@
 
 	</target>
 
+	<!-- =================================================================== -->
+	<!-- Run Tests                                                           -->
+	<!-- =================================================================== -->
+	
 	<target name="all-tests" depends="jar" description="Perform jUnit tests">
 		<mkdir dir="${work.dir}"/>
 		<mkdir dir="${test.reports}"/>
@@ -198,11 +194,11 @@
 		<junit printsummary="yes" haltonfailure="no" 
 				failureproperty="junit.failure" fork="yes">
 			<classpath>
-				<pathelement location="${build.test}" />
+				<pathelement location="${build.test.classes}" />
 			</classpath>
 			<classpath refid="test-classpath"/>
 			<batchtest todir="${test.reports}">
-				<fileset dir="${build.test}">
+				<fileset dir="${build.test.classes}">
 					<include name="**/test/*TestCase.class"/>
 					<include name="**/*Test.class" />
 					<exclude name="**/AllTest.class" />
@@ -212,7 +208,6 @@
 			<formatter type="xml"/>
 			<sysproperty key="basedir" value="${basedir}"/>
 			<sysproperty key="ant.file" value="${ant.file}"/>
-			<sysproperty key="oddjob.net.test.ftp.port" value="${oddjob.net.test.ftp.port}"/>
 		</junit>
 		
 		<junitreport todir="${test.reports}">
@@ -230,14 +225,13 @@
 			
 		<junit printsummary="yes" haltonfailure="yes" fork="yes">
 			<classpath>
-				<pathelement location="${build.test}" />
+				<pathelement location="${build.test.classes}" />
 			</classpath>
 			<classpath refid="test-classpath"/>
 			<formatter type="plain" usefile="no" />
 			<test name="${junit.test}"/>
 			<sysproperty key="basedir" value="${basedir}"/>
 			<sysproperty key="ant.file" value="${ant.file}"/>
-			<sysproperty key="oddjob.net.test.ftp.port" value="${oddjob.net.test.ftp.port}"/>
 		</junit>
 	</target>
 	
@@ -263,21 +257,13 @@
 			<fileset dir="${src.dir}"/>
 		</copy>
 
-		<copy todir="${to.dir}/lib">
-			<fileset dir="${lib.dir}">
-				<exclude name='${jar.name}'/>
-			</fileset>
-		</copy>
-
-		<copy todir="${to.dir}/test">
-			<fileset dir="${test.dir}">
-				<exclude name="persist/**"/>
-			</fileset>
-		</copy>
-
 		<copy todir="${to.dir}">
 			<fileset dir=".">
 				<include name="build.xml"/>
+				<include name="ivy.xml"/>
+				<include name="ivysettings.xml"/>
+				<include name="LICENSE.txt"/>
+				<include name="README.txt"/>
 			</fileset>
 		</copy>
 
@@ -288,10 +274,18 @@
 	<!-- =================================================================== -->
 	<target name="dist-bin" depends="jar">
 		
-		<property name="to.dir" value="${dist.bin.dir}/oddballs/${name}"/>
-		<property name="to.lib" value="${to.dir}/lib"/>
+		<property name="to.dir"    value="${dist.bin.dir}/oddballs/${name}"/>
+		<property name="to.lib"    value="${to.dir}/lib"/>
+		<property name="to.webapp" value="${to.dir}/webapp"/>
 		
-		<!-- And now the jars -->
+		<!-- The Webapp -->
+		<copy todir="${to.webapp}">
+			<fileset dir="${webapp.dir}">
+				<include name="**/*"/>
+			</fileset>
+		</copy>
+		
+		<!-- The jars -->
 		<copy todir="${to.lib}">
 			<fileset dir="${lib.dir}">
 				<include name="*.jar"/>

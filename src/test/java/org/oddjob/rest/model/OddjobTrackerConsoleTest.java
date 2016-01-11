@@ -5,7 +5,7 @@ import static org.junit.Assert.assertTrue;
 
 import org.apache.log4j.Logger;
 import org.junit.Test;
-import org.oddjob.Oddjob;
+import org.oddjob.OddjobConsole;
 import org.oddjob.Structural;
 import org.oddjob.arooa.standard.StandardArooaSession;
 import org.oddjob.logging.ConsoleOwner;
@@ -57,60 +57,62 @@ public class OddjobTrackerConsoleTest {
 		
 		int rootId = test.track(job1);
 
-		Class.forName(Oddjob.class.getName());
-		
-		System.out.println("Job1 - Console Line 1");
-		System.out.println("Job1 - Console Line 2");
-		
-		job1.job2.consoleArchive.addEvent(LogLevel.INFO, 
-				"Job2 - Console Line 1");
-		
-		LogLines result1 = test.consoleLinesFor(rootId, -1);
-		
-		assertEquals(0, result1.getNodeId());
-		
-		LogLine[] job1Lines = result1.getLogLines();
-		
-		int lineCount = job1Lines.length;
-		
-		assertEquals(lineCount - 2, job1Lines[lineCount - 2].getLogSeq());
-		assertEquals("INFO", job1Lines[lineCount - 2].getLevel());
-		assertTrue(job1Lines[lineCount - 2].getMessage(), 
-				job1Lines[lineCount - 2].getMessage().trim().endsWith("Job1 - Console Line 1"));
-		
-		assertEquals(lineCount - 1, job1Lines[lineCount - 1].getLogSeq());
-		assertEquals("INFO", job1Lines[lineCount - 1].getLevel());
-		assertTrue(job1Lines[lineCount - 1].getMessage(), 
-				job1Lines[lineCount - 1].getMessage().trim().endsWith("Job1 - Console Line 2"));
-		
-		LogLines result2 = test.consoleLinesFor(rootId + 1, -1);
-		
-		assertEquals(1, result2.getNodeId());
-		
-		LogLine[] job2Lines = result2.getLogLines();
-		
-		assertEquals(1, job2Lines.length);		
-		
-		assertEquals(0, job2Lines[0].getLogSeq());
-		assertEquals("INFO", job2Lines[0].getLevel());
-		assertTrue(job2Lines[0].getMessage(), 
-				job2Lines[0].getMessage().trim().endsWith("Job2 - Console Line 1"));
-		
-		job1.job2.consoleArchive.addEvent(LogLevel.INFO, 
-				"Job2 - Console Line 2");
-		
-		result2 = test.consoleLinesFor(rootId + 1, 0);
-		
-		assertEquals(1, result2.getNodeId());
-		
-		job2Lines = result2.getLogLines();
-		
-		assertEquals(1, job2Lines.length);		
-		
-		assertEquals(1, job2Lines[0].getLogSeq());
-		assertEquals("INFO", job2Lines[0].getLevel());
-		assertTrue(job2Lines[0].getMessage(), 
-				job2Lines[0].getMessage().trim().endsWith("Job2 - Console Line 2"));
+		try (OddjobConsole.Close consoleClose = OddjobConsole.initialise()) {
+			
+			System.out.println("Job1 - Console Line 1");
+			System.out.println("Job1 - Console Line 2");
+			
+			job1.job2.consoleArchive.addEvent(LogLevel.INFO, 
+					"Job2 - Console Line 1");
+			
+			LogLines result1 = test.consoleLinesFor(rootId, -1);
+			
+			assertEquals(0, result1.getNodeId());
+			
+			LogLine[] job1Lines = result1.getLogLines();
+			
+			int lineCount = job1Lines.length;
+			
+			assertEquals(lineCount - 2, job1Lines[lineCount - 2].getLogSeq());
+			assertEquals("INFO", job1Lines[lineCount - 2].getLevel());
+			assertTrue(job1Lines[lineCount - 2].getMessage(), 
+					job1Lines[lineCount - 2].getMessage().trim().endsWith("Job1 - Console Line 1"));
+			
+			assertEquals(lineCount - 1, job1Lines[lineCount - 1].getLogSeq());
+			assertEquals("INFO", job1Lines[lineCount - 1].getLevel());
+			assertTrue(job1Lines[lineCount - 1].getMessage(), 
+					job1Lines[lineCount - 1].getMessage().trim().endsWith("Job1 - Console Line 2"));
+			
+			LogLines result2 = test.consoleLinesFor(rootId + 1, -1);
+			
+			assertEquals(1, result2.getNodeId());
+			
+			LogLine[] job2Lines = result2.getLogLines();
+			
+			assertEquals(1, job2Lines.length);		
+			
+			assertEquals(0, job2Lines[0].getLogSeq());
+			assertEquals("INFO", job2Lines[0].getLevel());
+			assertTrue(job2Lines[0].getMessage(), 
+					job2Lines[0].getMessage().trim().endsWith("Job2 - Console Line 1"));
+			
+			job1.job2.consoleArchive.addEvent(LogLevel.INFO, 
+					"Job2 - Console Line 2");
+			
+			result2 = test.consoleLinesFor(rootId + 1, 0);
+			
+			assertEquals(1, result2.getNodeId());
+			
+			job2Lines = result2.getLogLines();
+			
+			assertEquals(1, job2Lines.length);		
+			
+			assertEquals(1, job2Lines[0].getLogSeq());
+			assertEquals("INFO", job2Lines[0].getLevel());
+			assertTrue(job2Lines[0].getMessage(), 
+					job2Lines[0].getMessage().trim().endsWith("Job2 - Console Line 2"));
+			
+		}
 		
 	}
 }
