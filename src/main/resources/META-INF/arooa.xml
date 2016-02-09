@@ -3,7 +3,7 @@
   <values>
     <arooa:bean-def element='oddjob-web'
       className='org.oddjob.jetty.OddjobWebHandler'/>
-    <arooa:bean-def element='files'
+    <arooa:bean-def element='resource'
       className='org.oddjob.jetty.ResourceHandlerType'/>
   </values>
   <components>

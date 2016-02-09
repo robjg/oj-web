@@ -52,7 +52,11 @@ public class JettyHttpServer implements Service {
 	 */
 	private volatile int port;
 
-	/** List of Jetty Handlers. */
+	/** 
+	 * @oddjob.property
+	 * @oddjob.description List of Jetty Handlers.
+	 * @oddjob.required No, but pointless if missing.
+	 */
 	private final List<Handler> handlers = new CopyOnWriteArrayList<>();
 	
 	/** The Jetty Server instance. */

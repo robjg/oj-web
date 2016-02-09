@@ -19,6 +19,8 @@ import org.eclipse.jetty.util.Fields;
  * 
  * This is a very simple wrapper around Jetty's 
  * <a href="http://download.eclipse.org/jetty/stable-9/apidocs/org/eclipse/jetty/client/HttpClient.html">HTTPClient</a>.
+ * It was developed to support testing of Oddjob's web service and as such it is quite
+ * limited. It only supports PUT and GET requests and has no support for authentication.
  * 
  * @oddjob.example
  * 
@@ -76,6 +78,11 @@ public class JettyHttpClient implements Callable<Integer> {
 	 */
 	private volatile Map<String, String> parameters;
 	
+	/** 
+	 * @oddjob.property
+	 * @oddjob.description The content type of a POST request. Useful for sending forms.
+	 * @oddjob.required No.
+	 */
 	private volatile String contentType;
 	
 	private interface RequestStrategy {
@@ -85,7 +92,7 @@ public class JettyHttpClient implements Callable<Integer> {
 	}
 	
 	/**
-	 * Collect all request paremeters together.
+	 * Collect all request parameters together.
 	 */
 	private class RequestConfiguration {
 		

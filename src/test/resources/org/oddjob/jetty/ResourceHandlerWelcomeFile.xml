@@ -2,11 +2,11 @@
   <job>
     <web:server xmlns:web="oddjob:web" id="server">
       <handlers>
-        <web:files baseDir="${this.dir}">
+        <web:resource base="${this.dir}">
           <welcomeFiles>
             <value value="TestFile.txt"/>
           </welcomeFiles>
-        </web:files>
+        </web:resource>
       </handlers>
     </web:server>
   </job>

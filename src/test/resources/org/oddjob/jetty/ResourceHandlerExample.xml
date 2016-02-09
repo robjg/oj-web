@@ -2,7 +2,7 @@
   <job>
     <web:server xmlns:web="oddjob:web" id="server">
       <handlers>
-        <web:files directoriesListed="true" baseDir="${this.dir}"/>
+        <web:resource directoriesListed="true" base="${this.dir}"/>
       </handlers>
     </web:server>
   </job>

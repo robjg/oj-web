@@ -13,7 +13,7 @@ public class JettyHttpClientTest extends TestCase {
 	public void testExample() throws Exception {
 		
 		ResourceHandlerType resourceHandler = new ResourceHandlerType();
-		resourceHandler.setBaseDir("org/oddjob/jetty");
+		resourceHandler.setBase("org/oddjob/jetty");
 		resourceHandler.setResourceType(ResourceHandlerType.ResourceType.CLASSPATH);
 		
 		JettyHttpServer server = new JettyHttpServer();

@@ -12,7 +12,16 @@ import org.oddjob.arooa.deploy.annotations.ArooaAttribute;
 import org.oddjob.arooa.types.ValueFactory;
 
 /**
- * @oddjob.description Serve file content.
+ * @oddjob.description Provides a Handler to Serve file content from the file system or
+ * class path.
+ * 
+ * @oddjob.example Serve files from the same directory the configuration file is in.
+ * 
+ * {@oddjob.xml.resource org/oddjob/jetty/ResourceHandlerExample.xml}
+ * 
+ * @oddjob.example Serves files but also provides a list of welcome files.
+ * 
+ * {@oddjob.xml.resource org/oddjob/jetty/ResourceHandlerWelcomeFile.xml}
  * 
  * @author rob
  *
@@ -24,7 +33,7 @@ public class ResourceHandlerType implements ValueFactory<Handler>{
 	
 	/** 
 	 * @oddjob.property
-	 * @oddjob.description The base directory from where to serve content.
+	 * @oddjob.description The base directory or resource from where to serve content.
 	 * @oddjob.required No, but pointless without one.
 	 */
 	private String base;
@@ -106,7 +115,7 @@ public class ResourceHandlerType implements ValueFactory<Handler>{
 						 "Faled converting " + base + " to a resource.", e);
 			 }
 			 
-			 logger.debug("Setting base directory to " + base);
+			 logger.debug("Setting base to " + base);
 		 }
 		 
 		 if (minMemoryMappedContentLength != null) {
@@ -116,12 +125,12 @@ public class ResourceHandlerType implements ValueFactory<Handler>{
 		return resourceHandler;
 	}
 
-	public String getBaseDir() {
+	public String getBase() {
 		return base;
 	}
 
 	@ArooaAttribute
-	public void setBaseDir(String base) {
+	public void setBase(String base) {
 		this.base = base;
 	}
 
