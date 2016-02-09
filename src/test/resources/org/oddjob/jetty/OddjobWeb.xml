@@ -10,16 +10,7 @@
                 </properties>
                 <web:server id="server" port="${server.port}" xmlns:web="oddjob:web">
                     <handlers>
-                        <web:files baseDir="${basedir}/src/main/webapp/" directoriesListed="true" minMemoryMappedContentLength="-1">
-                            <welcomeFiles>
-                                <value value="index.html"/>
-                            </welcomeFiles>
-                        </web:files>
-                        <web:oddjob-ws>
-                            <root>
-                                <value value="${jobs}"/>
-                            </root>
-                        </web:oddjob-ws>
+                        <web:oddjob-web root="${jobs}"/>
                     </handlers>
                 </web:server>
                 <sequential id="jobs">

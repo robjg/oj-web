@@ -127,6 +127,6 @@ public class OjTreeModelScript2Test {
 	    
 	    // Cleanup
 	    
-	    webClient.closeAllWindows();		
+	    webClient.close();		
 	}
 }

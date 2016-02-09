@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<oddjob>
+    <job>
+        <sequential>
+            <jobs>
+                <properties>
+                    <values>
+                        <value key="some.url" value="http://www.google.com/search"/>
+                    </values>
+                </properties>
+                <web:client xmlns:web="oddjob:web" id="request" url="${some.url}">
+                    <parameters>
+                        <map>
+                            <values>
+                                <value key="q" value="gold fish"/>
+                            </values>
+                        </map>
+                    </parameters>
+                </web:client>
+                <echo><![CDATA[${request.content}]]></echo>
+            </jobs>
+        </sequential>
+    </job>
+</oddjob>

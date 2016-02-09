@@ -38,7 +38,6 @@
 		<property name="src.dir"      	value="./src/main"/>
 		<property name="src.java"     	value="${src.dir}/java"/>
 		<property name="src.resources"  value="${src.dir}/resources"/>
-		<property name="webapp.dir"		value="${src.dir}/webapp"/>
 		<property name="test.dir"     	value="./src/test"/>
 		<property name="test.java"     	value="${test.dir}/java"/>
 		<property name="test.resources" value="${test.dir}/resources"/>
@@ -127,7 +126,7 @@
 	<target name="compile" depends="prepare-src-main"
           description="Compiles the source code">
 
-		<copy todir="${build.classes}">
+		<copy todir="${build.classes}" filtering="off">
 			<fileset dir="${src.resources}">
 				<include name="**/*"/>
 			</fileset>
@@ -192,7 +191,8 @@
 		<mkdir dir="${test.reports}"/>
 		
 		<junit printsummary="yes" haltonfailure="no" 
-				failureproperty="junit.failure" fork="yes">
+				failureproperty="junit.failure" 
+				fork="yes" forkmode="once">
 			<classpath>
 				<pathelement location="${build.test.classes}" />
 			</classpath>
@@ -276,15 +276,7 @@
 		
 		<property name="to.dir"    value="${dist.bin.dir}/oddballs/${name}"/>
 		<property name="to.lib"    value="${to.dir}/lib"/>
-		<property name="to.webapp" value="${to.dir}/webapp"/>
-		
-		<!-- The Webapp -->
-		<copy todir="${to.webapp}">
-			<fileset dir="${webapp.dir}">
-				<include name="**/*"/>
-			</fileset>
-		</copy>
-		
+				
 		<!-- The jars -->
 		<copy todir="${to.lib}">
 			<fileset dir="${lib.dir}">
@@ -318,7 +310,7 @@
 		<delete dir="${build.dir}"/>
 		<delete>
 			<fileset dir="${lib.dir}">
-			 <include name="${name}*.jar"/>
+			 <include name="*.jar"/>
 			</fileset>
 		</delete>
 	</target>

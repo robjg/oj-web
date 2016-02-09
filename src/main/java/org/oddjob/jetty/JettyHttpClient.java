@@ -14,20 +14,66 @@ import org.eclipse.jetty.client.util.StringContentProvider;
 import org.eclipse.jetty.http.HttpStatus;
 import org.eclipse.jetty.util.Fields;
 
+/**
+ * @oddjob.description Execute an HTTP client request.
+ * 
+ * This is a very simple wrapper around Jetty's 
+ * <a href="http://download.eclipse.org/jetty/stable-9/apidocs/org/eclipse/jetty/client/HttpClient.html">HTTPClient</a>.
+ * 
+ * @oddjob.example
+ * 
+ * Get the content of a URL using a parameter.
+ * 
+ * {@oddjob.xml.resource org/oddjob/jetty/ClientGetExample.xml}
+ * 
+ * @author rob
+ *
+ */
 public class JettyHttpClient implements Callable<Integer> {
 
 	private static final Logger logger = Logger.getLogger(JettyHttpClient.class);
 	
+	/** 
+	 * @oddjob.property
+	 * @oddjob.description The name of the job. Can be any text.
+	 * @oddjob.required No.
+	 */
 	private volatile String name;
 	
+	
+	/** 
+	 * @oddjob.property
+	 * @oddjob.description The URL to connect to. Must be a full URL, e.g. http://www.google.com
+	 * @oddjob.required Yes.
+	 */
 	private volatile String url;
 	
+	/** 
+	 * @oddjob.property
+	 * @oddjob.description The request method. GET/POST.
+	 * @oddjob.required No defaults to GET.
+	 */
 	private volatile RequestMethod method;
 	
+	/** 
+	 * @oddjob.property
+	 * @oddjob.description The return status.
+	 * @oddjob.required Read Only.
+	 */
 	private volatile int status;
 	
+	/** 
+	 * @oddjob.property
+	 * @oddjob.description The content retrieved or to send.
+	 * @oddjob.required No.
+	 */
 	private volatile String content;
 	
+	/** 
+	 * @oddjob.property
+	 * @oddjob.description Parameters.
+	 * @oddjob.required No.
+	 */
 	private volatile Map<String, String> parameters;
 	
 	private volatile String contentType;
@@ -38,6 +84,9 @@ public class JettyHttpClient implements Callable<Integer> {
 		throws ExecutionException, InterruptedException, TimeoutException;
 	}
 	
+	/**
+	 * Collect all request paremeters together.
+	 */
 	private class RequestConfiguration {
 		
 		private final String url;

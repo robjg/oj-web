@@ -22,6 +22,13 @@ import org.eclipse.jetty.server.handler.AbstractHandler;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 
+/**
+ * Echo a JSON representation of the HTTP Servlet Request. Useful for debugging and 
+ * diagnostics.
+ * 
+ * @author rob
+ *
+ */
 public class EchoRequestHandler extends AbstractHandler {
 
 	private static final Logger logger = Logger.getLogger(EchoRequestHandler.class);

@@ -1,6 +1,6 @@
 package org.oddjob.jetty;
 
-import java.io.File;
+import java.net.MalformedURLException;
 import java.util.Arrays;
 
 import org.apache.log4j.Logger;
@@ -11,21 +11,74 @@ import org.oddjob.arooa.convert.ArooaConversionException;
 import org.oddjob.arooa.deploy.annotations.ArooaAttribute;
 import org.oddjob.arooa.types.ValueFactory;
 
+/**
+ * @oddjob.description Serve file content.
+ * 
+ * @author rob
+ *
+ */
 public class ResourceHandlerType implements ValueFactory<Handler>{
 
 	private static final Logger logger = 
 			Logger.getLogger(ResourceHandlerType.class);
 	
-	private File baseDir;
+	/** 
+	 * @oddjob.property
+	 * @oddjob.description The base directory from where to serve content.
+	 * @oddjob.required No, but pointless without one.
+	 */
+	private String base;
 	
+	/** 
+	 * @oddjob.property
+	 * @oddjob.description The type of resource, FILE or CLASSPATH.
+	 * @oddjob.required No, defaults to FILE.
+	 */
+	private JettyResourceType resourceType;
+	
+	/** 
+	 * @oddjob.property
+	 * @oddjob.description List directories or not.
+	 * @oddjob.required No, defaults to false.
+	 */
 	private boolean directoriesListed;
 	
+	/** 
+	 * @oddjob.property
+	 * @oddjob.description List of welcome files to serve.
+	 * @oddjob.required No.
+	 */
 	private String[] welcomeFiles;
 	
-	/**
-	 * https://wiki.eclipse.org/Jetty/Howto/Deal_with_Locked_Windows_Files
+	/** 
+	 * @oddjob.property
+	 * @oddjob.description Control memory mapped size. Set to -1 on windows because of
+	 * <a href="https://wiki.eclipse.org/Jetty/Howto/Deal_with_Locked_Windows_Files">This issue</a>
+	 * @oddjob.required No.
 	 */
 	private Integer minMemoryMappedContentLength;
+	
+	public interface JettyResourceType {
+		
+		Resource resourceFromString(String resource) throws MalformedURLException;
+	}
+	
+	public enum ResourceType implements JettyResourceType {
+		
+		FILE {
+			@Override
+			public Resource resourceFromString(String resource) throws MalformedURLException {
+				return Resource.newResource(resource);
+			}
+		},
+		CLASSPATH {
+			@Override
+			public Resource resourceFromString(String resource) throws MalformedURLException {
+				return Resource.newClassPathResource(resource);
+			}
+		}
+		;
+	}
 	
 	@Override
 	public Handler toValue() throws ArooaConversionException {
@@ -33,21 +86,27 @@ public class ResourceHandlerType implements ValueFactory<Handler>{
 		 ResourceHandler resourceHandler = new ResourceHandler();
 		 
 		 resourceHandler.setDirectoriesListed(directoriesListed);
-		 
+
 		 if (welcomeFiles != null) {
 			 resourceHandler.setWelcomeFiles(welcomeFiles);
 			 logger.debug("Setting welcome files to " + Arrays.toString(welcomeFiles));
 		 }
 		 
-		 if (baseDir != null) {
-			 if (!baseDir.exists()) {
-				 throw new ArooaConversionException(baseDir + " does not exist.");
+		 if (base != null) {
+			 JettyResourceType resourceType = this.resourceType;
+			 if (resourceType == null) {
+				 resourceType = ResourceType.FILE;
 			 }
-			 if (!baseDir.isDirectory()) {
-				 throw new ArooaConversionException(baseDir + " is not a directory.");				 
+			 
+			 try {
+				 resourceHandler.setBaseResource(resourceType.resourceFromString(base));
 			 }
-			 resourceHandler.setBaseResource(Resource.newResource(baseDir));
-			 logger.debug("Setting base directory to " + baseDir);
+			 catch (MalformedURLException e) {
+				 throw new ArooaConversionException(
+						 "Faled converting " + base + " to a resource.", e);
+			 }
+			 
+			 logger.debug("Setting base directory to " + base);
 		 }
 		 
 		 if (minMemoryMappedContentLength != null) {
@@ -57,13 +116,13 @@ public class ResourceHandlerType implements ValueFactory<Handler>{
 		return resourceHandler;
 	}
 
-	public File getBaseDir() {
-		return baseDir;
+	public String getBaseDir() {
+		return base;
 	}
 
 	@ArooaAttribute
-	public void setBaseDir(File base) {
-		this.baseDir = base;
+	public void setBaseDir(String base) {
+		this.base = base;
 	}
 
 	public boolean isDirectoriesListed() {
@@ -90,9 +149,17 @@ public class ResourceHandlerType implements ValueFactory<Handler>{
 		this.minMemoryMappedContentLength = minMemoryMappedFileSize;
 	}
 	
+	public JettyResourceType getResourceType() {
+		return resourceType;
+	}
+
+	public void setResourceType(JettyResourceType resourceType) {
+		this.resourceType = resourceType;
+	}
+
 	@Override
 	public String toString() {
-		return getClass().getName() + ", base=" + baseDir;
+		return getClass().getName() + ", base=" + base;
 	}
 
 }

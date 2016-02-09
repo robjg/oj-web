@@ -12,16 +12,52 @@ import org.oddjob.FailedToStopException;
 import org.oddjob.arooa.utils.ListSetterHelper;
 import org.oddjob.framework.Service;
 
+/**
+ * @oddjob.description An HTTP server.
+ * <p>
+ * This is a wrapper around the Jetty <a href="http://download.eclipse.org/jetty/stable-9/apidocs/org/eclipse/jetty/server/Server.html">Server</a>.
+ * The {@code handlers} property must be used to configure the server to do anything useful. By default only Jetty's
+ * <a href="http://download.eclipse.org/jetty/stable-9/apidocs/org/eclipse/jetty/server/handler/DefaultHandler.html">DefaultHandler</a>
+ * which returns status {@code 404} for all requests.
+ * <p>
+ * Common handlers to use are:
+ * <ul>
+ * <li>{@link ResourceHandlerType}</li>
+ * <li>{@link OddjobWebHandler}</li>
+ * </ul>
+ * 
+ * @oddjob.example
+ * 
+ * Provide an Oddjob web client.
+ * 
+ * {@oddjob.xml.resource org/oddjob/jetty/OddjobWeb.xml}
+ * 
+ * 
+ * @author rob
+ *
+ */
 public class JettyHttpServer implements Service {
 
+	/** 
+	 * @oddjob.property
+	 * @oddjob.description The name of service. Can be any text.
+	 * @oddjob.required No.
+	 */
 	private volatile String name;
 	
-	private volatile Server server;
-
+	/** 
+	 * @oddjob.property
+	 * @oddjob.description The port number the server listens on.
+	 * @oddjob.required No, uses a random available port.
+	 */
 	private volatile int port;
 
+	/** List of Jetty Handlers. */
 	private final List<Handler> handlers = new CopyOnWriteArrayList<>();
 	
+	/** The Jetty Server instance. */
+	private volatile Server server;
+
 	@Override
 	public void start() throws Exception {
 

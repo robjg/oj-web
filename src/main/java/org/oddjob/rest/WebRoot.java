@@ -2,6 +2,13 @@ package org.oddjob.rest;
 
 import org.oddjob.arooa.ArooaSession;
 
+/**
+ * Wrapper round an Oddjob component and a Session. Used to pass this information between
+ * the Servlet and the Web Service implementation.
+ * 
+ * @author rob
+ *
+ */
 public class WebRoot {
 
 	private final Object rootComponent;

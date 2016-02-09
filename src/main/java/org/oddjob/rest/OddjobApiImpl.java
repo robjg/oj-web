@@ -22,15 +22,27 @@ import org.oddjob.rest.model.WebDialog;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 
+/**
+ * Implementation of the Oddjob Web Service API.
+ * 
+ * @author rob
+ *
+ */
 public class OddjobApiImpl implements OddjobApi {
 
 	private static final Logger logger = Logger.getLogger(OddjobApiImpl.class);
-	
+
+	/** Track changes in Oddjob. */
 	private final OddjobTracker tracker;
 	
 	private final WebActionFactory actionFactory =
 			new WebActionFactory(Executors.newFixedThreadPool(2));
 	
+	/**
+	 * Only constructor.
+	 * 
+	 * @param webExport The root of the Oddjob component hierarchy.
+	 */
 	public OddjobApiImpl(WebRoot webExport) {
 		if (webExport == null) {
 			throw new NullPointerException("No " + OddjobApplication.ROOT_ATTRIBUTE_NAME + 

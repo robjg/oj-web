@@ -1,8 +1,8 @@
 <arooa:descriptor xmlns:arooa="http://rgordon.co.uk/oddjob/arooa"
   prefix="web" namespace="oddjob:web">
   <values>
-    <arooa:bean-def element='oddjob-ws'
-      className='org.oddjob.jetty.OddjobRestHandler'/>
+    <arooa:bean-def element='oddjob-web'
+      className='org.oddjob.jetty.OddjobWebHandler'/>
     <arooa:bean-def element='files'
       className='org.oddjob.jetty.ResourceHandlerType'/>
   </values>

@@ -61,6 +61,6 @@ public class OjJobActionsScriptTest {
 	    
 	    // Cleanup
 	    
-	    webClient.closeAllWindows();
+	    webClient.close();
 	}
 }

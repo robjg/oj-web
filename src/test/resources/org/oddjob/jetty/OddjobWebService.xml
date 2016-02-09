@@ -5,11 +5,7 @@
             <jobs>
                 <web:server xmlns:web="oddjob:web" id="server">
                     <handlers>
-                        <web:oddjob-ws>
-                            <root>
-                                <value value="${jobs}"/>
-                            </root>
-                        </web:oddjob-ws>
+                        <web:oddjob-web serviceOnly="true" root="${jobs}"/>
                     </handlers>
                 </web:server>
                 <sequential id="jobs">

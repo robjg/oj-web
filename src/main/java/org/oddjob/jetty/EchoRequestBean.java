@@ -2,6 +2,14 @@ package org.oddjob.jetty;
 
 import java.util.Map;
 
+/**
+ * Used to capture attributes of a ServletRequest so that it may be easily converted into JSON.
+ * 
+ * @see EchoRequestHandler
+ * 
+ * @author rob
+ *
+ */
 public class EchoRequestBean {
 	
 	private String protocol;
