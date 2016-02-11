@@ -120,14 +120,14 @@ public class JettyHttpServerExamplesTest extends TestCase {
 				"/foo");
 		httpClient.call();
 		
-		Assert.assertEquals(404, httpClient.getStatus());
+		Assert.assertEquals(200, httpClient.getStatus());
 		
 		String content = httpClient.getContent();
 		
 		logger.debug(content);
 		
-		Assert.assertTrue("Expected 'Not Found' in :" + content, 
-				content.contains("Not Found"));
+		Assert.assertTrue("Expected 'Welcome' in :" + content, 
+				content.contains("Welcome"));
 		
 		oddjob.stop();
 		

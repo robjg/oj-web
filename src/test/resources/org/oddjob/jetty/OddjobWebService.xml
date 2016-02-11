@@ -1,20 +1,20 @@
 <?xml version="1.0" encoding="UTF-8" standalone="no"?>
 <oddjob>
-    <job>
-        <sequential>
-            <jobs>
-                <web:server xmlns:web="oddjob:web" id="server">
-                    <handlers>
-                        <web:oddjob-web serviceOnly="true" root="${jobs}"/>
-                    </handlers>
-                </web:server>
-                <sequential id="jobs">
-                    <jobs>
-                        <echo name="Echo 1"><![CDATA[Hello]]></echo>
-                        <echo name="Echo 2"><![CDATA[Hello]]></echo>
-                    </jobs>
-                </sequential>
-            </jobs>
+  <job>
+    <sequential>
+      <jobs>
+        <web:server xmlns:web="oddjob:web" id="server">
+          <handlers>
+            <web:oddjob-web serviceOnly="true" root="${jobs}" />
+          </handlers>
+        </web:server>
+        <sequential id="jobs">
+          <jobs>
+            <echo name="Echo 1"><![CDATA[Hello]]></echo>
+            <echo name="Echo 2"><![CDATA[Hello]]></echo>
+          </jobs>
         </sequential>
-    </job>
+      </jobs>
+    </sequential>
+  </job>
 </oddjob>

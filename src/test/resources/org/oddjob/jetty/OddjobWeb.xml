@@ -1,25 +1,21 @@
 <?xml version="1.0" encoding="UTF-8" standalone="no"?>
 <oddjob id="this">
-    <job>
-        <sequential>
-            <jobs>
-                <properties>
-                    <values>
-                        <file file="." key="basedir"/>
-                    </values>
-                </properties>
-                <web:server id="server" port="${server.port}" xmlns:web="oddjob:web">
-                    <handlers>
-                        <web:oddjob-web root="${jobs}"/>
-                    </handlers>
-                </web:server>
-                <sequential id="jobs">
-                    <jobs>
-                        <echo name="Echo 1"><![CDATA[Hello]]></echo>
-                        <echo name="Echo 2"><![CDATA[Hello]]></echo>
-                    </jobs>
-                </sequential>
-            </jobs>
+  <job>
+    <sequential>
+      <jobs>
+        <web:server id="server" port="${server.port}"
+          xmlns:web="oddjob:web">
+          <handlers>
+            <web:oddjob-web root="${jobs}" />
+          </handlers>
+        </web:server>
+        <sequential id="jobs">
+          <jobs>
+            <echo name="Echo 1"><![CDATA[Hello]]></echo>
+            <echo name="Echo 2"><![CDATA[Hello]]></echo>
+          </jobs>
         </sequential>
-    </job>
+      </jobs>
+    </sequential>
+  </job>
 </oddjob>

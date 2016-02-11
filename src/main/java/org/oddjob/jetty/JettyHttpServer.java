@@ -16,9 +16,9 @@ import org.oddjob.framework.Service;
  * @oddjob.description An HTTP server.
  * <p>
  * This is a wrapper around the Jetty <a href="http://download.eclipse.org/jetty/stable-9/apidocs/org/eclipse/jetty/server/Server.html">Server</a>.
- * The {@code handlers} property must be used to configure the server to do anything useful. By default only Jetty's
- * <a href="http://download.eclipse.org/jetty/stable-9/apidocs/org/eclipse/jetty/server/handler/DefaultHandler.html">DefaultHandler</a>
- * which returns status {@code 404} for all requests.
+ * The {@code handlers} property must be used to configure the server to do anything useful. By default 
+ * a simple welcome message is returned for all requests.
+ * 
  * <p>
  * Common handlers to use are:
  * <ul>
@@ -28,9 +28,9 @@ import org.oddjob.framework.Service;
  * 
  * @oddjob.example
  * 
- * Provide an Oddjob web client.
+ * The simplest web server without any handlers.
  * 
- * {@oddjob.xml.resource org/oddjob/jetty/OddjobWeb.xml}
+ * {@oddjob.xml.resource org/oddjob/jetty/DefaultServerExample.xml}
  * 
  * 
  * @author rob
@@ -72,14 +72,20 @@ public class JettyHttpServer implements Service {
 		server = new Server(port);
 		
 		try {
-			HandlerList handlerList = new HandlerList();
 			
-			handlerList.setHandlers(handlers.toArray(
-					new Handler[handlers.size()]));
-	
-			handlerList.addHandler(new DefaultHandler());
-			
-			server.setHandler(handlerList);
+			if (handlers.size() > 0) {
+				HandlerList handlerList = new HandlerList();
+				
+				handlerList.setHandlers(handlers.toArray(
+						new Handler[handlers.size()]));
+
+				handlerList.addHandler(new DefaultHandler());
+				
+				server.setHandler(handlerList);
+			}
+			else {
+				server.setHandler(new WelcomeHandler());
+			}
 			
 			server.start();
 			

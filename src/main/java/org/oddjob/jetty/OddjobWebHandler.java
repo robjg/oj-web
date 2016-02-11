@@ -18,8 +18,23 @@ import org.oddjob.rest.OddjobApplication;
 import org.oddjob.rest.WebRoot;
 
 /**
- * @oddjob.description Provide the Oddjob Web Service. The actual service API is defined in 
- * {@link OddjobApi}.
+ * @oddjob.description Provide the Oddjob Web Service and Oddjob Web interface.
+ * <p>
+ * The actual service API is defined in {@link OddjobApi}.
+ * 
+ * @oddjob.example
+ * 
+ * Provide an Oddjob web client.
+ * 
+ * {@oddjob.xml.resource org/oddjob/jetty/OddjobWeb.xml}
+ * 
+ * @oddjob.example
+ * 
+ * Provide an Oddjob web service only without the client.
+ * 
+ * {@oddjob.xml.resource org/oddjob/jetty/OddjobWebService.xml}
+ * 
+ * 
  * 
  * @author rob
  *
