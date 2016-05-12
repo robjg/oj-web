@@ -1,5 +1,9 @@
 
-var ojDao = function() {
+var ojDaoFactory = function(path) {
+
+    if (path === undefined) {
+        path = "api";
+    }
 
     return {
 
@@ -7,29 +11,34 @@ var ojDao = function() {
 
         makeNodeInfoRequest: function(nodeIds, ajaxCallback, eventSeq) {
 
-            $.get('api/nodeInfo', 'nodeIds=' + nodeIds + '&eventSeq=' + eventSeq,
+            $.get(path + '/nodeInfo', 'nodeIds=' + nodeIds + '&eventSeq=' + eventSeq,
                 ajaxCallback);
+        },
+
+        // Todo: Test This
+        iconSrcUrl: function(icon) {
+            return path + '/icon/' + icon;
         },
 
         // Actions
 
         actionsFor: function(nodeId, ajaxCallback) {
 
-            $.get('api/actionsFor/' + nodeId,
+            $.get(path + '/actionsFor/' + nodeId,
                 ajaxCallback);
         },
 
         dialogFor: function(nodeId, actionName, ajaxCallback) {
-            $.get('api/dialogFor/' +  nodeId +  '/' + actionName, ajaxCallback);
+            $.get(path + '/dialogFor/' +  nodeId +  '/' + actionName, ajaxCallback);
         },
 
         executeAction: function(nodeId, actionName, statusCallback) {
-            $.get('api/action/' +  nodeId +  '/' + actionName, statusCallback);
+            $.get(path + '/action/' +  nodeId +  '/' + actionName, statusCallback);
         },
 
         formAction: function(nodeId, actionName, form$, statusCallback) {
 
-            var url = 'api/formAction/' +  nodeId +  '/' + actionName;
+            var url = path + '/formAction/' +  nodeId +  '/' + actionName;
 
             $.ajax({
                 type: "POST",
@@ -43,7 +52,7 @@ var ojDao = function() {
 
         fetchState: function(nodeId, ajaxCallback) {
 
-            $.get('api/state/' + nodeId,
+            $.get(path + '/state/' + nodeId,
                 ajaxCallback);
         },
 
@@ -51,7 +60,7 @@ var ojDao = function() {
 
         fetchConsoleLines: function(nodeId, logSeq, ajaxCallback) {
 
-            $.get('api/consoleLines/' + nodeId, 'logSeq=' + logSeq,
+            $.get(path + '/consoleLines/' + nodeId, 'logSeq=' + logSeq,
                 ajaxCallback);
         },
 
@@ -59,14 +68,14 @@ var ojDao = function() {
 
         fetchLogLines: function(nodeId, logSeq, ajaxCallback) {
 
-            $.get('api/logLines/' + nodeId, 'logSeq=' + logSeq,
+            $.get(path + '/logLines/' + nodeId, 'logSeq=' + logSeq,
                 ajaxCallback);
         },
 
         fetchProperties: function(nodeId, ajaxCallback) {
 
-            $.get('api/properties/' + nodeId,
+            $.get(path + '/properties/' + nodeId,
                 ajaxCallback);
         }
     };
-}();
+};

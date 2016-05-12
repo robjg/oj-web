@@ -54,7 +54,7 @@ var ojTreeModelFactory = function(ojTreeDao) {
 		for (var i = 0; i < changeListeners.length; ++i) {
 			var callback = changeListeners[i].nodeInserted(event);
 			if (callback !== undefined) {
-				calback(event);
+				callback(event);
 			}
 		}
 	}
@@ -67,7 +67,7 @@ var ojTreeModelFactory = function(ojTreeDao) {
 		for (var i = 0; i < changeListeners.length; ++i) {
 			var callback = changeListeners[i].nodeRemoved(event);
 			if (callback !== undefined) {
-				calback(event);
+				callback(event);
 			}
 		}
 	}
@@ -94,7 +94,7 @@ var ojTreeModelFactory = function(ojTreeDao) {
 		for (var i = 0; i < changeListeners.length; ++i) {
 			var callback = changeListeners[i].nodeCollapsed(event);
 			if (callback !== undefined) {
-				calback(event);
+				callback(event);
 			}
 		}
 	}
@@ -107,7 +107,7 @@ var ojTreeModelFactory = function(ojTreeDao) {
 		for (var i = 0; i < changeListeners.length; ++i) {
 			var callback = changeListeners[i].nodeUpdated(event);
 			if (callback !== undefined) {
-				calback(event);
+				callback(event);
 			}
 		}
 	}
@@ -181,10 +181,11 @@ var ojTreeModelFactory = function(ojTreeDao) {
 		}
 		else {
 			var node = nodeOrArray;
-			var nodeData = {};
-			nodeData.expanded = false;
-			nodeData.pending = pending;
-			nodeData.node = node;
+			var nodeData = {
+				expanded: false,
+				pending: pending,
+				node: node
+			};
 			
 			nodeDataById[node.nodeId] = nodeData;
 		}
@@ -234,7 +235,7 @@ var ojTreeModelFactory = function(ojTreeDao) {
 		
 		fireTreeInitialised(rootNode);
 		
-		createNodeState(rootNode);
+		createNodeState(rootNode, false);
 		
 		lastSeq = data.eventSeq;
 	}

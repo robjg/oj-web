@@ -64,3 +64,9 @@ ojTreeController = function() {
 	};
 	
 }();
+
+iconProvider = {
+    iconSrcUrl: function(icon) {
+        return 'api/icon/' + icon;
+    }
+};

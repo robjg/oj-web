@@ -102,7 +102,7 @@
 <script src="scripts/split-pane.js"></script>
 <script src="scripts/ojDao.js"></script>
 <script src="scripts/ojTreeUI.js"></script>
-<script src="scripts/ojTreeModel.js"></script>
+<script src="scripts/Oddjob.js"></script>
 <script src="scripts/ojTabsUI.js"></script>
 <script src="scripts/ojTabsModel.js"></script>
 <script src="scripts/ojState.js"></script>
@@ -111,6 +111,7 @@
 <script src="scripts/ojForm.js"></script>
 <script src="scripts/ojProperties.js"></script>
 <script src="scripts/ojTreeController.js"></script>
+<script src="scripts/ojMain.js"></script>
 
 <script>
 
@@ -120,13 +121,13 @@ $(function() {
 
 $(document).ready(function() {
 
-    var controller = ojTreeController();
+    var main = ojMainFactory();
 	
 	$("#refresh").change(function(event) {
-		controller.start(event.currentTarget.value);
+		main.start(event.currentTarget.value);
 	});
 
-	controller.start();
+	main.start();
 });
 
 </script>

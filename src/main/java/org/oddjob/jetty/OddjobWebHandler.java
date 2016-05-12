@@ -1,10 +1,16 @@
 package org.oddjob.jetty;
 
+import java.util.EnumSet;
+
+import javax.servlet.DispatcherType;
+
 import org.eclipse.jetty.server.Handler;
 import org.eclipse.jetty.server.handler.HandlerList;
 import org.eclipse.jetty.server.handler.ResourceHandler;
+import org.eclipse.jetty.servlet.FilterHolder;
 import org.eclipse.jetty.servlet.ServletContextHandler;
 import org.eclipse.jetty.servlet.ServletHolder;
+import org.eclipse.jetty.servlets.CrossOriginFilter;
 import org.eclipse.jetty.util.resource.Resource;
 import org.jboss.resteasy.plugins.server.servlet.HttpServletDispatcher;
 import org.oddjob.arooa.ArooaSession;
@@ -124,6 +130,15 @@ implements ValueFactory<Handler>, ArooaSessionAware {
 				"org.oddjob.rest.OddjobApplication");
 		
 		contextHandler.addServlet(servletHolder, servicePath);
+		
+		FilterHolder holder = new FilterHolder(CrossOriginFilter.class);
+		holder.setInitParameter(CrossOriginFilter.ALLOWED_ORIGINS_PARAM, "*");
+		holder.setInitParameter(CrossOriginFilter.ACCESS_CONTROL_ALLOW_ORIGIN_HEADER, "*");
+		holder.setInitParameter(CrossOriginFilter.ALLOWED_METHODS_PARAM, "GET,POST,HEAD");
+		holder.setInitParameter(CrossOriginFilter.ALLOWED_HEADERS_PARAM, "X-Requested-With,Content-Type,Accept,Origin");
+		holder.setName("cross-origin");
+				
+		contextHandler.addFilter(holder, "/*", EnumSet.of(DispatcherType.REQUEST));
 		
 		Handler handler;
 		

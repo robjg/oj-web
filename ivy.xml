@@ -24,6 +24,9 @@
 	    <dependency org="org.eclipse.jetty" name="jetty-client" rev="${jetty.version}"
 	    			conf="default->default" />
 	    
+	    <dependency org="org.eclipse.jetty" name="jetty-servlets" rev="${jetty.version}"
+	    			conf="default->default" />
+	    
 	    <dependency org="com.google.code.gson" name="gson" rev="${gson.version}"
 	    			conf="default->default" />
 	    			

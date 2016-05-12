@@ -1,0 +1,40 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="ISO-8859-1">
+
+	<style type="text/css">
+        @import url(../../main/resources/org/oddjob/webapp/css/tree.css?v=1.1.0);
+    </style>
+	<title>Tree Test</title>
+</head>
+<body>
+
+<div id='ojNodeRoot' class='tree global-font'>
+    <ul>
+    </ul>
+</div>
+
+<script src="../../main/resources/org/oddjob/webapp/scripts/jquery-1.11.2.js"></script>
+<script src="../../main/resources/org/oddjob/webapp/scripts/ojDao.js"></script>
+<script src="../../main/resources/org/oddjob/webapp/scripts/ojTreeUI.js"></script>
+<script src="../../main/resources/org/oddjob/webapp/scripts/Oddjob.js"></script>
+
+<script>
+
+$(document).ready(function() {
+
+    var ojDao = ojDaoFactory('http://localhost:8090/api');
+    var ojTreeModel = ojTreeModelFactory(ojDao);
+    var ojTreeUI = ojTreeUIFactory(ojTreeModel, ojDao, 'ojNode');
+
+    ojTreeModel.addSelectionListener(ojTreeUI);
+    ojTreeModel.addTreeChangeListener(ojTreeUI);
+
+	ojTreeModel.init();
+});
+
+</script>
+
+</body>
+</html>

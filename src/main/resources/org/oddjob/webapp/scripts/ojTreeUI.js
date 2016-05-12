@@ -1,8 +1,27 @@
 /**
- * 
+ * Creates The Oddjob Tree UI Component. This component is a Selection Listener and a
+ * Tree Change Listener and must be added as a listener to a Model to receive the
+ * structure to display.
+ *
+ *
+ * @param {Object} ojTreeController
+ * @param {Function} [ojTreeController.select] - function called when a user selects node.
+ * @param {Function} ojTreeController.expandNode - function called when user expands node.
+ * @param {Function} ojTTreeController.collapseNode - function called when user collapses node.
+ * @param {string} [idPrefix=ojNode]
+ *
+ * @returns {{
+ *     treeInitialised: function,
+ *     nodeInserted: function,
+ *     nodeRemoved: function,
+ *     nodeExpanded: function,
+ *     nodeCollapsed: function,
+ *     nodeUpdated: function,
+ *     selectionChanged: function
+ *     }}
+ *       A facade onto the Trees User Interface.
  */
-
-var ojTreeUIFactory = function(ojTreeController, idPrefix) {
+var ojTreeUIFactory = function(ojTreeController, iconProvider, idPrefix) {
 	"use strict";
 
 	if (idPrefix === undefined) {
@@ -27,8 +46,8 @@ var ojTreeUIFactory = function(ojTreeController, idPrefix) {
 	function expandImage(nodeId) {
 		return $('<img>').attr(
 				{ class: 'toggle',
-				  src: 'gfx/plus.png', 
-				  alt: 'expand' 
+				  src: 'gfx/plus.png',
+				  alt: 'expand'
 				}
 			).click(function() {
 				return ojTreeController.expandNode(nodeId);
@@ -52,7 +71,7 @@ var ojTreeUIFactory = function(ojTreeController, idPrefix) {
 		
 		return $('<img>').attr(
 				{ class: 'icon',
-				  src: 'api/icon/' + iconName, 
+				  src: iconProvider.iconSrcUrl(iconName),
 				  alt: iconName 
 				}
 		);
