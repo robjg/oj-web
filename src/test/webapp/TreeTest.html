@@ -16,15 +16,13 @@
 </div>
 
 <script src="../../main/resources/org/oddjob/webapp/scripts/jquery-1.11.2.js"></script>
-<script src="../../main/resources/org/oddjob/webapp/scripts/ojDao.js"></script>
-<script src="../../main/resources/org/oddjob/webapp/scripts/ojTreeUI.js"></script>
-<script src="../../main/resources/org/oddjob/webapp/scripts/Oddjob.js"></script>
+<script src="../../main/resources/org/oddjob/webapp/scripts/oddjob.js"></script>
 
 <script>
 
 $(document).ready(function() {
 
-    var ojDao = ojDaoFactory('http://localhost:8090/api');
+    var ojDao = new OjDaoImpl('http://localhost:8090/api');
     var ojTreeModel = ojTreeModelFactory(ojDao);
     var ojTreeUI = ojTreeUIFactory(ojTreeModel, ojDao, 'ojNode');
 

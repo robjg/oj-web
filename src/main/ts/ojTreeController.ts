@@ -1,12 +1,14 @@
 /**
  *
  */
-ojTreeControllerFactory = function(ojTreeModel, ojPollController) {
+var ojTreeControllerFactory = function(ojTreeModel, ojPollController: PollController) {
 
 	if (ojPollController === undefined) {
         ojPollController = {
 
-            stopRefresh: function() {}
+            stopRefresh: function() {
+				return function() {};
+			}
         };
     }
 

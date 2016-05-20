@@ -2,117 +2,177 @@
  * 
  */
 
-var ojTreeModelFactory = function(ojTreeDao) {
-	"use strict";
+interface ChangeListener {
+
+    treeInitialised(event: {rootNode: NodeInfo}): void;
+
+    nodeInserted(event: {parentId: number, index: number, node: NodeInfo}): void;
+
+    nodeRemoved(event: {nodeId: number}): void;
+
+    nodeExpanded(event: {parentId: number, nodeList: NodeInfo[]}): void;
+
+    nodeCollapsed(event: {parentId: number}): void;
+
+    nodeUpdated(event: {node: NodeInfo}): void;
+}
+
+interface SelectionEvent {
+
+    fromNodeId: number;
+    toNodeId: number;
+}
+
+interface SelectionListener {
+
+    selectionChanged(event: SelectionEvent): void;
+}
+
+interface TreeModel {
+
+    init(): void;
+
+    expandNode(nodeId: number): void;
+
+    collapseNode(nodeId: number): void;
+
+    poll(): void;
+
+    select(nodeId: number): void;
+
+    addSelectionListener(listener: SelectionListener): void;
+
+    addTreeChangeListener(listener: ChangeListener): void;
+}
+
+interface NodeData {
+    pending: boolean;
+    expanded: boolean;
+    node: NodeInfo;
+}
+
+class OjTreeModel implements TreeModel {
+
+	private nodeDataById: {
+        [nodeId: number] : NodeData;
+	} = {};
 	
-	var nodeDataById = {};
+	lastSeq: number = -1;
 	
-	var lastSeq = -1;
+	pendingLeastSeq: number;
 	
-	var pendingLeastSeq;
+	selectedNodeId: number;
 	
-	var selectedNodeId;
+	selectionListeners: SelectionListener[] = [];
 	
-	var selectionListeners = [];
+	changeListeners: ChangeListener[] = [];
+
+    ojTreeDao: TreeDao;
+
+    constructor(ojTreeDao: TreeDao) {
+        this.ojTreeDao = ojTreeDao;
+    }
 	
-	var changeListeners = [];
-	
-	function fireSelectionChanged(fromNodeId, toNodeId) {
+	private fireSelectionChanged(fromNodeId: number, toNodeId: number): void {
 		var event = {
 			fromNodeId: fromNodeId,
 			toNodeId: toNodeId
 		};
 		
-		for (var i = 0; i < selectionListeners.length; ++i) {
-			var callback = selectionListeners[i].selectionChanged;
+		for (var i = 0; i < this.selectionListeners.length; ++i) {
+			var callback = this.selectionListeners[i].selectionChanged;
 			if (callback !== undefined) {
 				callback(event);
 			}
 		}
 	}
-	
-	function fireTreeInitialised(node) {
+
+    private fireTreeInitialised(node: NodeInfo): void {
 		var event = {
 			rootNode: node
 		};
 		
-		for (var i = 0; i < changeListeners.length; ++i) {
-			var callback = changeListeners[i].treeInitialised;
+		for (var i = 0; i < this.changeListeners.length; ++i) {
+			var callback = this.changeListeners[i].treeInitialised;
 			if (callback !== undefined) {
 				callback(event);
 			}
 		}
 	}
-	
-	function fireNodeInserted(parentId, index, node) {
+
+    private fireNodeInserted(parentId: number, index: number, node: NodeInfo): void {
 		var event = {
 			parentId: parentId,
 			index: index,
 			node: node
 		};
 		
-		for (var i = 0; i < changeListeners.length; ++i) {
-			var callback = changeListeners[i].nodeInserted(event);
+		for (var i = 0; i < this.changeListeners.length; ++i) {
+			var callback = this.changeListeners[i].nodeInserted;
 			if (callback !== undefined) {
 				callback(event);
 			}
 		}
 	}
-	
-	function fireNodeRemoved(nodeId) {
+
+    private fireNodeRemoved(nodeId: number): void {
 		var event = {
 			nodeId: nodeId
 		};
 		
-		for (var i = 0; i < changeListeners.length; ++i) {
-			var callback = changeListeners[i].nodeRemoved(event);
+		for (var i = 0; i < this.changeListeners.length; ++i) {
+			var callback = this.changeListeners[i].nodeRemoved;
 			if (callback !== undefined) {
 				callback(event);
 			}
 		}
 	}
-	
-	function fireNodeExpanded(parentId, nodeArray) {
+
+    private fireNodeExpanded(parentId: number, nodeArray: NodeInfo[]): void {
 		var event = {
 			parentId: parentId,
 			nodeList: nodeArray
 		};
 		
-		for (var i = 0; i < changeListeners.length; ++i) {
-			var callback = changeListeners[i].nodeExpanded;
+		for (var i = 0; i < this.changeListeners.length; ++i) {
+			var callback = this.changeListeners[i].nodeExpanded;
 			if (callback !== undefined) {
 				callback(event);
 			}
 		}
 	}
-	
-	function fireNodeCollapsed(parentId) {
+
+    private fireNodeCollapsed(parentId: number): void {
 		var event = {
 			parentId: parentId
 		};
 		
-		for (var i = 0; i < changeListeners.length; ++i) {
-			var callback = changeListeners[i].nodeCollapsed(event);
+		for (var i = 0; i < this.changeListeners.length; ++i) {
+			var callback = this.changeListeners[i].nodeCollapsed;
 			if (callback !== undefined) {
 				callback(event);
 			}
 		}
 	}
-	
-	function fireNodeUpdated(node) {
+
+    private fireNodeUpdated(node: NodeInfo): void {
 		var event = {
 			node: node
 		};
 		
-		for (var i = 0; i < changeListeners.length; ++i) {
-			var callback = changeListeners[i].nodeUpdated(event);
+		for (var i = 0; i < this.changeListeners.length; ++i) {
+			var callback = this.changeListeners[i].nodeUpdated;
 			if (callback !== undefined) {
 				callback(event);
 			}
 		}
 	}
-	
-	function compareNodeList(nodes1, nodes2, callbacks) {
+
+    private compareNodeList(nodes1: number[], nodes2: number[],
+                            callbacks: {
+                                inserted: (nodeId: number, index: number) => void;
+                                deleted: (nodeId: number, index: number) => void;
+                            }) {
 								
 		var lastI = 0, insertPoint = 0;
 		
@@ -144,56 +204,51 @@ var ojTreeModelFactory = function(ojTreeDao) {
 		}
 	}
 
-	function nodeDataFor(nodeId) {
+    private nodeDataFor(nodeId: number): NodeData {
 		
-		var nodeData = nodeDataById[nodeId];
+		let nodeData: NodeData = this.nodeDataById[nodeId];
 		if (nodeData === undefined) {
 			throw "No node data for node id [" + nodeId + "]"
 		}
 		return nodeData;
 	}
-	
-	function whenNodeDataFor(nodeId, then) {
+
+    private whenNodeDataFor = (nodeId: number, then: (nodeData: NodeData) => any): any => {
 		
-		var nodeData = nodeDataById[nodeId];
+		let nodeData: NodeData = this.nodeDataById[nodeId];
 		
 		if (nodeData !== undefined) {
 			return then(nodeData);
 		}
 	}
-	
-	function updateNodeStateExpanded(nodeId, expanded) {
+
+    private updateNodeStateExpanded(nodeId: number, expanded: boolean): void {
 		
-		var nodeData = nodeDataFor(nodeId);
+		let nodeData: NodeData = this.nodeDataFor(nodeId);
 		nodeData.expanded = expanded;
 	}
-	
-	function createNodeState(nodeOrArray, pending) {
 
-		if (pending === undefined) {
-			pending = false;
-		}
-		
-		if (nodeOrArray.constructor === Array) {
-			for (var i = 0; i < nodeOrArray.length; ++i) {
-				createNodeState(nodeOrArray[i], pending);
-			}
-		}
-		else {
-			var node = nodeOrArray;
-			var nodeData = {
-				expanded: false,
-				pending: pending,
-				node: node
-			};
-			
-			nodeDataById[node.nodeId] = nodeData;
-		}
+    private createNodeStates(nodes: NodeInfo[], pending: boolean = false): void {
+
+        for (var i = 0; i < nodes.length; ++i) {
+            this.createNodeState(nodes[i], pending);
+        }
+    }
+
+    private createNodeState(node: NodeInfo, pending: boolean = false): void {
+
+        var nodeData = {
+            expanded: false,
+            pending: pending,
+            node: node
+        };
+
+        this.nodeDataById[node.nodeId] = nodeData;
 	}
-	
-	function updateNodeState(update) {
 
-		var nodeData = nodeDataFor(update.nodeId);	
+    private updateNodeState(update: { nodeId: number, children: number[], name: string, icon: string }) {
+
+		var nodeData = this.nodeDataFor(update.nodeId);
 		var existing = nodeData.node;
 		
 		if (update.children) {
@@ -206,10 +261,10 @@ var ojTreeModelFactory = function(ojTreeDao) {
 			existing.icon = update.icon;
 		}
 	}
-	
-	function childrenRequest(intArray) {
+
+    private childrenRequest(intArray: number[]): string {
 		
-		var childrenStr = "";
+		let childrenStr: string = "";
 		for (var i = 0; i < intArray.length; ++i) {
 			if (i > 0) {
 				childrenStr = childrenStr + ",";
@@ -219,162 +274,172 @@ var ojTreeModelFactory = function(ojTreeDao) {
 		return childrenStr;
 	}
 
-	function updatePendingSeq(eventSeq) {
+    private updatePendingSeq(eventSeq: number): void {
 		
-		if (pendingLeastSeq === undefined) {
-			pendingLeastSeq = eventSeq
+		if (this.pendingLeastSeq === undefined) {
+			this.pendingLeastSeq = eventSeq
 		}
-		else if (eventSeq < pendingLeastSeq) {
-			pendingLeastSeq = eventSeq;
+		else if (eventSeq < this.pendingLeastSeq) {
+			this.pendingLeastSeq = eventSeq;
 		}
 	}
-	
-	function rootNodeCallback(data) {
+
+    private rootNodeCallback = (data: MakeNodeInfoRequestData): void => {
 		
-		var rootNode = data.nodeInfo[0];
+		let rootNode: NodeInfo = data.nodeInfo[0];
 		
-		fireTreeInitialised(rootNode);
+		this.fireTreeInitialised(rootNode);
 		
-		createNodeState(rootNode, false);
+		this.createNodeState(rootNode, false);
 		
-		lastSeq = data.eventSeq;
+		this.lastSeq = data.eventSeq;
 	}
-	
-	function provideExpandCallback(parentId) {
+
+    private provideExpandCallback = (parentId: number): (data: MakeNodeInfoRequestData) => void => {
 		
-		return function(data) {
+		return (data: MakeNodeInfoRequestData): void => {
 			
-			var nodeArray = data.nodeInfo
+			let nodeArray: NodeInfo[] = data.nodeInfo
 			
-			fireNodeExpanded(parentId, nodeArray);
+			this.fireNodeExpanded(parentId, nodeArray);
 			
-			updateNodeStateExpanded(parentId, true);
+			this.updateNodeStateExpanded(parentId, true);
 			
-			createNodeState(nodeArray, true);
-			updatePendingSeq(data.eventSeq);
+			this.createNodeStates(nodeArray, true);
+			this.updatePendingSeq(data.eventSeq);
 		}; 
-	}	
-	
-	function recursiveCollapse(nodeId) {
+	}
+
+    private recursiveCollapse(nodeId: number): void {
 		
-		whenNodeDataFor(nodeId, function(nodeData) {
+		this.whenNodeDataFor(nodeId,
+            (nodeData: NodeData): void => {
 			
 			if (!nodeData.expanded) {
 				return;
 			}
 			
-			var node = nodeData.node;
+			let node: NodeInfo = nodeData.node;
 
-			var childNodeIds = node.children;
+			let childNodeIds: number[] = node.children;
 				
 			for (var i = 0; i < childNodeIds.length; ++i) {
-				var childNodeId = childNodeIds[i];
-				recursiveCollapse(childNodeId);
+				let childNodeId: number = childNodeIds[i];
+				this.recursiveCollapse(childNodeId);
 				
-				delete nodeDataById[childNodeId];
+				delete this.nodeDataById[childNodeId];
 			}
 			
-			fireNodeCollapsed(nodeId);
+			this.fireNodeCollapsed(nodeId);
 			
 			nodeData.expanded = false;
 		});
 	}
-	
-	function insertNode(parentId, index, node) {
 
-		createNodeState(node, true);
+    private insertNode(parentId: number, index: number, node: NodeInfo): void {
+
+		this.createNodeState(node, true);
 		
-		fireNodeInserted(parentId, index, node);
+		this.fireNodeInserted(parentId, index, node);
 	}
-	
-	function provideInsertedNodesCallback(childThings) {
+
+    private provideInsertedNodesCallback = (childThings: {
+        nodeActions: ((nodeInfo: NodeInfo) => number)[];
+    }): (data: MakeNodeInfoRequestData) => void => {
 		
-		return function(data) {
+		return (data: MakeNodeInfoRequestData): void => {
 			
-			var nodeInfo = data.nodeInfo;
+			let nodeInfo: NodeInfo[] = data.nodeInfo;
 			
-			var j = 0;
+			let j: number = 0;
 			
-			var nodeActions = childThings.nodeActions;
+			let nodeActions: ((nodeInfo: NodeInfo) => number)[]
+                = childThings.nodeActions;
 			
 			for (var i = 0; i < nodeActions.length; ++i) {
 		
 				j = j + nodeActions[i](nodeInfo[j]);
 			}
 			
-			updatePendingSeq(data.latEventSeq);
+			this.updatePendingSeq(data.eventSeq);
 		}
 	}
-	
-	function updateNode(node, childThings) {
-		
-		var nodeData = nodeDataFor(node.nodeId);	
 
-		var newChildren = node.children;
+    private updateNode(node: NodeInfo,
+                       childThings: {
+                           insertedNodeIds: number[];
+                           nodeActions: ((nodeInfo: NodeInfo) => number)[];
+                       }) {
+
+        let self = this;
+
+		let nodeData: NodeData = this.nodeDataFor(node.nodeId);
+
+		let newChildren: number[] = node.children;
 		
 		if (nodeData.expanded && newChildren !== undefined) {
 
 			var oldChildren = nodeData.node.children;
 			
 			var index = 0;
-			
-			compareNodeList(oldChildren, newChildren, {
-				inserted: function(nodeId, index) {
+
+			this.compareNodeList(oldChildren, newChildren, {
+				inserted: (nodeId: number, index: number): void => {
 					childThings.insertedNodeIds.push(nodeId);
-					childThings.nodeActions.push(function (childNode) {
-						insertNode(node.nodeId, index, childNode);
+					childThings.nodeActions.push((childNode: NodeInfo): number => {
+						self.insertNode(node.nodeId, index, childNode);
 						return 1;
 					});
 				},
 				deleted: function(nodeId, index) {
-					childThings.nodeActions.push(function(childNode) {
-						recursiveCollapse(nodeId);
-						delete nodeDataById[nodeId];
-						fireNodeRemoved(nodeId);
+					childThings.nodeActions.push((childNode: NodeInfo): number => {
+						self.recursiveCollapse(nodeId);
+						delete self.nodeDataById[nodeId];
+						self.fireNodeRemoved(nodeId);
 						return 0;
 					});
 				}
 			});
 		}
 		
-		fireNodeUpdated(node);
-		updateNodeState(node);
+		this.fireNodeUpdated(node);
+		this.updateNodeState(node);
 	}
 
-	function pollCallback(data) {
+    private pollCallback = (data: MakeNodeInfoRequestData): void => {
 	
 		var childThings = {
 				nodeActions: [],
 				insertedNodeIds: []
 		};
 		
-		var nodeInfo = data.nodeInfo;
+		let nodeInfo: NodeInfo[] = data.nodeInfo;
 		
 		for (var i = 0; i < nodeInfo.length; ++i) {
 	
-			var node = nodeInfo[i];
+			let node: NodeInfo = nodeInfo[i];
 			 
-			updateNode(node, childThings);
+			this.updateNode(node, childThings);
 		}
 		
-		if (pendingLeastSeq === undefined) {
-			lastSeq = data.eventSeq;
+		if (this.pendingLeastSeq === undefined) {
+			this.lastSeq = data.eventSeq;
 		}
 		else {
-			for (var property in nodeDataById) {
-				if (nodeDataById.hasOwnProperty(property)) {
-					nodeDataById[property].pending = false;
+			for (var property in this.nodeDataById) {
+				if (this.nodeDataById.hasOwnProperty(property)) {
+					this.nodeDataById[property].pending = false;
 		        }
 		    }		
-			lastSeq = pendingLeastSeq;
-			pendingLeastSeq = undefined;
+			this.lastSeq = this.pendingLeastSeq;
+			this.pendingLeastSeq = undefined;
 		}
 		
 		if (childThings.insertedNodeIds.length > 0) {
 			
-			ojTreeDao.makeNodeInfoRequest(
-					childrenRequest(childThings.insertedNodeIds), 
-					provideInsertedNodesCallback(childThings), -1);
+			this.ojTreeDao.makeNodeInfoRequest(
+					this.childrenRequest(childThings.insertedNodeIds),
+					this.provideInsertedNodesCallback(childThings), -1);
 		}
 		else {
 			var nodeActions = childThings.nodeActions;
@@ -385,61 +450,58 @@ var ojTreeModelFactory = function(ojTreeDao) {
 	}	
 
 
-	return {
+    init(): void {
 
-		init: function() {
-			
-			ojTreeDao.makeNodeInfoRequest('0', rootNodeCallback, -1);
-		},
+        this.ojTreeDao.makeNodeInfoRequest('0', this.rootNodeCallback, -1);
+    }
 		
-		expandNode: function(nodeId) {
-			
-			var nodeData = whenNodeDataFor(nodeId, function(nodeData) {
-				
-				var node = nodeData.node;
-				var childNodes = childrenRequest(node.children);
-				
-				ojTreeDao.makeNodeInfoRequest(childNodes, 
-						provideExpandCallback(nodeId), -1);
-			})
-		},
+    expandNode(nodeId: number): void {
+
+        var nodeData = this.whenNodeDataFor(nodeId, (nodeData: NodeData): void => {
+
+            let node: NodeInfo = nodeData.node;
+            var childNodes = this.childrenRequest(node.children);
+
+            this.ojTreeDao.makeNodeInfoRequest(childNodes,
+                    this.provideExpandCallback(nodeId), -1);
+        })
+    }
 		
-		collapseNode: function(nodeId) {
-			
-			recursiveCollapse(nodeId);
-		},
-		
-		poll: function() {
-			
-			var nonePendingNodeIds = [];
-			
-			for (var property in nodeDataById) {
-				if (nodeDataById.hasOwnProperty(property)) {
-					var nodeData = nodeDataById[property];
-					if (nodeData.pending === false) {
-						nonePendingNodeIds.push(nodeData.node.nodeId);
-					}
-		        }
-		    }		
-				
-			ojTreeDao.makeNodeInfoRequest(childrenRequest(nonePendingNodeIds), 
-					pollCallback, lastSeq);
-		},
-		
-		select: function(nodeId) {
-			
-			if (nodeId !== selectedNodeId) {
-				fireSelectionChanged(selectedNodeId, nodeId)
-				selectedNodeId = nodeId;
-			}
-		},		
-		
-		addSelectionListener: function(listener) {
-			selectionListeners.push(listener);
-		},
-		
-		addTreeChangeListener: function(listener) {
-			changeListeners.push(listener);
-		},
-	};
-};
+    collapseNode(nodeId: number): void {
+
+        this.recursiveCollapse(nodeId);
+    }
+
+    poll(): void {
+
+        var nonePendingNodeIds = [];
+
+        for (var property in this.nodeDataById) {
+            if (this.nodeDataById.hasOwnProperty(property)) {
+                var nodeData = this.nodeDataById[property];
+                if (nodeData.pending === false) {
+                    nonePendingNodeIds.push(nodeData.node.nodeId);
+                }
+            }
+        }
+
+        this.ojTreeDao.makeNodeInfoRequest(this.childrenRequest(nonePendingNodeIds),
+                this.pollCallback, this.lastSeq);
+    }
+
+    select(nodeId: number): void {
+
+        if (nodeId !== this.selectedNodeId) {
+            this.fireSelectionChanged(this.selectedNodeId, nodeId)
+            this.selectedNodeId = nodeId;
+        }
+    }
+
+    addSelectionListener(listener: SelectionListener): void {
+        this.selectionListeners.push(listener);
+    }
+
+    addTreeChangeListener(listener: ChangeListener): void {
+        this.changeListeners.push(listener);
+    }
+}

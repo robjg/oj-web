@@ -21,7 +21,7 @@
 <button id="manualTest">Manual Test</button>
 
 <script src="../../main/resources/org/oddjob/webapp/scripts/jquery-1.11.2.js"></script>
-<script src="../../main/resources/org/oddjob/webapp/scripts/ojTreeModel.js"></script>
+<script src="../../main/resources/org/oddjob/webapp/scripts/oddjob.js"></script>
 <script src="ojTreeModelTest3.js"></script>
 
 
@@ -30,7 +30,7 @@
 
 $(document).ready(function() {
 	
-	var test = ojTreeModelFactory(ojTreeDao);
+	var test = new OjTreeModel(ojTreeDao);
 	test.addTreeChangeListener(ojTreeUI);
 	
 	$("#runTestOne").click(function() {

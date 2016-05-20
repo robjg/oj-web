@@ -37,9 +37,9 @@ ojMainFactory = function(idPrefix, factories) {
         ojConsole.poll();
     }
 
-    var ojDao = ojDaoFactory();
+    var ojDao = new OjDaoImpl();
 
-    var ojTreeModel = ojTreeModelFactory(ojDao);
+    var ojTreeModel = new OjTreeModel(ojDao);
 
     var ojTreeController = ojTreeControllerFactory(ojTreeModel, pollController);
 
