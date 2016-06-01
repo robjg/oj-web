@@ -21,16 +21,16 @@
 
 <script src="../../main/resources/org/oddjob/webapp/scripts/jquery-1.11.2.js"></script>
 <script src="../../main/resources/org/oddjob/webapp/scripts/oddjob.js"></script>
-<script src="ojTreeUITest.js"></script>
-
-
+<script src="scripts/test/ts/ojTreeUITest.js"></script>
 
 <script>
 
 $(document).ready(function() {
-	
-	ojTreeUI = ojTreeUIFactory(ojTreeController, iconProvider);
-	
+
+	var ojTreeController = new OjTreeControllerTest();
+	var ojTreeUI = new OjTreeUI(ojTreeController, new IconProviderTest());
+    ojTreeController.treeChangeListener = ojTreeUI;
+
 	ojTreeUI.treeInitialised({
 		rootNode: { nodeId: 0, name: "Test",  icon: "executing", children: [1, 2, 3] }
 	});

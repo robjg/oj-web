@@ -1,70 +1,91 @@
 /**
  *
  */
-var ojTreeControllerFactory = function(ojTreeModel, ojPollController: PollController) {
+interface TreeController {
 
-	if (ojPollController === undefined) {
-        ojPollController = {
+    expandNode(nodeId: number): void;
 
-            stopRefresh: function() {
-				return function() {};
-			}
-        };
+    collapseNode(nodeId: number): void;
+
+    isSelectEnabled(): boolean;
+
+    select(nodeId: number): void;
+}
+
+class OjTreeController implements TreeController {
+
+    private ojTreeModel: TreeModel;
+
+    private ojPollController: PollController;
+
+    private initialised = false;
+
+    selectEnabled = true;
+
+    constructor(ojTreeModel: TreeModel,
+            ojPollController: PollController = {
+
+                stopRefresh: function() {
+                    return function() {};
+                }
+            }) {
+
+        this.ojTreeModel = ojTreeModel;
+        this.ojPollController = ojPollController;
     }
 
-	var initialised = false;
+    init(): void {
+        if (this.initialised) {
+            throw "ojTreeController already initialised.";
+        }
+        this.ojTreeModel.init();
+        this.initialised = true;
+    }
 
-	return {
-		
-		init: function() {
-			if (initialised) {
-				throw "ojTreeController already initialised.";
-			}
-			ojTreeModel.init();
-			initialised = true;
-		},
-		
-		expandNode: function(nodeId) {
-			if (!initialised) {
-				throw "ojTreeController not initialised.";
-			}
-			
-			var resume = ojPollController.stopRefresh();
-			
-			ojTreeModel.poll();
-			
-			ojTreeModel.expandNode(nodeId);
+    expandNode(nodeId: number): void {
+        if (!this.initialised) {
+            throw "ojTreeController not initialised.";
+        }
 
-            resume();
-		},
-	
-		collapseNode: function(nodeId) {
-			if (!initialised) {
-				throw "ojTreeController not initialised.";
-			}
-			
-			var resume = ojPollController.stopRefresh();
-			
-			ojTreeModel.collapseNode(nodeId);
-			
-			ojTreeModel.poll();
+        var resume = this.ojPollController.stopRefresh();
 
-            resume();
-		},
-		
-		select: function(nodeId) {
-			
-			if (!initialised) {
-				throw "ojTreeController not initialised.";
-			}
-			
-			var resume = ojPollController.stopRefresh();
-			
-			ojTreeModel.poll();
-			
-			ojTreeModel.select(nodeId);
+        this.ojTreeModel.poll();
 
-            resume();
-		}
-	};
+        this.ojTreeModel.expandNode(nodeId);
+
+        resume();
+    }
+
+    collapseNode(nodeId: number): void {
+        if (!this.initialised) {
+            throw "ojTreeController not initialised.";
+        }
+
+        var resume = this.ojPollController.stopRefresh();
+
+        this.ojTreeModel.collapseNode(nodeId);
+
+        this.ojTreeModel.poll();
+
+        resume();
+    }
+
+    isSelectEnabled(): boolean {
+        return this.selectEnabled;
+    }
+
+    select(nodeId: number): void {
+
+        if (!this.initialised) {
+            throw "ojTreeController not initialised.";
+        }
+
+        var resume = this.ojPollController.stopRefresh();
+
+        this.ojTreeModel.poll();
+
+        this.ojTreeModel.select(nodeId);
+
+        resume();
+    }
 }

@@ -1,31 +1,43 @@
+
 /**
- * 
+ * Define callbacks for when a tree is changed.
  */
+interface TreeChangeListener {
 
-interface ChangeListener {
+    treeInitialised: (event: {rootNode: NodeInfo}) => void;
 
-    treeInitialised(event: {rootNode: NodeInfo}): void;
+    nodeInserted: (event: {parentId: number, index: number, node: NodeInfo}) => void;
 
-    nodeInserted(event: {parentId: number, index: number, node: NodeInfo}): void;
+    nodeRemoved: (event: {nodeId: number}) => void;
 
-    nodeRemoved(event: {nodeId: number}): void;
+    /**
+     * Called when user expands node.
+     *
+     * @param event
+     */
+    nodeExpanded: (event: {parentId: number, nodeList: NodeInfo[]}) => void;
 
-    nodeExpanded(event: {parentId: number, nodeList: NodeInfo[]}): void;
+    /**
+     * Called when user collapses node
+     *
+     * @param event
+     */
+    nodeCollapsed: (event: {parentId: number}) => void;
 
-    nodeCollapsed(event: {parentId: number}): void;
-
-    nodeUpdated(event: {node: NodeInfo}): void;
+    nodeUpdated: (event: {node: NodeInfo}) => void;
 }
 
-interface SelectionEvent {
+/**
+ * Define callback for when selection is changed.
+ */
+interface TreeSelectionListener {
 
-    fromNodeId: number;
-    toNodeId: number;
-}
-
-interface SelectionListener {
-
-    selectionChanged(event: SelectionEvent): void;
+    /**
+     * Called when a user selects node.
+     *
+     * @param event
+     */
+    selectionChanged: (event: {fromNodeId: number, toNodeId: number}) => void;
 }
 
 interface TreeModel {
@@ -40,9 +52,9 @@ interface TreeModel {
 
     select(nodeId: number): void;
 
-    addSelectionListener(listener: SelectionListener): void;
+    addSelectionListener(listener: TreeSelectionListener): void;
 
-    addTreeChangeListener(listener: ChangeListener): void;
+    addTreeChangeListener(listener: TreeChangeListener): void;
 }
 
 interface NodeData {
@@ -63,9 +75,9 @@ class OjTreeModel implements TreeModel {
 	
 	selectedNodeId: number;
 	
-	selectionListeners: SelectionListener[] = [];
+	selectionListeners: TreeSelectionListener[] = [];
 	
-	changeListeners: ChangeListener[] = [];
+	changeListeners: TreeChangeListener[] = [];
 
     ojTreeDao: TreeDao;
 
@@ -497,11 +509,11 @@ class OjTreeModel implements TreeModel {
         }
     }
 
-    addSelectionListener(listener: SelectionListener): void {
+    addSelectionListener(listener: TreeSelectionListener): void {
         this.selectionListeners.push(listener);
     }
 
-    addTreeChangeListener(listener: ChangeListener): void {
+    addTreeChangeListener(listener: TreeChangeListener): void {
         this.changeListeners.push(listener);
     }
 }

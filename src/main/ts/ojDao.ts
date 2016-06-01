@@ -19,13 +19,16 @@ interface MakeNodeInfoRequestData {
     eventSeq: number;
 }
 
-interface TreeDao {
+interface IconProvider {
+
+    iconSrcUrl(icon: string): string;
+}
+
+interface TreeDao extends IconProvider {
 
     makeNodeInfoRequest(nodeIds: string,
                         ajaxCallback: (data: MakeNodeInfoRequestData, textStatus?: string, jqXHR?: JQueryXHR) => any,
                         eventSeq: number): void;
-
-    iconSrcUrl(icon: string): string;
 }
 
 interface ActionDao {

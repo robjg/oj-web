@@ -23,7 +23,7 @@
 $(document).ready(function() {
 
     var ojDao = new OjDaoImpl('http://localhost:8090/api');
-    var ojTreeModel = ojTreeModelFactory(ojDao);
+    var ojTreeModel = new OjTreeModel(ojDao);
     var ojTreeUI = ojTreeUIFactory(ojTreeModel, ojDao, 'ojNode');
 
     ojTreeModel.addSelectionListener(ojTreeUI);

@@ -1,6 +1,9 @@
 /**
  *
  */
+
+
+
 ojMainFactory = function(idPrefix, factories) {
 	
 	var initialised = false;
@@ -41,9 +44,9 @@ ojMainFactory = function(idPrefix, factories) {
 
     var ojTreeModel = new OjTreeModel(ojDao);
 
-    var ojTreeController = ojTreeControllerFactory(ojTreeModel, pollController);
+    var ojTreeController = new OjTreeController(ojTreeModel, pollController);
 
-	var ojTreeUI = ojTreeUIFactory(ojTreeController, ojDao, idPrefix);
+	var ojTreeUI = new OjTreeUI(ojTreeController, ojDao, idPrefix);
 	
 	ojTreeModel.addTreeChangeListener(ojTreeUI);
 	ojTreeModel.addSelectionListener(ojTreeUI);

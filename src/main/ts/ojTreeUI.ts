@@ -1,265 +1,261 @@
+
 /**
  * Creates The Oddjob Tree UI Component. This component is a Selection Listener and a
  * Tree Change Listener and must be added as a listener to a Model to receive the
  * structure to display.
  *
- *
- * @param {Object} ojTreeController
- * @param {Function} [ojTreeController.select] - function called when a user selects node.
- * @param {Function} ojTreeController.expandNode - function called when user expands node.
- * @param {Function} ojTTreeController.collapseNode - function called when user collapses node.
- * @param {string} [idPrefix=ojNode]
- *
- * @returns {{
- *     treeInitialised: function,
- *     nodeInserted: function,
- *     nodeRemoved: function,
- *     nodeExpanded: function,
- *     nodeCollapsed: function,
- *     nodeUpdated: function,
- *     selectionChanged: function
- *     }}
- *       A facade onto the Trees User Interface.
  */
-var ojTreeUIFactory = function(ojTreeController, iconProvider, idPrefix) {
-	"use strict";
+class OjTreeUI implements TreeChangeListener, TreeSelectionListener {
 
-	if (idPrefix === undefined) {
-		idPrefix = 'ojNode';
-	}
-	
-	var label;
-	
-	if (ojTreeController.select === undefined) {
-		label = function(node) {
-			return node.name;			
-		}
-	}
-	else {
-		label = function(node) {
-			return $('<a>' + node.name + '</a>').click(function() {
-				ojTreeController.select(node.nodeId);
-			});
-		}
-	}
-	
-	function expandImage(nodeId) {
+	private ojTreeController: TreeController;
+
+	private iconProvider: IconProvider;
+
+	private idPrefix: string;
+
+	private label: (node: NodeInfo) => JQuery;
+
+    /**
+     * Constructor.
+     *
+     * @param ojTreeController
+     * @param iconProvider
+     * @param idPrefix
+     */
+	constructor(ojTreeController: TreeController, iconProvider: IconProvider, idPrefix: string = 'ojNode') {
+
+        if (ojTreeController.isSelectEnabled()) {
+            this.label = function(node: NodeInfo): JQuery {
+                return $('<a>' + node.name + '</a>').click(function() {
+                    ojTreeController.select(node.nodeId);
+                });
+            }
+        }
+        else {
+            this.label = function(node: NodeInfo) {
+                return $(document.createTextNode(node.name));
+            }
+        }
+
+        this.ojTreeController = ojTreeController;
+        this.iconProvider = iconProvider;
+        this.idPrefix = idPrefix;
+    }
+
+	private expandImage(nodeId: number): JQuery {
 		return $('<img>').attr(
 				{ class: 'toggle',
 				  src: 'gfx/plus.png',
 				  alt: 'expand'
 				}
-			).click(function() {
-				return ojTreeController.expandNode(nodeId);
+			).click((): void => {
+				this.ojTreeController.expandNode(nodeId);
 			}
 		);
 	}
 	
-	function collapseImage(nodeId) {
+	private collapseImage(nodeId: number): JQuery {
 		return $('<img>').attr(
 				{ class: 'toggle',
 				  src: 'gfx/minus.png', 
 				  alt: 'collapse' 
 				}
-			).click(function() {
-				return ojTreeController.collapseNode(nodeId)
+			).click((): void => {
+				this.ojTreeController.collapseNode(nodeId)
 			}
 		);
 	}
 	
-	function iconImage(iconName) {
+	private iconImage(iconName: string): JQuery {
 		
 		return $('<img>').attr(
 				{ class: 'icon',
-				  src: iconProvider.iconSrcUrl(iconName),
+				  src: this.iconProvider.iconSrcUrl(iconName),
 				  alt: iconName 
 				}
 		);
 	}
 
-	function changeToggleImageToExpand(li$, nodeId) {
+	private changeToggleImageToExpand(li$: JQuery, nodeId: number): void {
 		
 		li$.find('>img.toggle').replaceWith(
-				expandImage(nodeId));
+            this.expandImage(nodeId));
 	}
 	
-	function changeToggleImageToCollapse(li$, nodeId) {
+	private changeToggleImageToCollapse(li$: JQuery, nodeId: number): void {
 		
-		var img$ = li$.find('>img.toggle');
+		let img$: JQuery = li$.find('>img.toggle');
 		
 		if (img$.length === 0) {
-			li$.prepend(expandImage(nodeId));
+			li$.prepend(this.expandImage(nodeId));
 		}
 		else {
 			img$.replaceWith(
-					collapseImage(nodeId));
+                this.collapseImage(nodeId));
 		}
 	}
 	
-	function removeToggleImage(li$) {
+	private static removeToggleImage(li$: JQuery): void {
 		
 		li$.children('img.toggle').remove();
 	}
 	
-	function changeIconImage(li$, iconName) {
+	private changeIconImage(li$: JQuery, iconName: string): void {
 		
 		li$.children('img.icon').replaceWith(
-				iconImage(iconName));
+            this.iconImage(iconName));
 	}
 	
-	function nodeIdSelector(nodeId) {
-		return '#' + idPrefix  + nodeId;
+	private nodeIdSelector(nodeId: string): string {
+		return '#' + this.idPrefix  + nodeId;
 	}
 	
-	function htmlForNode(node) {
+	private htmlForNode(node: NodeInfo): JQuery {
 		
-		var li$ = $('<li>').attr('id', 'ojNode' + node.nodeId);
+		let li$: JQuery = $('<li>').attr('id', 'ojNode' + node.nodeId);
 		
 		if (node.children !== undefined && node.children.length > 0) {
-			li$.append(expandImage(node.nodeId));
+			li$.append(this.expandImage(node.nodeId));
 		}
 		
 		if (node.icon !== undefined) {
-			li$.append(iconImage(node.icon));
+			li$.append(this.iconImage(node.icon));
 		}
 		
-		li$.append(label(node));
+		li$.append(this.label(node));
 		
 	    li$.append('<ul>');
 	    
 	    return li$;
 	}	
 	
-	function insertChildFirst(parent$, node) {
+	private insertChildFirst(parent$: JQuery, node: NodeInfo): void {
 		
-		parent$.find('>ul').prepend(htmlForNode(node));
+		parent$.find('>ul').prepend(this.htmlForNode(node));
 	}
 
-	function insertChild(parent$, index, node) {
+    private insertChild(parent$: JQuery, index: number, node: NodeInfo): void {
 		
 	    parent$.find('>ul>li:nth-child('+ index +')'
-				).after(htmlForNode(node));
+				).after(this.htmlForNode(node));
 	}
-	
-	function appendChild(parent$, node) {
+
+    private appendChild(parent$: JQuery, node: NodeInfo) {
 		
 		parent$.find('>ul'
-				).append(htmlForNode(node));
+				).append(this.htmlForNode(node));
 	}
 
-	return {
-		
-		treeInitialised: function(event) {
+    treeInitialised = (event: {rootNode: NodeInfo}): void => {
 			
-			var node = event.rootNode;
-			
-			insertChildFirst($(nodeIdSelector('Root')), node);
-		},
-		
-		/*
-		 * Create the DOM for a node and make it a child of the
-		 * given parent at the given index.
-		 */
-		nodeInserted: function(event) {
-			
-			var parentId = event.parentId;
-			var index = event.index;
-			var node = event.node;
-			
-			var parent$ = $(nodeIdSelector(parentId));
-			
-			if (parent$.children('ul li').length == 0) {
-				changeToggleImageToCollapse(parent$, parentId)
-			}
-			
-			if(index === 0) {
-				insertChildFirst(parent$, node);        
-			}
-			else {
-				insertChild(parent$, index, node);
-			}
+        var node = event.rootNode;
 
-		},
+        this.insertChildFirst($(this.nodeIdSelector('Root')), node);
+    };
 		
- 		nodeRemoved: function(event) {
+    /*
+     * Create the DOM for a node and make it a child of the
+     * given parent at the given index.
+     */
+    nodeInserted = (event: {parentId: number, index: number, node: NodeInfo}): void => {
 
- 			var nodeId = event.nodeId;
- 			
- 			var node$ = $(nodeIdSelector(nodeId));
- 			
- 			var parent$ = node$.parent('ul').parent('li');
- 			
-			node$.remove();	
-			
-			if (parent$.find('>ul>li').length == 0) {
-				removeToggleImage(parent$)
-			}
-		},
-		
-		nodeExpanded: function(event) {
-			
-			var parentId = event.parentId;
-			var nodeList = event.nodeList;
-			
-			var parent$ = $(nodeIdSelector(parentId));
-			
-			for (var i = 0; i < nodeList.length; ++i) {
-				appendChild(parent$, nodeList[i]);
-			}
-			
-			changeToggleImageToCollapse(parent$, parentId)
-		},
-		
-		nodeCollapsed: function(event) {
+        let parentId: number = event.parentId;
+        let index: number = event.index;
+        let node: NodeInfo = event.node;
 
-			var parentId = event.parentId;
-			
-			var parent$ = $(nodeIdSelector(parentId));
+        var parent$ = $(this.nodeIdSelector(parentId.toString()));
 
-			parent$.find('>ul>li').remove();
-			
-			changeToggleImageToExpand(parent$, parentId);
-		},
+        if (parent$.children('ul li').length == 0) {
+            this.changeToggleImageToCollapse(parent$, parentId)
+        }
+
+        if(index === 0) {
+            this.insertChildFirst(parent$, node);
+        }
+        else {
+            this.insertChild(parent$, index, node);
+        }
+    };
+
+    nodeRemoved = (event: {nodeId: number}): void => {
+
+        let nodeId: string = event.nodeId.toString();
+
+        let node$: JQuery = $(this.nodeIdSelector(nodeId));
+
+        let parent$: JQuery = node$.parent('ul').parent('li');
+
+        node$.remove();
+
+        if (parent$.find('>ul>li').length == 0) {
+            OjTreeUI.removeToggleImage(parent$)
+        }
+    };
+
+    nodeExpanded = (event: {parentId: number, nodeList: NodeInfo[]}): void => {
+
+        let parentId: number = event.parentId;
+        let nodeList: NodeInfo[] = event.nodeList;
+
+        let parent$: JQuery = $(this.nodeIdSelector(parentId.toString()));
+
+        for (var i = 0; i < nodeList.length; ++i) {
+            this.appendChild(parent$, nodeList[i]);
+        }
+
+        this.changeToggleImageToCollapse(parent$, parentId)
+    };
+
+    nodeCollapsed = (event: {parentId: number}): void => {
+
+        let parentId: number = event.parentId;
+
+        let parent$: JQuery = $(this.nodeIdSelector(parentId.toString()));
+
+        parent$.find('>ul>li').remove();
+
+        this.changeToggleImageToExpand(parent$, parentId);
+    };
 		
-		nodeUpdated: function(event) {
-			
-			var node = event.node;
-			
-			var li$ = $(nodeIdSelector(node.nodeId));
-			
-			if (node.children !== undefined) {
-				
-				if (node.children.length > 0) {
-					if (li$.find('ul>li').length === 0) {
-						li$.prepend(expandImage(node.nodeId));
-					}
-				}
-				else {
-					removeToggleImage(li$);
-				}
-			}
-			
-			if (node.icon !== undefined) {
-				changeIconImage(li$, node.icon);
-			}
-			
-			// Todo: Change text.
-		},
+    nodeUpdated = (event: {node: NodeInfo}): void => {
+
+        let node: NodeInfo = event.node;
+
+        let li$: JQuery = $(this.nodeIdSelector(node.nodeId.toString()));
+
+        if (node.children !== undefined) {
+
+            if (node.children.length > 0) {
+                if (li$.find('ul>li').length === 0) {
+                    li$.prepend(this.expandImage(node.nodeId));
+                }
+            }
+            else {
+                OjTreeUI.removeToggleImage(li$);
+            }
+        }
+
+        if (node.icon !== undefined) {
+            this.changeIconImage(li$, node.icon);
+        }
+
+        // Todo: Change text.
+    };
 		
-		selectionChanged: function(event) {
-			var fromNodeId = event.fromNodeId;
-			var toNodeId = event.toNodeId;
-			
-			if (fromNodeId !== undefined) {
-				$(nodeIdSelector(fromNodeId) + ">a").removeAttr(
-				'class');
-			}
-			
-			if (toNodeId !== undefined) {
-				$(nodeIdSelector(toNodeId) + ">a").attr(
-						'class', 'selected');
-			}
-		}
-		
-	};
-};
+    selectionChanged = (event: {fromNodeId: number, toNodeId: number}): void => {
+
+        let fromNodeId: number = event.fromNodeId;
+        let toNodeId: number = event.toNodeId;
+
+        if (fromNodeId !== undefined) {
+            $(this.nodeIdSelector(fromNodeId.toString()) + ">a").removeAttr(
+            'class');
+        }
+
+        if (toNodeId !== undefined) {
+            $(this.nodeIdSelector(toNodeId.toString()) + ">a").attr(
+                    'class', 'selected');
+        }
+    }
+
+}
