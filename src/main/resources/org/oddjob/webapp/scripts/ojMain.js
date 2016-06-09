@@ -56,16 +56,16 @@ ojMainFactory = function(idPrefix, factories) {
 	var ojActions = ojJobActions(ojDao, ojForm);
 	ojTreeModel.addSelectionListener(ojActions);
 
-    var tabsModel = ojTabsModel("state");
-    var tabsUI = ojDetailTabs(tabsModel);
+    var tabsModel = new OjTabsModel("state");
+    var tabsUI = new OjDetailTabsUI(tabsModel);
     tabsModel.addTabSelectionListener(tabsUI);
 
-    var ojState = ojStateFactory(ojDao, { selected: true });
+    var ojState = new OjState(ojDao, { selected: true });
 
     tabsModel.addTabSelectionListener(ojState);
     ojTreeModel.addSelectionListener(ojState);
 
-    var ojConsole = ojLogger({
+    var ojConsole = new OjLogger({
         fetchLogLines: function(nodeId, logSeq, ajaxCallback) {
             ojDao.fetchConsoleLines(nodeId, logSeq, ajaxCallback);
         }
@@ -74,12 +74,12 @@ ojMainFactory = function(idPrefix, factories) {
     tabsModel.addTabSelectionListener(ojConsole);
     ojTreeModel.addSelectionListener(ojConsole);
 
-    var ojLog = ojLogger(ojDao);
+    var ojLog = new OjLogger(ojDao);
 
     tabsModel.addTabSelectionListener(ojLog);
     ojTreeModel.addSelectionListener(ojLog);
 
-    var ojProperties = ojPropertiesFactory(ojDao);
+    var ojProperties = new OjProperties(ojDao);
 
     tabsModel.addTabSelectionListener(ojProperties);
     ojTreeModel.addSelectionListener(ojProperties);

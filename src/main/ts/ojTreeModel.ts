@@ -27,6 +27,13 @@ interface TreeChangeListener {
     nodeUpdated: (event: {node: NodeInfo}) => void;
 }
 
+interface TreeSelectionEvent {
+
+    fromNodeId: number;
+
+    toNodeId: number;
+}
+
 /**
  * Define callback for when selection is changed.
  */
@@ -37,7 +44,7 @@ interface TreeSelectionListener {
      *
      * @param event
      */
-    selectionChanged: (event: {fromNodeId: number, toNodeId: number}) => void;
+    selectionChanged: (event: TreeSelectionEvent) => void;
 }
 
 interface TreeModel {

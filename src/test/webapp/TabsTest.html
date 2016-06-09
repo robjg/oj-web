@@ -45,8 +45,7 @@ Log Line 2
 </div>
 
 <script src="../../main/resources/org/oddjob/webapp/scripts/jquery-1.11.2.js"></script>
-<script src="../../main/resources/org/oddjob/webapp/scripts/ojTabsModel.js"></script>
-<script src="../../main/resources/org/oddjob/webapp/scripts/ojTabsUI.js"></script>
+<script src="../../main/resources/org/oddjob/webapp/scripts/oddjob.js"></script>
 
 
 
@@ -54,8 +53,8 @@ Log Line 2
 
 $(document).ready(function() {
 	
-        var model = ojTabsModel();
-        var ui = ojDetailTabs(model);
+        var model = new OjTabsModel('state');
+        var ui = new OjDetailTabsUI(model);
         model.addTabSelectionListener(ui);
 	
 });

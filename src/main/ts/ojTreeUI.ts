@@ -242,7 +242,7 @@ class OjTreeUI implements TreeChangeListener, TreeSelectionListener {
         // Todo: Change text.
     };
 		
-    selectionChanged = (event: {fromNodeId: number, toNodeId: number}): void => {
+    selectionChanged = (event: TreeSelectionEvent): void => {
 
         let fromNodeId: number = event.fromNodeId;
         let toNodeId: number = event.toNodeId;
@@ -256,6 +256,6 @@ class OjTreeUI implements TreeChangeListener, TreeSelectionListener {
             $(this.nodeIdSelector(toNodeId.toString()) + ">a").attr(
                     'class', 'selected');
         }
-    }
+    };
 
 }

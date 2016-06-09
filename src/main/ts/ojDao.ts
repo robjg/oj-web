@@ -27,7 +27,7 @@ interface IconProvider {
 interface TreeDao extends IconProvider {
 
     makeNodeInfoRequest(nodeIds: string,
-                        ajaxCallback: (data: MakeNodeInfoRequestData, textStatus?: string, jqXHR?: JQueryXHR) => any,
+                        ajaxCallback: (data: MakeNodeInfoRequestData, textStatus?: string, jqXHR?: JQueryXHR) => void,
                         eventSeq: number): void;
 }
 
@@ -42,23 +42,55 @@ interface ActionDao {
     formAction(nodeId:string, actionName:string, form$:FormData, statusCallback:AjaxCallback): void;
 }
 
+interface StateData {
+    nodeId: number;
+    state: string;
+    time: number;
+    exception: string;
+}
+
 interface StateDao {
 
-    fetchState(nodeId: string, ajaxCallback: AjaxCallback): void;
+    fetchState(nodeId: string,
+               ajaxCallback: (data: StateData, textStatus?: string, jqXHR?: JQueryXHR) => void): void;
+}
+
+interface LogLine {
+    logSeq: number;
+    level: string;
+    message: string;
+}
+
+interface LinesData {
+
+    nodeId: number;
+    logLines: LogLine[];
+
 }
 
 interface ConsoleDao {
 
-    fetchConsoleLines(nodeId: string, logSeq: number, ajaxCallback: AjaxCallback): void;
+    fetchConsoleLines(nodeId: string,
+                      logSeq: number,
+                      ajaxCallback: (data: LinesData, textStatus?: string, jqXHR?: JQueryXHR) => void): void;
 }
 
 interface LoggerDao {
 
-    fetchLogLines(nodeId: string, logSeq: number, ajaxCallback: AjaxCallback);
+    fetchLogLines(nodeId: string,
+                  logSeq: number,
+                  ajaxCallback: (data: LinesData, textStatus?: string, jqXHR?: JQueryXHR) => void): void;
+}
+
+interface PropertiesData {
+
+    nodeId: number;
+    properties: { [key: string]: string };
 }
 
 interface PropertiesDao {
-    fetchProperties(nodeId: string, ajaxCallback: AjaxCallback): void;
+    fetchProperties(nodeId: string,
+                    ajaxCallback: (data: PropertiesData, textStatus?: string, jqXHR?: JQueryXHR) => void): void;
 }
 
 class OjDaoImpl implements TreeDao, ActionDao, StateDao, ConsoleDao, LoggerDao, PropertiesDao {
