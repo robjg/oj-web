@@ -517,10 +517,16 @@ class OjTreeModel implements TreeModel {
     }
 
     addSelectionListener(listener: TreeSelectionListener): void {
+        if (!listener) {
+            throw new Error("TreeSelectionListener undefined.");
+        }
         this.selectionListeners.push(listener);
     }
 
     addTreeChangeListener(listener: TreeChangeListener): void {
+        if (!listener) {
+            throw new Error("TreeChangeListener undefined.");
+        }
         this.changeListeners.push(listener);
     }
 }

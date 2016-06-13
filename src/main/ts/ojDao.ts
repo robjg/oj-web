@@ -3,10 +3,6 @@ interface AjaxCallback {
     (data: any, textStatus?: string, jqXHR?: JQueryXHR) : any;
 }
 
-interface FormData {
-    serialize();
-}
-
 interface NodeInfo {
     nodeId: number;
     name: string;
@@ -31,15 +27,52 @@ interface TreeDao extends IconProvider {
                         eventSeq: number): void;
 }
 
+
+interface ActionData {
+
+    actionType: string;
+    name: string;
+    displayName: string;
+}
+
+interface DialogFieldData {
+    fieldType: string;
+    label: string;
+    name: string;
+    value: string;
+}
+
+interface DialogData {
+    dialogType: string;
+    fields: DialogFieldData[];
+}
+
+interface ActionStatus {
+    status: string;
+    message: string;
+}
+
 interface ActionDao {
 
-    actionsFor(nodeId:string, ajaxCallback:AjaxCallback): void;
+    actionsFor(nodeId: number,
+               ajaxCallback: (data: ActionData[], textStatus?: string, jqXHR?: JQueryXHR) => any
+    ): JQueryXHR;
 
-    dialogFor(nodeId:string, actionName:string, ajaxCallback:AjaxCallback): void;
+    dialogFor(nodeId: number,
+              actionName:string,
+              ajaxCallback: (data: DialogData, textStatus?: string, jqXHR?: JQueryXHR) => any
+    ): JQueryXHR;
 
-    executeAction(nodeId:string, actionName:string, statusCallback:AjaxCallback): void;
+    executeAction(nodeId: number,
+                  actionName:string,
+                  statusCallback: (data: ActionStatus, textStatus?: string, jqXHR?: JQueryXHR) => any
+    ): JQueryXHR;
 
-    formAction(nodeId:string, actionName:string, form$:FormData, statusCallback:AjaxCallback): void;
+    formAction(nodeId: number,
+               actionName:string,
+               form$: JQuery,
+               statusCallback: (data: ActionStatus, textStatus?: string, jqXHR?: JQueryXHR) => any
+    ): JQueryXHR;
 }
 
 interface StateData {
@@ -119,25 +152,31 @@ class OjDaoImpl implements TreeDao, ActionDao, StateDao, ConsoleDao, LoggerDao, 
 
     // Actions
 
-    actionsFor(nodeId: string, ajaxCallback: AjaxCallback): void {
+    actionsFor(nodeId: number, ajaxCallback): JQueryXHR {
 
-        $.get(this.path + '/actionsFor/' + nodeId,
+        return $.get(this.path + '/actionsFor/' + nodeId,
             ajaxCallback);
     }
 
-    dialogFor(nodeId: string, actionName: string, ajaxCallback: AjaxCallback): void {
-        $.get(this.path + '/dialogFor/' +  nodeId +  '/' + actionName, ajaxCallback);
+    dialogFor(nodeId: number, actionName: string, ajaxCallback): JQueryXHR {
+        return $.get(this.path + '/dialogFor/' +  nodeId +  '/' + actionName, ajaxCallback);
     }
 
-    executeAction(nodeId: string, actionName: string, statusCallback: AjaxCallback): void {
-        $.get(this.path + '/action/' +  nodeId +  '/' + actionName, statusCallback);
+    executeAction(nodeId: number, actionName: string,
+                  statusCallback: (data: ActionStatus, textStatus?: string, jqXHR?: JQueryXHR) => any
+    ): JQueryXHR {
+
+        return $.get(this.path + '/action/' +  nodeId +  '/' + actionName, statusCallback);
     }
 
-    formAction(nodeId: string, actionName: string, form$: FormData, statusCallback: AjaxCallback): void {
+    formAction(nodeId: number, actionName: string,
+               form$: JQuery,
+               statusCallback: (data: ActionStatus, textStatus?: string, jqXHR?: JQueryXHR) => any
+    ): JQueryXHR {
 
         var url = this.path + '/formAction/' +  nodeId +  '/' + actionName;
 
-        $.ajax({
+        return $.ajax({
             type: "POST",
             url: url,
             data: form$.serialize(), // serializes the form's elements.

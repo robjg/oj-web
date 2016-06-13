@@ -28,17 +28,16 @@
 <div id=result5></div>
 
 <script src="../../main/resources/org/oddjob/webapp/scripts/jquery-1.11.2.js"></script>
-<script src="../../main/resources/org/oddjob/webapp/scripts/ojJobActions.js"></script>
-<script src="../../main/resources/org/oddjob/webapp/scripts/ojForm.js"></script>
+<script src="../../main/resources/org/oddjob/webapp/scripts/oddjob.js"></script>
 <script src="ojJobActionsTest.js"></script>
 
 <script>
 
 $(document).ready(function() {
 
-    var ojForm = ojFormFactory();
+    var ojForm = new OjForm();
 
-    var test = ojJobActions(testActionsDao, ojForm);
+    var test = new OjJobActions(testActionsDao, ojForm);
     testTreeModel.addSelectionListener(test);
 
     $("#runTestOne").click(function () {

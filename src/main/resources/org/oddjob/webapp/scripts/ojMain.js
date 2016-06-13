@@ -51,9 +51,9 @@ ojMainFactory = function(idPrefix, factories) {
 	ojTreeModel.addTreeChangeListener(ojTreeUI);
 	ojTreeModel.addSelectionListener(ojTreeUI);
 
-    var ojForm = ojFormFactory();
+    var ojForm = new OjForm();
 
-	var ojActions = ojJobActions(ojDao, ojForm);
+	var ojActions = new OjJobActions(ojDao, ojForm);
 	ojTreeModel.addSelectionListener(ojActions);
 
     var tabsModel = new OjTabsModel("state");
