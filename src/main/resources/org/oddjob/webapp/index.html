@@ -36,6 +36,7 @@
             <div class="refresh-set">
                 <label for="refresh">Refresh Interval</label>
                 <input id="refresh" type="text"/>
+                <button id="refreshSubmit">Change</button>
             </div>
         </div>
         <div id="oj-detail-tabs" class="tabbed-pane">
@@ -101,7 +102,6 @@
 <script src="scripts/jquery-1.11.2.js"></script>
 <script src="scripts/split-pane.js"></script>
 <script src="scripts/oddjob.js"></script>
-<script src="scripts/ojMain.js"></script>
 
 <script>
 
@@ -111,12 +111,8 @@ $(function() {
 
 $(document).ready(function() {
 
-    var main = ojMainFactory();
+    var main = new OjMain();
 	
-	$("#refresh").change(function(event) {
-		main.start(event.currentTarget.value);
-	});
-
 	main.start();
 });
 

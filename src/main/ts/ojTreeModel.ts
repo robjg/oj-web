@@ -93,7 +93,7 @@ class OjTreeModel implements TreeModel {
     }
 	
 	private fireSelectionChanged(fromNodeId: number, toNodeId: number): void {
-		var event = {
+		let event: TreeSelectionEvent = {
 			fromNodeId: fromNodeId,
 			toNodeId: toNodeId
 		};

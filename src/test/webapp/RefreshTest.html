@@ -1,0 +1,48 @@
+<html>
+<head>
+	<style type="text/css">
+	@import url(../../main/resources/org/oddjob/webapp/css/global.css?v=1.1.0);
+	</style>
+</head>
+<body>
+
+<div style="position: absolute; left: 0; top: 0; bottom: 0; right: 0; margin: 50px; padding: 50px; border: 2px solid #FF0000">
+	<div class="control">
+		<div class="refresh-set">
+			<label for="refresh">Refresh Interval</label>
+			<input id="refresh" type="text"/>
+            <button id="refreshSubmit">Change</button>
+		</div>
+	</div>
+
+	<div id="results" style="margin: 50px" >
+
+
+    </div>
+</div>
+
+<script src="../../main/resources/org/oddjob/webapp/scripts/jquery-1.11.2.js"></script>
+<script src="../../main/resources/org/oddjob/webapp/scripts/oddjob.js"></script>
+
+
+
+<script>
+
+$(document).ready(function() {
+	
+    var model = new OjRefreshModel();
+    var ui = new OjRefreshUI(model);
+
+    $('#results').append('<p>Results:</p>')
+
+    model.addRefreshListener({
+        refreshChanged: function(event) {
+            $('#results').append('<p>New Interval: ' + event.newInterval + '</p>');
+        }
+    })
+});
+
+</script>
+
+</body>
+</html>

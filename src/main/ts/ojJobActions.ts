@@ -1,3 +1,9 @@
+
+interface ActionListener {
+
+    actionPerformed(status: ActionStatus): void;
+}
+
 /**
  * Create action buttons.
  *
@@ -8,15 +14,19 @@
  */
 class OjJobActions implements TreeSelectionListener {
 
+    private actionListeners: ActionListener[] = [];
+
     constructor(private ojActionsDao: ActionDao,
                 private ojForm: Form,
                 private divId = 'ojJobActions') {
 
     }
 
-    private statusCallback(data: ActionStatus): void {
+    private statusCallback = (data: ActionStatus): void => {
 
-        // todo
+        for (var i = 0; i < this.actionListeners.length; ++i) {
+            this.actionListeners[i].actionPerformed(data);
+        }
     }
 
 	private htmlForAction(nodeId: number, action: ActionData) {
@@ -96,4 +106,8 @@ class OjJobActions implements TreeSelectionListener {
             this.ojActionsDao.actionsFor(to, this.actionsCallback(to));
         }
 	};
+
+    addActionListener = (listener: ActionListener): void => {
+        this.actionListeners.push(listener);
+    }
 }

@@ -14,38 +14,18 @@ interface TreeController {
 
 class OjTreeController implements TreeController {
 
-    private ojTreeModel: TreeModel;
+    private selectEnabled: boolean = true;
 
-    private ojPollController: PollController;
-
-    private initialised = false;
-
-    selectEnabled = true;
-
-    constructor(ojTreeModel: TreeModel,
-            ojPollController: PollController = {
+    constructor(private ojTreeModel: TreeModel,
+            private ojPollController: PollController = {
 
                 stopRefresh: function() {
                     return function() {};
                 }
             }) {
-
-        this.ojTreeModel = ojTreeModel;
-        this.ojPollController = ojPollController;
-    }
-
-    init(): void {
-        if (this.initialised) {
-            throw "ojTreeController already initialised.";
-        }
-        this.ojTreeModel.init();
-        this.initialised = true;
     }
 
     expandNode(nodeId: number): void {
-        if (!this.initialised) {
-            throw "ojTreeController not initialised.";
-        }
 
         var resume = this.ojPollController.stopRefresh();
 
@@ -57,9 +37,6 @@ class OjTreeController implements TreeController {
     }
 
     collapseNode(nodeId: number): void {
-        if (!this.initialised) {
-            throw "ojTreeController not initialised.";
-        }
 
         var resume = this.ojPollController.stopRefresh();
 
@@ -75,10 +52,6 @@ class OjTreeController implements TreeController {
     }
 
     select(nodeId: number): void {
-
-        if (!this.initialised) {
-            throw "ojTreeController not initialised.";
-        }
 
         var resume = this.ojPollController.stopRefresh();
 
