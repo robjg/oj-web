@@ -134,8 +134,11 @@ public class TaskExecutorTest {
 		
 		echoState.checkWait();
 		
-		assertEquals("Favourite Fruit: Apples, A Secret: password123",
-				lookup.lookup("echo.text", String.class));
+		String[] text = lookup.lookup("echo.text", String.class).split("\n");
+		
+		assertEquals("Favourite Fruit: Apples", text[0].trim());
+		assertEquals("A Secret: password123", text[1].trim());
+		assertEquals("Some File:", text[2].trim());
 		
 		oddjob.stop();
 		

@@ -1,5 +1,7 @@
 package org.oddjob.rest;
 
+import java.io.File;
+
 import org.oddjob.arooa.ArooaSession;
 
 /**
@@ -14,8 +16,10 @@ public class WebRoot {
 	private final Object rootComponent;
 	
 	private final ArooaSession arooaSession;
+
+	private final File uploadDirectory;
 	
-	public WebRoot(Object rootComponent, ArooaSession arooaSession) {
+	public WebRoot(Object rootComponent, ArooaSession arooaSession, File fileUploadDir) {
 		if (rootComponent == null) {
 			throw new NullPointerException("No Root Component.");
 		}
@@ -25,6 +29,7 @@ public class WebRoot {
 		
 		this.rootComponent = rootComponent;
 		this.arooaSession = arooaSession;
+		this.uploadDirectory = fileUploadDir;
 	}
 	
 	public ArooaSession getArooaSession() {
@@ -33,5 +38,9 @@ public class WebRoot {
 	
 	public Object getRootComponent() {
 		return rootComponent;
+	}
+	
+	public File getUploadDirectory() {
+		return uploadDirectory;
 	}
 }

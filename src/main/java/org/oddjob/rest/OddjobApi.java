@@ -1,5 +1,6 @@
 package org.oddjob.rest;
 
+import javax.servlet.http.HttpServletRequest;
 import javax.ws.rs.Consumes;
 import javax.ws.rs.GET;
 import javax.ws.rs.POST;
@@ -7,6 +8,8 @@ import javax.ws.rs.Path;
 import javax.ws.rs.PathParam;
 import javax.ws.rs.Produces;
 import javax.ws.rs.QueryParam;
+import javax.ws.rs.core.Context;
+import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.MultivaluedMap;
 import javax.ws.rs.core.Response;
 
@@ -56,11 +59,18 @@ public interface OddjobApi {
 	@Consumes("application/x-www-form-urlencoded")
 	@Path("formAction/{nodeId}/{actionName}")
 	@Produces("application/json")
-	public Response actionForm(@PathParam("nodeId") String nodeId, 
+	public Response actionForm2(@PathParam("nodeId") String nodeId, 
 			@PathParam("actionName") String actionName,
 			MultivaluedMap<String, String> formParams);
-	
-	@GET
+
+    @POST
+	@Path("formAction/{nodeId}/{actionName}")
+    @Consumes(MediaType.MULTIPART_FORM_DATA)
+    public Response actionForm(@PathParam("nodeId") String nodeId, 
+			@PathParam("actionName") String actionName,
+			@Context HttpServletRequest request);
+    
+    @GET
 	@Path("state/{nodeId}")
 	@Produces("application/json")
 	public Response state(

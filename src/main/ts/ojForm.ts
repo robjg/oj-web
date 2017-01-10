@@ -39,6 +39,9 @@ class OjForm implements Form {
                 if (field.fieldType === 'PASSWORD') {
                     input$.attr('type', 'password');
                 }
+                else if (field.fieldType === 'FILE') {
+                    input$.attr('type', 'file');
+                }
                 else {
                     input$.attr('type', 'text');
                 }

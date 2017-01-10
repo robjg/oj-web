@@ -176,10 +176,14 @@ class OjDaoImpl implements TreeDao, ActionDao, StateDao, ConsoleDao, LoggerDao, 
 
         var url = this.path + '/formAction/' +  nodeId +  '/' + actionName;
 
+        var formData = new FormData(<HTMLFormElement> form$[0]);
+
         return $.ajax({
             type: "POST",
             url: url,
-            data: form$.serialize(), // serializes the form's elements.
+            data: formData,
+            processData: false,
+            contentType: false,
             success: statusCallback
         });
     }

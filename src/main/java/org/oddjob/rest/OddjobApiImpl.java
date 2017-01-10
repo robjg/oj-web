@@ -1,8 +1,10 @@
 package org.oddjob.rest;
 
+import java.io.File;
 import java.util.Properties;
 import java.util.concurrent.Executors;
 
+import javax.servlet.http.HttpServletRequest;
 import javax.ws.rs.core.MultivaluedMap;
 import javax.ws.rs.core.Response;
 
@@ -18,6 +20,8 @@ import org.oddjob.rest.model.PropertiesDTO;
 import org.oddjob.rest.model.StateDTO;
 import org.oddjob.rest.model.WebActionFactory;
 import org.oddjob.rest.model.WebDialog;
+import org.oddjob.rest.util.FormData;
+import org.oddjob.rest.util.MultipartRequestMap;
 
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
@@ -35,6 +39,8 @@ public class OddjobApiImpl implements OddjobApi {
 	/** Track changes in Oddjob. */
 	private final OddjobTracker tracker;
 	
+	private final File uploadDirectory;
+	
 	private final WebActionFactory actionFactory =
 			new WebActionFactory(Executors.newFixedThreadPool(2));
 	
@@ -48,8 +54,10 @@ public class OddjobApiImpl implements OddjobApi {
 			throw new NullPointerException("No " + OddjobApplication.ROOT_ATTRIBUTE_NAME + 
 					" in Servlet Context.");
 		}
-		tracker = new OddjobTracker(webExport.getArooaSession());
-		tracker.track(webExport.getRootComponent());
+		this.tracker = new OddjobTracker(webExport.getArooaSession());
+		this.tracker.track(webExport.getRootComponent());
+		
+		this.uploadDirectory = webExport.getUploadDirectory();
 	}
 
 	@Override
@@ -189,7 +197,7 @@ public class OddjobApiImpl implements OddjobApi {
 	}
 	
 	@Override
-	public Response actionForm(String nodeId, String actionName,
+	public Response actionForm2(String nodeId, String actionName,
 			MultivaluedMap<String, String> formParams) {
 		
 		Gson gson = new Gson();
@@ -222,6 +230,49 @@ public class OddjobApiImpl implements OddjobApi {
 		}
 		
 	}
+	
+	@Override
+    public Response actionForm(String nodeId, String actionName,
+    		HttpServletRequest request) {
+		
+		Gson gson = new Gson();
+		
+		try {
+			Object node = nodeFor(nodeId);
+			
+			FormData formData = new MultipartRequestMap(uploadDirectory).parse(request);
+			
+			Properties properties = new Properties();
+			
+			for (String key : formData.getParameterNames()) {
+				properties.setProperty(key, formData.getParameter(key));
+			}
+		
+			ActionStatus status = actionFactory.performAction(
+					node, actionName, properties);
+			
+			String json = gson.toJson(status);  
+		
+			if (logger.isDebugEnabled()) {
+				logger.debug("actionForm(" + nodeId+ 
+						"), Response: " + json);
+			}
+			
+			return Response.status(200).entity(json).build();
+		}		
+		catch (Exception e) {
+			
+			String json = gson.toJson(
+					ExceptionBean.createFrom(e));
+			
+			if (logger.isDebugEnabled()) {
+				logger.debug("actionForm(" + nodeId+ 
+						"), Response: " + json);
+			}
+			
+			return Response.status(400).entity(json).build();
+		}
+    }	
 	
 	@Override
 	public Response state(String nodeId) {

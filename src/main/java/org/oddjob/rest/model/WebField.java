@@ -6,7 +6,8 @@ public class WebField {
 		TEXT,
 		MESSAGE,
 		CHECKBOX,
-		PASSWORD
+		PASSWORD,
+		FILE,
 	}
 	
 	private Type fieldType;

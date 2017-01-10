@@ -74,7 +74,7 @@ public class WebForm implements InputMedium, WebDialog {
 	public void file(String message, String defaultValue,
 			FileSelectionOptions options) {
 		WebField webField = new WebField();
-		webField.setFieldType(WebField.Type.TEXT);
+		webField.setFieldType(WebField.Type.FILE);
 		webField.setLabel(message);
 		webField.setValue(defaultValue);
 		fields.add(webField);

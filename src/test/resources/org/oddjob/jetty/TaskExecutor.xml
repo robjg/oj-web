@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 <oddjob id="this">
     <job>
         <sequential>
@@ -8,21 +8,27 @@
                         <file file="." key="basedir"/>
                     </values>
                 </properties>
-                <web:server id="server" port="${server.port}" xmlns:web="oddjob:web">
+                <web:server xmlns:web="oddjob:web" id="server" port="${server.port}">
                     <handlers>
-                        <web:oddjob-web root="${jobs}"/>
+                        <web:oddjob-web root="${jobs}">
+                            <webappDir>
+                                <file file="${basedir}/src/main/resources/org/oddjob/webapp"/>
+                            </webappDir>
+                        </web:oddjob-web>
                     </handlers>
                 </web:server>
                 <sequential id="jobs">
                     <jobs>
                         <task-service id="echo-task">
                             <job>
-                                <echo id="echo" name="Echo Properties"><![CDATA[Favourite Fruit: ${favourite.fruit}, A Secret: ${some.secret}
-]]></echo>
+                                <echo id="echo" name="Echo Properties"><![CDATA[Favourite Fruit: ${favourite.fruit}
+A Secret: ${some.secret}
+Some File: ${some.file}]]></echo>
                             </job>
                             <requests>
                                 <input-text default="Apples" prompt="Favourite Fruit" property="favourite.fruit"/>
                                 <input-password prompt="A Secret" property="some.secret"/>
+                                <input-file prompt="A File" property="some.file"/>
                             </requests>
                         </task-service>
                     </jobs>
