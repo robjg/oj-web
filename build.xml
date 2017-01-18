@@ -67,6 +67,7 @@
 		<property name="src.resources"  value="${src.dir}/resources"/>
 		<property name="test.dir"     	value="./src/test"/>
 		<property name="test.java"     	value="${test.dir}/java"/>
+		<property name="test.ts"        value="${test.dir}/ts"/>
 		<property name="test.resources" value="${test.dir}/resources"/>
 		<property name="work.dir"     	value="./work"/>
 		<property name="lib.dir"      	value="./lib"/>
@@ -77,7 +78,8 @@
 		<property name="build.test"      	value="${build.dir}/test"/>
 		<property name="build.test.classes" value="${build.test}/classes"/>
 		<property name="build.lib"       	value="${build.dir}/lib"/>
-		<property name="build.tsc"   		value="${src.resources}/org/oddjob/webapp/tsc"/>
+		<property name="build.tsc"   		value="${src.resources}/org/oddjob/webapp/scripts/oddjob.js"/>
+        <property name="build.test.tsc"     value="${test.dir}/webapp/scripts"/>
 
 		<property name="test.reports" value="${build.test}/reports"/>
 		
@@ -103,8 +105,6 @@
 
 		<mkdir dir="${lib.dir}"/>
 		
-		<mkdir dir="${build.tsc}"/>
-			
 		<ivy:retrieve conf="default"/>
 		
 		<ivy:resolve conf="provided" refresh="true" />
@@ -197,6 +197,10 @@
 	
 	<target name="compile-tests" depends="compile" description="Compile jUnit tests">
 		<mkdir dir="${build.test}"/>
+
+        <TypeScriptCompileDir
+            src="${test.ts}"
+        />
 
 		<copy todir="${build.test.classes}" filtering="off">
 			<fileset dir="${test.resources}">
@@ -348,6 +352,8 @@
 			 <include name="*.jar"/>
 			</fileset>
 		</delete>
+		<delete file="${build.tsc}"/>
+		<delete dir="${build.test.tsc}"/>					
 	</target>
 
 </project>
