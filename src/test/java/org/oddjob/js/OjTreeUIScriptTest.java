@@ -18,7 +18,9 @@ import com.gargoylesoftware.htmlunit.html.HtmlListItem;
 import com.gargoylesoftware.htmlunit.html.HtmlPage;
 import com.gargoylesoftware.htmlunit.html.HtmlUnorderedList;
 
-public class OjTreeUIScriptTest {
+import junit.framework.TestCase;
+
+public class OjTreeUIScriptTest extends TestCase {
 
 	private static Logger logger = Logger.getLogger(OjTreeUIScriptTest.class);
 	

@@ -1,7 +1,5 @@
 package org.oddjob.js;
 
-import static junit.framework.Assert.assertEquals;
-
 import java.io.File;
 import java.net.URL;
 import java.util.List;
@@ -16,7 +14,9 @@ import com.gargoylesoftware.htmlunit.html.DomElement;
 import com.gargoylesoftware.htmlunit.html.HtmlElement;
 import com.gargoylesoftware.htmlunit.html.HtmlPage;
 
-public class OjJobActionsScriptTest {
+import junit.framework.TestCase;
+
+public class OjJobActionsScriptTest extends TestCase {
 
 	private static Logger logger = Logger.getLogger(OjJobActionsScriptTest.class);
 			

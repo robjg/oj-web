@@ -1,10 +1,5 @@
 package org.oddjob.rest.model;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNull;
-import static org.junit.Assert.assertSame;
-import static org.junit.Assert.assertTrue;
-
 import org.apache.log4j.Logger;
 import org.junit.Assert;
 import org.junit.Test;
@@ -13,7 +8,9 @@ import org.oddjob.arooa.standard.StandardArooaSession;
 import org.oddjob.arooa.xml.XMLConfiguration;
 import org.oddjob.state.FlagState;
 
-public class OddjobTrackerTest {
+import junit.framework.TestCase;
+
+public class OddjobTrackerTest extends TestCase {
 	
 	private static final Logger logger = Logger.getLogger(OddjobTrackerTest.class);
 	

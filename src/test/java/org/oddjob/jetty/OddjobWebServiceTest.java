@@ -1,7 +1,5 @@
 package org.oddjob.jetty;
 
-import static org.junit.Assert.assertEquals;
-
 import java.io.File;
 
 import org.apache.log4j.Logger;
@@ -12,7 +10,9 @@ import org.oddjob.Stateful;
 import org.oddjob.state.ParentState;
 import org.oddjob.tools.StateSteps;
 
-public class OddjobWebServiceTest {
+import junit.framework.TestCase;
+
+public class OddjobWebServiceTest extends TestCase {
 
 	private static final Logger logger = Logger.getLogger(OddjobWebServiceTest.class);
 	

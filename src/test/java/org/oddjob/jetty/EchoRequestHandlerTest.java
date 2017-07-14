@@ -4,23 +4,25 @@ import java.io.File;
 import java.util.LinkedHashMap;
 import java.util.Map;
 
-import junit.framework.TestCase;
-
 import org.apache.log4j.Logger;
 import org.eclipse.jetty.client.HttpClient;
 import org.eclipse.jetty.client.api.ContentResponse;
 import org.eclipse.jetty.util.Fields;
+import org.junit.Test;
 import org.oddjob.Oddjob;
 import org.oddjob.OddjobLookup;
 import org.oddjob.state.ParentState;
 
 import com.google.gson.Gson;
 
+import junit.framework.TestCase;
+
 public class EchoRequestHandlerTest extends TestCase {
 
 	private static final Logger logger = 
 			Logger.getLogger(EchoRequestHandlerTest.class);
 	
+	@Test
 	public void testEchoJettyClientPostFormData() throws Exception {
 		
 		File file = new File(getClass().getResource(

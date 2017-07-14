@@ -61,10 +61,11 @@
 		<property name="nowarn"         value="on"/>
 		<!-- <property name="build.compiler" value="classic"/> -->
 
-		<property name="src.dir"      	value="./src/main"/>
-		<property name="src.java"     	value="${src.dir}/java"/>
-		<property name="src.ts"     	value="${src.dir}/ts"/>
-		<property name="src.resources"  value="${src.dir}/resources"/>
+		<property name="src.dir"      	value="./src"/>
+        <property name="main.dir"        value="${src.dir}/main"/>
+		<property name="main.java"     	value="${main.dir}/java"/>
+		<property name="main.ts"     	value="${main.dir}/ts"/>
+		<property name="main.resources"  value="${main.dir}/resources"/>
 		<property name="test.dir"     	value="./src/test"/>
 		<property name="test.java"     	value="${test.dir}/java"/>
 		<property name="test.ts"        value="${test.dir}/ts"/>
@@ -78,7 +79,7 @@
 		<property name="build.test"      	value="${build.dir}/test"/>
 		<property name="build.test.classes" value="${build.test}/classes"/>
 		<property name="build.lib"       	value="${build.dir}/lib"/>
-		<property name="build.tsc"   		value="${src.resources}/org/oddjob/webapp/scripts/oddjob.js"/>
+		<property name="build.tsc"   		value="${main.resources}/org/oddjob/webapp/scripts/oddjob.js"/>
         <property name="build.test.tsc"     value="${test.dir}/webapp/scripts"/>
 
 		<property name="test.reports" value="${build.test}/reports"/>
@@ -142,7 +143,7 @@
 		<mkdir dir="${build.src}"/>
 		<mkdir dir="${build.classes}"/>
 		<copy todir="${build.src}" filtering="on">
-			<fileset dir="${src.java}">
+			<fileset dir="${main.java}">
 				<exclude name="**/*.gif"/>
 				<exclude name="**/*.properties"/>
 				<exclude name="**/*.xml"/>
@@ -158,11 +159,11 @@
 
 		<!-- Compile a single JavaScript file in the bin dir for release -->
 	    <TypeScriptCompileDir
-	        src="${src.ts}"
+	        src="${main.ts}"
 	    />
 		
 		<copy todir="${build.classes}" filtering="off">
-			<fileset dir="${src.resources}">
+			<fileset dir="${main.resources}">
 				<include name="**/*"/>
 			</fileset>
 		</copy>
@@ -296,6 +297,12 @@
 			<fileset dir="${src.dir}"/>
 		</copy>
 
+        <copy todir="${to.dir}/lib">
+            <fileset dir="${lib.dir}">
+                <exclude name='*.jar'/>
+            </fileset>
+        </copy>
+
 		<copy todir="${to.dir}">
 			<fileset dir=".">
 				<include name="build.xml"/>
@@ -318,9 +325,7 @@
 				
 		<!-- The jars -->
 		<copy todir="${to.lib}">
-			<fileset dir="${lib.dir}">
-				<include name="*.jar"/>
-			</fileset>
+			<fileset dir="${lib.dir}"/>
 		</copy>
 
 	</target>

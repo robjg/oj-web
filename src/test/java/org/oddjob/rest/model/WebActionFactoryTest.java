@@ -1,6 +1,5 @@
 package org.oddjob.rest.model;
 
-import static org.junit.Assert.assertEquals;
 import static org.mockito.Mockito.mock;
 
 import java.util.concurrent.Executor;
@@ -11,7 +10,9 @@ import org.oddjob.jobs.structural.SequentialJob;
 import org.oddjob.state.FlagState;
 import org.oddjob.state.JobState;
 
-public class WebActionFactoryTest {
+import junit.framework.TestCase;
+
+public class WebActionFactoryTest extends TestCase {
 
 	private static Logger logger = Logger.getLogger(WebActionFactoryTest.class);
 	

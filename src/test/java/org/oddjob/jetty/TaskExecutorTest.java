@@ -1,8 +1,5 @@
 package org.oddjob.jetty;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNotNull;
-
 import java.io.File;
 import java.util.LinkedHashMap;
 import java.util.Map;
@@ -21,7 +18,9 @@ import org.oddjob.tools.StateSteps;
 
 import com.google.gson.Gson;
 
-public class TaskExecutorTest {
+import junit.framework.TestCase;
+
+public class TaskExecutorTest extends TestCase {
 
 	private static final Logger logger = Logger.getLogger(TaskExecutorTest.class);
 	

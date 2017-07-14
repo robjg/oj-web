@@ -1,8 +1,5 @@
 package org.oddjob.rest.model;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertTrue;
-
 import org.apache.log4j.Logger;
 import org.junit.Test;
 import org.oddjob.Structural;
@@ -11,7 +8,9 @@ import org.oddjob.logging.LogEnabled;
 import org.oddjob.structural.StructuralEvent;
 import org.oddjob.structural.StructuralListener;
 
-public class OddjobTrackerLogTest {
+import junit.framework.TestCase;
+
+public class OddjobTrackerLogTest extends TestCase {
 
 	private final Logger logger1 = Logger.getLogger(Job1.class);
 	private final Logger logger2 = Logger.getLogger(Job2.class);

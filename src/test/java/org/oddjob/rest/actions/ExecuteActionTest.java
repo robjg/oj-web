@@ -1,6 +1,5 @@
 package org.oddjob.rest.actions;
 
-import static org.junit.Assert.assertEquals;
 import static org.mockito.Mockito.mock;
 
 import java.util.List;
@@ -15,7 +14,9 @@ import org.oddjob.rest.model.WebDialog;
 import org.oddjob.rest.model.WebField;
 import org.oddjob.rest.model.WebForm;
 
-public class ExecuteActionTest {
+import junit.framework.TestCase;
+
+public class ExecuteActionTest extends TestCase {
 
 	@Test
 	public void testFormFieldsArePopulatedOK() {

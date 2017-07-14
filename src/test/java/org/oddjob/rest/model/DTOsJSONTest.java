@@ -1,7 +1,5 @@
 package org.oddjob.rest.model;
 
-import static org.junit.Assert.assertEquals;
-
 import java.text.ParseException;
 import java.util.LinkedHashMap;
 import java.util.Map;
@@ -22,7 +20,9 @@ import org.oddjob.state.StateEvent;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 
-public class DTOsJSONTest {
+import junit.framework.TestCase;
+
+public class DTOsJSONTest extends TestCase {
 
 	private static Logger logger = Logger.getLogger(DTOsJSONTest.class);
 	

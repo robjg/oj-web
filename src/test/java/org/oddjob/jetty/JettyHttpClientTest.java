@@ -3,6 +3,7 @@ package org.oddjob.jetty;
 import java.io.File;
 import java.util.Properties;
 
+import org.junit.Test;
 import org.oddjob.Oddjob;
 import org.oddjob.OddjobLookup;
 
@@ -10,6 +11,7 @@ import junit.framework.TestCase;
 
 public class JettyHttpClientTest extends TestCase {
 
+	@Test
 	public void testExample() throws Exception {
 		
 		ResourceHandlerType resourceHandler = new ResourceHandlerType();

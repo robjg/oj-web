@@ -2,16 +2,17 @@ package org.oddjob.jetty;
 
 import java.io.File;
 
-import junit.framework.TestCase;
-
 import org.apache.log4j.Logger;
 import org.junit.Assert;
+import org.junit.Test;
 import org.oddjob.Oddjob;
 import org.oddjob.OddjobLookup;
 import org.oddjob.rest.model.NodeInfos;
 import org.oddjob.state.ParentState;
 
 import com.google.gson.Gson;
+
+import junit.framework.TestCase;
 
 public class JettyHttpServerExamplesTest extends TestCase {
 
@@ -24,6 +25,7 @@ public class JettyHttpServerExamplesTest extends TestCase {
 	 * 
 	 * @throws Exception
 	 */
+	@Test
 	public void testOddjobWebExample() throws Exception {
 
 		File file = new File(getClass().getResource(
@@ -59,6 +61,7 @@ public class JettyHttpServerExamplesTest extends TestCase {
 				oddjob.lastStateEvent().getState());
 	}
 	
+	@Test
 	public void testOddjobWebServiceExample() throws Exception {
 
 		File file = new File(getClass().getResource(
@@ -98,6 +101,7 @@ public class JettyHttpServerExamplesTest extends TestCase {
 				oddjob.lastStateEvent().getState());
 	}
 	
+	@Test
 	public void testDefaultServerExample() throws Exception {
 
 		File file = new File(getClass().getResource(
@@ -135,6 +139,7 @@ public class JettyHttpServerExamplesTest extends TestCase {
 				oddjob.lastStateEvent().getState());
 	}
 	
+	@Test
 	public void testResourceHandlerExample() throws Exception {
 
 		File file = new File(getClass().getResource(
@@ -166,6 +171,7 @@ public class JettyHttpServerExamplesTest extends TestCase {
 				oddjob.lastStateEvent().getState());
 	}
 	
+	@Test
 	public void testResourceWelcomeFileExample() throws Exception {
 
 		File file = new File(getClass().getResource(
