@@ -4,7 +4,8 @@ import java.text.ParseException;
 import java.util.LinkedHashMap;
 import java.util.Map;
 
-import org.apache.log4j.Logger;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.junit.Assert;
 import org.junit.Test;
 import org.oddjob.FailedToStopException;
@@ -20,11 +21,9 @@ import org.oddjob.state.StateEvent;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 
-import junit.framework.TestCase;
+public class DTOsJSONTest extends Assert {
 
-public class DTOsJSONTest extends TestCase {
-
-	private static Logger logger = Logger.getLogger(DTOsJSONTest.class);
+	private static Logger logger = LoggerFactory.getLogger(DTOsJSONTest.class);
 	
 	@Test
 	public void testNodeInfoJSON() {

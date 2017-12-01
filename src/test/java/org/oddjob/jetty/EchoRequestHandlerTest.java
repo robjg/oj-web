@@ -4,10 +4,12 @@ import java.io.File;
 import java.util.LinkedHashMap;
 import java.util.Map;
 
-import org.apache.log4j.Logger;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.eclipse.jetty.client.HttpClient;
 import org.eclipse.jetty.client.api.ContentResponse;
 import org.eclipse.jetty.util.Fields;
+import org.junit.Assert;
 import org.junit.Test;
 import org.oddjob.Oddjob;
 import org.oddjob.OddjobLookup;
@@ -15,12 +17,10 @@ import org.oddjob.state.ParentState;
 
 import com.google.gson.Gson;
 
-import junit.framework.TestCase;
-
-public class EchoRequestHandlerTest extends TestCase {
+public class EchoRequestHandlerTest extends Assert {
 
 	private static final Logger logger = 
-			Logger.getLogger(EchoRequestHandlerTest.class);
+			LoggerFactory.getLogger(EchoRequestHandlerTest.class);
 	
 	@Test
 	public void testEchoJettyClientPostFormData() throws Exception {

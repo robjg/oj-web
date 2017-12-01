@@ -2,7 +2,8 @@ package org.oddjob.jetty;
 
 import java.io.File;
 
-import org.apache.log4j.Logger;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.junit.Assert;
 import org.junit.Test;
 import org.oddjob.Oddjob;
@@ -12,12 +13,10 @@ import org.oddjob.state.ParentState;
 
 import com.google.gson.Gson;
 
-import junit.framework.TestCase;
-
-public class JettyHttpServerExamplesTest extends TestCase {
+public class JettyHttpServerExamplesTest extends Assert {
 
 	private static final Logger logger = 
-			Logger.getLogger(JettyHttpServerExamplesTest.class);
+			LoggerFactory.getLogger(JettyHttpServerExamplesTest.class);
 	
 	/**
 	 * Test loading the whole Oddjob web application.

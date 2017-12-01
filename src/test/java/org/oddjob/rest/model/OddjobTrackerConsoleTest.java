@@ -1,23 +1,23 @@
 package org.oddjob.rest.model;
 
-import org.apache.log4j.Logger;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.junit.Assert;
 import org.junit.Test;
 import org.oddjob.OddjobConsole;
 import org.oddjob.Structural;
+import org.oddjob.arooa.logging.LogLevel;
 import org.oddjob.arooa.standard.StandardArooaSession;
 import org.oddjob.logging.ConsoleOwner;
 import org.oddjob.logging.LogArchive;
 import org.oddjob.logging.LogArchiver;
-import org.oddjob.logging.LogLevel;
 import org.oddjob.logging.cache.LogArchiveImpl;
 import org.oddjob.structural.StructuralEvent;
 import org.oddjob.structural.StructuralListener;
 
-import junit.framework.TestCase;
+public class OddjobTrackerConsoleTest extends Assert {
 
-public class OddjobTrackerConsoleTest extends TestCase {
-
-	private static final Logger logger = Logger.getLogger(OddjobTrackerConsoleTest.class);
+	private static final Logger logger = LoggerFactory.getLogger(OddjobTrackerConsoleTest.class);
 	
 	public static class Job1 implements Structural {
 		

@@ -3,7 +3,9 @@ package org.oddjob.js;
 import java.io.File;
 import java.net.URL;
 
-import org.apache.log4j.Logger;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.junit.Assert;
 import org.junit.Test;
 import org.oddjob.tools.OurDirs;
 
@@ -12,11 +14,9 @@ import com.gargoylesoftware.htmlunit.WebClient;
 import com.gargoylesoftware.htmlunit.html.HtmlElement;
 import com.gargoylesoftware.htmlunit.html.HtmlPage;
 
-import junit.framework.TestCase;
+public class OjTreeModelScript3Test extends Assert {
 
-public class OjTreeModelScript3Test extends TestCase {
-
-	private static Logger logger = Logger.getLogger(OjTreeModelScript3Test.class);
+	private static Logger logger = LoggerFactory.getLogger(OjTreeModelScript3Test.class);
 	
 	@Test
 	public void testAll() throws Exception {

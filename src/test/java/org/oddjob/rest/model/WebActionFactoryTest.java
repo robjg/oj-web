@@ -4,17 +4,17 @@ import static org.mockito.Mockito.mock;
 
 import java.util.concurrent.Executor;
 
-import org.apache.log4j.Logger;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.junit.Assert;
 import org.junit.Test;
 import org.oddjob.jobs.structural.SequentialJob;
 import org.oddjob.state.FlagState;
 import org.oddjob.state.JobState;
 
-import junit.framework.TestCase;
+public class WebActionFactoryTest extends Assert {
 
-public class WebActionFactoryTest extends TestCase {
-
-	private static Logger logger = Logger.getLogger(WebActionFactoryTest.class);
+	private static Logger logger = LoggerFactory.getLogger(WebActionFactoryTest.class);
 	
 	@Test
 	public void testActionsForRunnable() {

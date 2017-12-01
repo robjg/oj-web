@@ -8,7 +8,8 @@ import javax.servlet.http.HttpServletRequest;
 import javax.ws.rs.core.MultivaluedMap;
 import javax.ws.rs.core.Response;
 
-import org.apache.log4j.Logger;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.oddjob.rest.model.ActionBean;
 import org.oddjob.rest.model.ActionStatus;
 import org.oddjob.rest.model.ComponentSummary;
@@ -34,7 +35,7 @@ import com.google.gson.GsonBuilder;
  */
 public class OddjobApiImpl implements OddjobApi {
 
-	private static final Logger logger = Logger.getLogger(OddjobApiImpl.class);
+	private static final Logger logger = LoggerFactory.getLogger(OddjobApiImpl.class);
 
 	/** Track changes in Oddjob. */
 	private final OddjobTracker tracker;

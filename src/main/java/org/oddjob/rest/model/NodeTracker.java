@@ -7,8 +7,8 @@ import org.oddjob.OJConstants;
 import org.oddjob.Structural;
 import org.oddjob.logging.ConsoleArchiver;
 import org.oddjob.logging.LogArchiver;
+import org.oddjob.logging.appender.AppenderArchiver;
 import org.oddjob.logging.cache.LocalConsoleArchiver;
-import org.oddjob.logging.log4j.Log4jArchiver;
 
 /**
  * Adds listeners to a node to track changes.
@@ -52,7 +52,7 @@ class NodeTracker {
 		}
 		
 		if (parent == null) {
-			this.logArchiver = new Log4jArchiver(node, 
+			this.logArchiver = new AppenderArchiver(node, 
 					OJConstants.DEFAULT_LOG_FORMAT);
 		}
 		else if (parent.node instanceof LogArchiver) {

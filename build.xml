@@ -112,6 +112,8 @@
 		
 		<ivy:resolve conf="test" refresh="true" />
 		
+		<ivy:dependencytree showEvicted="true"/>
+		
 		<ivy:cachepath pathid="provided-cachepath" conf="provided" />
 				
 		<ivy:cachepath pathid="test-cachepath" conf="test" />

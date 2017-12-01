@@ -33,10 +33,6 @@
 	    <dependency org="org.jboss.resteasy" name="resteasy-servlet-initializer" rev="${resteasy.version}"
 	    			conf="default->default" />
 
-		<dependency org="org.slf4j" name="slf4j-api" rev="1.7.14"/>
-
-		<dependency org="org.slf4j" name="slf4j-log4j12" rev="1.7.14"/>
-	
 	    <dependency org="uk.co.rgordon" name="oddjob" rev="latest.integration"
 	    			conf="test->tools" />
 	    	

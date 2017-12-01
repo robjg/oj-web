@@ -4,7 +4,9 @@ import java.io.File;
 import java.util.LinkedHashMap;
 import java.util.Map;
 
-import org.apache.log4j.Logger;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.junit.Assert;
 import org.junit.Test;
 import org.oddjob.Oddjob;
 import org.oddjob.OddjobLookup;
@@ -18,11 +20,9 @@ import org.oddjob.tools.StateSteps;
 
 import com.google.gson.Gson;
 
-import junit.framework.TestCase;
+public class TaskExecutorTest extends Assert {
 
-public class TaskExecutorTest extends TestCase {
-
-	private static final Logger logger = Logger.getLogger(TaskExecutorTest.class);
+	private static final Logger logger = LoggerFactory.getLogger(TaskExecutorTest.class);
 	
 	@Test
 	public void testOddjobWebServiceActions() throws Exception {

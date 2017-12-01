@@ -1,11 +1,12 @@
 package org.oddjob.rest.actions;
 
-import org.apache.log4j.Logger;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.oddjob.Resetable;
 
 public class HardReset extends SimpleAction {
 
-	private static final Logger logger = Logger.getLogger(HardReset.class);
+	private static final Logger logger = LoggerFactory.getLogger(HardReset.class);
 
 	private final String name = "hard-reset";
 	

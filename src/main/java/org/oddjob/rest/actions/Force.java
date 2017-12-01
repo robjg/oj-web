@@ -1,11 +1,12 @@
 package org.oddjob.rest.actions;
 
-import org.apache.log4j.Logger;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.oddjob.Forceable;
 
 public class Force extends SimpleAction {
 
-	private static final Logger logger = Logger.getLogger(Force.class);
+	private static final Logger logger = LoggerFactory.getLogger(Force.class);
 
 	private final String name = "force";
 	

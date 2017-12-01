@@ -4,6 +4,7 @@ import static org.mockito.Mockito.mock;
 
 import java.util.List;
 
+import org.junit.Assert;
 import org.junit.Test;
 import org.mockito.Mockito;
 import org.oddjob.input.InputRequest;
@@ -14,9 +15,7 @@ import org.oddjob.rest.model.WebDialog;
 import org.oddjob.rest.model.WebField;
 import org.oddjob.rest.model.WebForm;
 
-import junit.framework.TestCase;
-
-public class ExecuteActionTest extends TestCase {
+public class ExecuteActionTest extends Assert {
 
 	@Test
 	public void testFormFieldsArePopulatedOK() {

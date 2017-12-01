@@ -4,7 +4,8 @@ import java.io.File;
 import java.net.URL;
 import java.util.List;
 
-import org.apache.log4j.Logger;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.junit.Assert;
 import org.junit.Test;
 import org.oddjob.tools.OurDirs;
@@ -18,11 +19,9 @@ import com.gargoylesoftware.htmlunit.html.HtmlListItem;
 import com.gargoylesoftware.htmlunit.html.HtmlPage;
 import com.gargoylesoftware.htmlunit.html.HtmlUnorderedList;
 
-import junit.framework.TestCase;
+public class OjTreeUIScriptTest extends Assert {
 
-public class OjTreeUIScriptTest extends TestCase {
-
-	private static Logger logger = Logger.getLogger(OjTreeUIScriptTest.class);
+	private static Logger logger = LoggerFactory.getLogger(OjTreeUIScriptTest.class);
 	
 	@Test
 	public void testRootNode() throws Exception {
@@ -152,7 +151,7 @@ public class OjTreeUIScriptTest extends TestCase {
 	    
 	    // Cleanup
 	    
-	    webClient.closeAllWindows();		
+	    webClient.close();		
 	}
 	
 }

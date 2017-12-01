@@ -3,7 +3,8 @@ package org.oddjob.jetty;
 import java.net.MalformedURLException;
 import java.util.Arrays;
 
-import org.apache.log4j.Logger;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.eclipse.jetty.server.Handler;
 import org.eclipse.jetty.server.handler.ResourceHandler;
 import org.eclipse.jetty.util.resource.Resource;
@@ -29,7 +30,7 @@ import org.oddjob.arooa.types.ValueFactory;
 public class ResourceHandlerType implements ValueFactory<Handler>{
 
 	private static final Logger logger = 
-			Logger.getLogger(ResourceHandlerType.class);
+			LoggerFactory.getLogger(ResourceHandlerType.class);
 	
 	/** 
 	 * @oddjob.property

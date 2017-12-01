@@ -1,6 +1,8 @@
 package org.oddjob.rest.model;
 
-import org.apache.log4j.Logger;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.junit.Assert;
 import org.junit.Test;
 import org.oddjob.Structural;
 import org.oddjob.arooa.standard.StandardArooaSession;
@@ -8,12 +10,10 @@ import org.oddjob.logging.LogEnabled;
 import org.oddjob.structural.StructuralEvent;
 import org.oddjob.structural.StructuralListener;
 
-import junit.framework.TestCase;
+public class OddjobTrackerLogTest extends Assert {
 
-public class OddjobTrackerLogTest extends TestCase {
-
-	private final Logger logger1 = Logger.getLogger(Job1.class);
-	private final Logger logger2 = Logger.getLogger(Job2.class);
+	private final Logger logger1 = LoggerFactory.getLogger(Job1.class);
+	private final Logger logger2 = LoggerFactory.getLogger(Job2.class);
 	
 	public static class Job1 implements LogEnabled, Structural {
 		

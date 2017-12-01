@@ -1,11 +1,12 @@
 package org.oddjob.rest.actions;
 
-import org.apache.log4j.Logger;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.oddjob.Resetable;
 
 public class SoftReset extends SimpleAction {
 
-	private static final Logger logger = Logger.getLogger(SoftReset.class);
+	private static final Logger logger = LoggerFactory.getLogger(SoftReset.class);
 	
 	private final String name = "soft-reset";
 	

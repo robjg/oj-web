@@ -1,22 +1,24 @@
 package org.oddjob.js;
 
+import static org.hamcrest.CoreMatchers.is;
+
 import java.io.File;
 import java.net.URL;
 
-import org.apache.log4j.Logger;
+import org.junit.Assert;
 import org.junit.Test;
 import org.oddjob.tools.OurDirs;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import com.gargoylesoftware.htmlunit.BrowserVersion;
 import com.gargoylesoftware.htmlunit.WebClient;
 import com.gargoylesoftware.htmlunit.html.HtmlElement;
 import com.gargoylesoftware.htmlunit.html.HtmlPage;
 
-import junit.framework.TestCase;
+public class OjTreeModelScript1Test extends Assert {
 
-public class OjTreeModelScript1Test extends TestCase {
-
-	private static Logger logger = Logger.getLogger(OjTreeModelScript1Test.class);
+	private static Logger logger = LoggerFactory.getLogger(OjTreeModelScript1Test.class);
 	
 	@Test
 	public void testAll() throws Exception {
@@ -25,6 +27,8 @@ public class OjTreeModelScript1Test extends TestCase {
 		
 		OurDirs ourDirs = new OurDirs();
 		File file = ourDirs.relative("src/test/webapp/OjTreeModelTest.html");
+		
+		assertThat(file.exists(), is(true));
 		
 		URL url = file.toURI().toURL();
 		

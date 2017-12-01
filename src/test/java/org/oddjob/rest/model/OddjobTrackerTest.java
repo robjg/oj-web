@@ -1,6 +1,7 @@
 package org.oddjob.rest.model;
 
-import org.apache.log4j.Logger;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.junit.Assert;
 import org.junit.Test;
 import org.oddjob.Oddjob;
@@ -8,11 +9,9 @@ import org.oddjob.arooa.standard.StandardArooaSession;
 import org.oddjob.arooa.xml.XMLConfiguration;
 import org.oddjob.state.FlagState;
 
-import junit.framework.TestCase;
-
-public class OddjobTrackerTest extends TestCase {
+public class OddjobTrackerTest extends Assert {
 	
-	private static final Logger logger = Logger.getLogger(OddjobTrackerTest.class);
+	private static final Logger logger = LoggerFactory.getLogger(OddjobTrackerTest.class);
 	
 	@Test
 	public void testSimleIconEvents() {
@@ -219,6 +218,6 @@ public class OddjobTrackerTest extends TestCase {
 		
 		assertEquals(1, result.getNodeId());
 		
-		logger.info(result.getProperties());
+		logger.info("Properties: {}", result.getProperties());
 	}
 }

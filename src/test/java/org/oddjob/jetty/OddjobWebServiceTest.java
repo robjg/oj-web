@@ -2,7 +2,9 @@ package org.oddjob.jetty;
 
 import java.io.File;
 
-import org.apache.log4j.Logger;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.junit.Assert;
 import org.junit.Test;
 import org.oddjob.Oddjob;
 import org.oddjob.OddjobLookup;
@@ -10,11 +12,9 @@ import org.oddjob.Stateful;
 import org.oddjob.state.ParentState;
 import org.oddjob.tools.StateSteps;
 
-import junit.framework.TestCase;
+public class OddjobWebServiceTest extends Assert {
 
-public class OddjobWebServiceTest extends TestCase {
-
-	private static final Logger logger = Logger.getLogger(OddjobWebServiceTest.class);
+	private static final Logger logger = LoggerFactory.getLogger(OddjobWebServiceTest.class);
 	
 	@Test
 	public void testOddjobWebServiceActions() throws Exception {

@@ -6,7 +6,8 @@ import java.util.concurrent.Callable;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.TimeoutException;
 
-import org.apache.log4j.Logger;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.eclipse.jetty.client.HttpClient;
 import org.eclipse.jetty.client.api.ContentResponse;
 import org.eclipse.jetty.client.api.Request;
@@ -33,7 +34,7 @@ import org.eclipse.jetty.util.Fields;
  */
 public class JettyHttpClient implements Callable<Integer> {
 
-	private static final Logger logger = Logger.getLogger(JettyHttpClient.class);
+	private static final Logger logger = LoggerFactory.getLogger(JettyHttpClient.class);
 	
 	/** 
 	 * @oddjob.property

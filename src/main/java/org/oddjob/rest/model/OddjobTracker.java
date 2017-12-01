@@ -8,18 +8,19 @@ import java.util.concurrent.ConcurrentMap;
 import java.util.concurrent.atomic.AtomicInteger;
 import java.util.concurrent.atomic.AtomicLong;
 
-import org.apache.log4j.Logger;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.oddjob.Iconic;
 import org.oddjob.Stateful;
 import org.oddjob.Structural;
 import org.oddjob.arooa.ArooaSession;
+import org.oddjob.arooa.logging.LogLevel;
 import org.oddjob.describe.UniversalDescriber;
 import org.oddjob.images.IconEvent;
 import org.oddjob.images.IconListener;
 import org.oddjob.logging.ConsoleArchiver;
 import org.oddjob.logging.LogArchiver;
 import org.oddjob.logging.LogEvent;
-import org.oddjob.logging.LogLevel;
 import org.oddjob.logging.LogListener;
 import org.oddjob.state.State;
 import org.oddjob.structural.StructuralEvent;
@@ -36,7 +37,7 @@ import org.oddjob.structural.StructuralListener;
  */
 public class OddjobTracker {
 
-	private static final Logger logger = Logger.getLogger(OddjobTracker.class);
+	private static final Logger logger = LoggerFactory.getLogger(OddjobTracker.class);
 	
 	private final ArooaSession session;
 	
