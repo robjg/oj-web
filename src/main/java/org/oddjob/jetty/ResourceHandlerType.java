@@ -1,5 +1,6 @@
 package org.oddjob.jetty;
 
+import java.io.IOException;
 import java.net.MalformedURLException;
 import java.util.Arrays;
 
@@ -70,24 +71,23 @@ public class ResourceHandlerType implements ValueFactory<Handler>{
 	
 	public interface JettyResourceType {
 		
-		Resource resourceFromString(String resource) throws MalformedURLException;
+		Resource resourceFromString(String resource) throws IOException;
 	}
 	
 	public enum ResourceType implements JettyResourceType {
 		
 		FILE {
 			@Override
-			public Resource resourceFromString(String resource) throws MalformedURLException {
+			public Resource resourceFromString(String resource) throws IOException {
 				return Resource.newResource(resource);
 			}
 		},
 		CLASSPATH {
 			@Override
-			public Resource resourceFromString(String resource) throws MalformedURLException {
+			public Resource resourceFromString(String resource) {
 				return Resource.newClassPathResource(resource);
 			}
 		}
-		;
 	}
 	
 	@Override
@@ -111,7 +111,7 @@ public class ResourceHandlerType implements ValueFactory<Handler>{
 			 try {
 				 resourceHandler.setBaseResource(resourceType.resourceFromString(base));
 			 }
-			 catch (MalformedURLException e) {
+			 catch (IOException e) {
 				 throw new ArooaConversionException(
 						 "Faled converting " + base + " to a resource.", e);
 			 }

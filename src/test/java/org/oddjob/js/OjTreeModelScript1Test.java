@@ -1,20 +1,19 @@
 package org.oddjob.js;
 
-import static org.hamcrest.CoreMatchers.is;
-
-import java.io.File;
-import java.net.URL;
-
-import org.junit.Assert;
-import org.junit.Test;
-import org.oddjob.tools.OurDirs;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
 import com.gargoylesoftware.htmlunit.BrowserVersion;
 import com.gargoylesoftware.htmlunit.WebClient;
 import com.gargoylesoftware.htmlunit.html.HtmlElement;
 import com.gargoylesoftware.htmlunit.html.HtmlPage;
+import org.junit.Assert;
+import org.junit.Test;
+import org.oddjob.OurDirs;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
+import java.io.File;
+import java.net.URL;
+
+import static org.hamcrest.CoreMatchers.is;
 
 public class OjTreeModelScript1Test extends Assert {
 
