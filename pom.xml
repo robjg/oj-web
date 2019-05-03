@@ -19,7 +19,7 @@
     </scm>
 
     <properties>
-        <jetty.version>9.4.14.v20181114</jetty.version>
+        <jetty.version>9.4.18.v20190429</jetty.version>
         <resteasy.version>3.6.2.Final</resteasy.version>
         <htmlunit.version>2.33</htmlunit.version>
     </properties>
