@@ -14,8 +14,8 @@
     <url>http://rgordon.co.uk/oddjob</url>
 
     <scm>
-        <url>https://github.com/robjg/run-oddjob</url>
-        <connection>scm:git:git://github.com/robjg/run-oddjob.git</connection>
+        <url>https://github.com/robjg/oj-web</url>
+        <connection>scm:git:git://github.com/robjg/oj-web.git</connection>
     </scm>
 
     <properties>
