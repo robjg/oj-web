@@ -108,7 +108,7 @@
                         <id>exec-main-tsc</id>
                         <phase>generate-sources</phase>
                         <configuration>
-                            <executable>${env.APPDATA}/npm/tsc.cmd</executable>
+                            <executable>tsc</executable>
                             <arguments>
                                 <argument>-p</argument>
                                 <argument>${project.basedir}\src\main\ts</argument>
@@ -122,7 +122,7 @@
                         <id>exec-test-tsc</id>
                         <phase>generate-sources</phase>
                         <configuration>
-                            <executable>${env.APPDATA}/npm/tsc.cmd</executable>
+                            <executable>tsc</executable>
                             <arguments>
                                 <argument>-p</argument>
                                 <argument>${project.basedir}\src\test\ts</argument>
