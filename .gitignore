@@ -4,3 +4,5 @@
 /build/
 /.classpath
 /oj-web.iml
+/.settings/
+/.project
