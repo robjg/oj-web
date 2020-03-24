@@ -1,5 +1,7 @@
 package org.oddjob.rest.model;
 
+import org.oddjob.arooa.ArooaSession;
+import org.oddjob.describe.UniversalDescriber;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.junit.Assert;
@@ -16,10 +18,10 @@ public class OddjobTrackerTest extends Assert {
 	@Test
 	public void testSimleIconEvents() {
 		FlagState flagJob = new FlagState();
-		
-		OddjobTracker tracker = new OddjobTracker(
-				new StandardArooaSession());
-		
+
+		ArooaSession session = new StandardArooaSession();
+		OddjobTracker tracker = new OddjobTracker(session.getBeanRegistry(), new UniversalDescriber(session));
+
 		int nodeId = tracker.track(flagJob);
 		
 		assertEquals(0, nodeId);
@@ -97,9 +99,9 @@ public class OddjobTrackerTest extends Assert {
 		oddjob.setConfiguration(new XMLConfiguration("XML", xml));
 		
 		oddjob.load();
-		
-		OddjobTracker test = new OddjobTracker(
-				new StandardArooaSession());
+
+		ArooaSession session = new StandardArooaSession();
+		OddjobTracker test = new OddjobTracker(session.getBeanRegistry(), new UniversalDescriber(session));
 		
 		int oddjobId = test.track(oddjob);
 		Assert.assertEquals(0, oddjobId);
@@ -180,9 +182,9 @@ public class OddjobTrackerTest extends Assert {
 		oddjob.setConfiguration(new XMLConfiguration("XML", xml));
 		
 		oddjob.run();
-		
-		OddjobTracker test = new OddjobTracker(
-				new StandardArooaSession());
+
+		ArooaSession session = new StandardArooaSession();
+		OddjobTracker test = new OddjobTracker(session.getBeanRegistry(), new UniversalDescriber(session));
 		
 		int oddjobId = test.track(oddjob);
 		
@@ -208,9 +210,9 @@ public class OddjobTrackerTest extends Assert {
 		oddjob.setConfiguration(new XMLConfiguration("XML", xml));
 		
 		oddjob.run();
-		
-		OddjobTracker test = new OddjobTracker(
-				new StandardArooaSession());
+
+		ArooaSession session = new StandardArooaSession();
+		OddjobTracker test = new OddjobTracker(session.getBeanRegistry(), new UniversalDescriber(session));
 		
 		test.track(oddjob);
 		

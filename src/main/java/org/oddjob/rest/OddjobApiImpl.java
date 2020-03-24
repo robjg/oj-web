@@ -55,7 +55,7 @@ public class OddjobApiImpl implements OddjobApi {
 			throw new NullPointerException("No " + OddjobApplication.ROOT_ATTRIBUTE_NAME + 
 					" in Servlet Context.");
 		}
-		this.tracker = new OddjobTracker(webExport.getArooaSession());
+		this.tracker = new OddjobTracker(webExport.getBeanDirectory(), webExport.getDescriber());
 		this.tracker.track(webExport.getRootComponent());
 		
 		this.uploadDirectory = webExport.getUploadDirectory();

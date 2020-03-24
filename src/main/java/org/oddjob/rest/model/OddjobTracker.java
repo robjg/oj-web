@@ -3,11 +3,14 @@ package org.oddjob.rest.model;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
+import java.util.Objects;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ConcurrentMap;
 import java.util.concurrent.atomic.AtomicInteger;
 import java.util.concurrent.atomic.AtomicLong;
 
+import org.oddjob.arooa.registry.BeanDirectory;
+import org.oddjob.describe.Describer;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.oddjob.Iconic;
@@ -39,8 +42,10 @@ public class OddjobTracker {
 
 	private static final Logger logger = LoggerFactory.getLogger(OddjobTracker.class);
 	
-	private final ArooaSession session;
-	
+	private final BeanDirectory beanDirectory;
+
+	private final Describer describer;
+
 	private final AtomicLong sequenceNumber = new AtomicLong();
 	
 	private final AtomicInteger nodeId = new AtomicInteger();
@@ -51,8 +56,10 @@ public class OddjobTracker {
 	
 	private final IconRegistry iconRegistry = new IconRegistry();
 
-	public OddjobTracker(ArooaSession session) {
-		this.session = session;
+	public OddjobTracker(BeanDirectory beanDirectory, Describer describer) {
+
+		this.beanDirectory = Objects.requireNonNull(beanDirectory);
+		this.describer = Objects.requireNonNull(describer);
 	}
 	
 	public ComponentSummary[] nodeIdFor(String... componentPaths) {
@@ -60,7 +67,7 @@ public class OddjobTracker {
 		List<ComponentSummary> results = new ArrayList<>();
 		
 		for (String path : componentPaths) {
-			Object maybeComponent = session.getBeanRegistry().lookup(path);
+			Object maybeComponent = beanDirectory.lookup(path);
 			
 			if (maybeComponent == null) {
 				continue;
@@ -93,7 +100,7 @@ public class OddjobTracker {
 	/**
 	 * Track changes in a node node.
 	 * 
-	 * @param node The job node.
+	 * @param tracker The job node.
 	 * @return The nodeId create to reference the node by.
 	 */
 	int track(final NodeTracker tracker) {
@@ -276,8 +283,7 @@ public class OddjobTracker {
 			return null;
 		}
 		
-		Map<String, String> properties = 
-				new UniversalDescriber(session).describe(node);
+		Map<String, String> properties = describer.describe(node);
 		
 		return new PropertiesDTO(nodeId, properties);
 	}

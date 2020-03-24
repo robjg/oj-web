@@ -1,5 +1,7 @@
 package org.oddjob.rest.model;
 
+import org.oddjob.arooa.ArooaSession;
+import org.oddjob.describe.UniversalDescriber;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.junit.Assert;
@@ -49,8 +51,9 @@ public class OddjobTrackerConsoleTest extends Assert {
 	public void testConsoleLines() throws ClassNotFoundException {
 		
 		logger.info("-------------  testConsoleLines  -------------------");
-		
-		OddjobTracker test = new OddjobTracker(new StandardArooaSession());
+
+		ArooaSession session = new StandardArooaSession();
+		OddjobTracker test = new OddjobTracker(session.getBeanRegistry(), new UniversalDescriber(session));
 		
 		Job1 job1 = new Job1();
 		

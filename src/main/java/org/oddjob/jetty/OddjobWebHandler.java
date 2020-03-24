@@ -22,6 +22,7 @@ import org.oddjob.arooa.deploy.annotations.ArooaAttribute;
 import org.oddjob.arooa.deploy.annotations.ArooaHidden;
 import org.oddjob.arooa.life.ArooaSessionAware;
 import org.oddjob.arooa.types.ValueFactory;
+import org.oddjob.describe.UniversalDescriber;
 import org.oddjob.rest.OddjobApi;
 import org.oddjob.rest.OddjobApplication;
 import org.oddjob.rest.WebRoot;
@@ -150,7 +151,7 @@ implements ValueFactory<Handler>, ArooaSessionAware {
 		contextHandler.setContextPath(contextPath);
 		contextHandler.getServletContext().setAttribute(
 				OddjobApplication.ROOT_ATTRIBUTE_NAME, 
-				new WebRoot(root, session, uploadDirectory));
+				new WebRoot(root, session.getBeanRegistry(), new UniversalDescriber(session), uploadDirectory));
 		
 		contextHandler.addServlet(wsServletHolder(), servicePath);
 		
