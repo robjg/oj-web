@@ -9,7 +9,7 @@
         
 	<dependencies>
 	
-	    <dependency org="uk.co.rgordon" name="oddjob" rev="latest.integration"
+	    <dependency org="uk.co.rgordon" name="oddjob" rev="${project.version}"
 	    			conf="provided->default" />
 	    	
 	    <dependency org="org.eclipse.jetty" name="jetty-server" rev="${jetty.version}"
@@ -33,7 +33,7 @@
 	    <dependency org="org.jboss.resteasy" name="resteasy-servlet-initializer" rev="${resteasy.version}"
 	    			conf="default->default" />
 
-		<dependency org="uk.co.rgordon" name="arooa" rev="latest.integration"
+		<dependency org="uk.co.rgordon" name="arooa" rev="${project.version}"
 					conf="test->test" />
 
 	    <dependency org="junit" name="junit" rev="${junit.version}"
