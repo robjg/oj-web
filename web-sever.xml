@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<oddjob id="oddjob">
+    <job>
+        <sequential>
+            <jobs>
+                <web:server port="8080" xmlns:web="oddjob:web">
+                    <handlers>
+                        <web:resource base="c:/users/rob/projects/oj-reactjs">
+                            <welcomeFiles>
+                                <list>
+                                    <values>
+                                        <value value="index.html"/>
+                                    </values>
+                                </list>
+                            </welcomeFiles>
+                        </web:resource>
+                        <web:oddjob-web root="${serverJobs}" serviceOnly="true"/>
+                    </handlers>
+                </web:server>
+                <oddjob file="${oddjob.dir}/server-jobs.xml" id="serverJobs"/>
+            </jobs>
+        </sequential>
+    </job>
+</oddjob>

@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<oddjob id="this">
+    <job>
+        <sequential>
+            <jobs>
+                <echo name="Echo Hello"><![CDATA[Hello]]></echo>
+                <echo name="Echo World"><![CDATA[World]]></echo>
+            </jobs>
+        </sequential>
+    </job>
+</oddjob>

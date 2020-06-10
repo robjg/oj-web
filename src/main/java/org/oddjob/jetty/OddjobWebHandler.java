@@ -3,6 +3,7 @@ package org.oddjob.jetty;
 import java.io.File;
 import java.net.MalformedURLException;
 import java.util.EnumSet;
+import java.util.Objects;
 
 import javax.servlet.DispatcherType;
 import javax.servlet.MultipartConfigElement;
@@ -130,6 +131,8 @@ implements ValueFactory<Handler>, ArooaSessionAware {
 	
 	@Override
 	public Handler toValue() throws ArooaConversionException {
+
+		Object root = Objects.requireNonNull(this.root, "No root job.");
 
 		String contextPath = this.contextPath;
 		if (contextPath == null) {
