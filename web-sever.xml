@@ -5,7 +5,7 @@
             <jobs>
                 <web:server port="8080" xmlns:web="oddjob:web">
                     <handlers>
-                        <web:resource base="c:/users/rob/projects/oj-reactjs">
+                        <web:resource base="c:/users/rob/projects/oj-reactjs/dist">
                             <welcomeFiles>
                                 <list>
                                     <values>
