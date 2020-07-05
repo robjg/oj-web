@@ -18,7 +18,7 @@ import static org.hamcrest.Matchers.notNullValue;
 public class ClientServerTest {
 
     @Test
-    public void testStartStop() throws Exception {
+    public void testSubscribeReceiveUnsubscribe() throws Exception {
 
         BlockingQueue<Notification> results = new LinkedBlockingDeque<>();
 

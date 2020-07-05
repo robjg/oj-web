@@ -1,0 +1,33 @@
+package org.oddjob.http;
+
+import com.google.gson.Gson;
+import com.google.gson.GsonBuilder;
+import org.junit.Test;
+import org.oddjob.remote.OperationType;
+
+import static org.hamcrest.Matchers.is;
+import static org.junit.Assert.assertThat;
+
+public class OperationTypeDeSerTest {
+
+    @Test
+    public void testSerializeDeserialize() {
+
+        OperationType<Void> ot = OperationType
+                .named("foo")
+                .withSignature(String.class, int.class)
+                .returning(void.class);
+
+        Gson gson = new GsonBuilder()
+                .registerTypeAdapter(OperationType.class, new OperationTypeDeSer(getClass().getClassLoader()))
+                .create();
+
+        String json = gson.toJson(ot);
+
+        System.out.println(json);
+
+        OperationType<?> copy = gson.fromJson(json, OperationType.class);
+
+        assertThat(copy, is(ot));
+    }
+}
