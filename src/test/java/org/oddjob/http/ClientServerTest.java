@@ -89,13 +89,13 @@ public class ClientServerTest {
 
         server.start();
 
-        OperationType<String> op1 = OperationType.named("greeting")
+        OperationType<String> op1 = OperationType.ofName("greeting")
                 .returning(String.class);
-        OperationType<Boolean> op2 = OperationType.named("maybe")
+        OperationType<Boolean> op2 = OperationType.ofName("maybe")
                 .withSignature(int.class, String.class).returning(boolean.class);
-        OperationType<Fruit> op3 = OperationType.named("fruit")
+        OperationType<Fruit> op3 = OperationType.ofName("fruit")
                 .withSignature(Fruit.class).returning(Fruit.class);
-        OperationType<Void> op4 = OperationType.named("foo")
+        OperationType<Void> op4 = OperationType.ofName("foo")
                 .withSignature(String.class).returningVoid();
 
         try (InvokerClient client = new InvokerClient(

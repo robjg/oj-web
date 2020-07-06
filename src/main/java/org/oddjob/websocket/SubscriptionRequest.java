@@ -1,5 +1,7 @@
 package org.oddjob.websocket;
 
+import org.oddjob.remote.NotificationType;
+
 import java.util.Objects;
 
 /**
@@ -16,7 +18,7 @@ public class SubscriptionRequest {
 
     private long remoteId;
 
-    private String type;
+    private NotificationType<?> type;
 
     public Action getAction() {
         return action;
@@ -34,11 +36,11 @@ public class SubscriptionRequest {
         this.remoteId = remoteId;
     }
 
-    public String getType() {
+    public NotificationType<?> getType() {
         return type;
     }
 
-    public void setType(String type) {
+    public void setType(NotificationType<?> type) {
         this.type = type;
     }
 
@@ -49,7 +51,7 @@ public class SubscriptionRequest {
         SubscriptionRequest request = (SubscriptionRequest) o;
         return remoteId == request.remoteId &&
                 action == request.action &&
-                type.equals(request.type);
+                Objects.equals(type, request.type);
     }
 
     @Override

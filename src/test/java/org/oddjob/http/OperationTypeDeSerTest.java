@@ -14,7 +14,7 @@ public class OperationTypeDeSerTest {
     public void testSerializeDeserialize() {
 
         OperationType<Void> ot = OperationType
-                .named("foo")
+                .ofName("foo")
                 .withSignature(String.class, int.class)
                 .returning(void.class);
 

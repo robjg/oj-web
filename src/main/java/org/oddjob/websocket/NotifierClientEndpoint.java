@@ -10,7 +10,6 @@ import javax.websocket.*;
 import java.io.IOException;
 import java.util.HashMap;
 import java.util.Map;
-import java.util.Objects;
 import java.util.Set;
 import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.TimeUnit;
@@ -26,7 +25,7 @@ public class NotifierClientEndpoint implements RemoteNotifier {
 
     public static final long TIMEOUT_SECONDS = 5L;
 
-    private final Map<String, Set<NotificationListener>> listeners
+    private final Map<String, Set<NotificationListener<?>>> listeners
             = new HashMap<>();
 
     private final NotificationManager notificationManager;
@@ -35,16 +34,17 @@ public class NotifierClientEndpoint implements RemoteNotifier {
 
     private Session session;
 
-    public NotifierClientEndpoint(NotificationInfoProvider notificationInfoProvider) {
-        Objects.requireNonNull(notificationInfoProvider);
+    public NotifierClientEndpoint() {
 
-        this.notificationManager = new NotificationManager(notificationInfoProvider,
+        this.notificationManager = new NotificationManager(
                 this::subscribe,
                 this::unsubscribe);
 
         this.gson = new GsonBuilder()
+                .registerTypeAdapter(NotificationType.class,
+                        new NotificationTypeDesSer(getClass().getClassLoader()))
                 .registerTypeAdapter(Notification.class,
-                        new NotificationDeserializer(notificationInfoProvider))
+                        new NotificationDeserializer())
                 .create();
     }
 
@@ -65,7 +65,7 @@ public class NotifierClientEndpoint implements RemoteNotifier {
             logger.debug("Message from {}: {}", session.getId(), message);
         }
 
-        Notification notification = gson.fromJson(message, Notification.class);
+        Notification<?> notification = gson.fromJson(message, Notification.class);
 
         notificationManager.handleNotification(notification);
     }
@@ -80,23 +80,22 @@ public class NotifierClientEndpoint implements RemoteNotifier {
     }
 
     @Override
-    public NotificationInfo getNotificationInfo(long remoteId) throws RemoteException {
-        return notificationManager.getNotificationInfo(remoteId);
-    }
-
-    @Override
-    public void addNotificationListener(long remoteId, String notificationType, NotificationListener notificationListener) throws RemoteException {
+    public <T> void addNotificationListener(long remoteId,
+                                            NotificationType<T> notificationType,
+                                            NotificationListener<T> notificationListener) throws RemoteException {
 
         notificationManager.addNotificationListener(remoteId, notificationType, notificationListener);
     }
 
     @Override
-    public void removeNotificationListener(long remoteId, String notificationType, NotificationListener notificationListener) throws RemoteException {
+    public <T> void removeNotificationListener(long remoteId,
+                                               NotificationType<T> notificationType,
+                                               NotificationListener<T> notificationListener) throws RemoteException {
 
         notificationManager.removeNotificationListener(remoteId, notificationType, notificationListener);
     }
 
-    void subscribe(long remoteId, String type) throws RemoteException {
+    <T> void subscribe(long remoteId, NotificationType<T> type) throws RemoteException {
 
         if (remoteId == NotifierServerEndpoint.SYSTEM_REMOTE_ID) {
             return;
@@ -111,7 +110,7 @@ public class NotifierClientEndpoint implements RemoteNotifier {
 
         CountDownLatch latch = new CountDownLatch(1);
 
-        NotificationListener listener = notification -> {
+        NotificationListener<SubscriptionRequest> listener = notification -> {
             if (notification.getData().equals(request)) {
                 latch.countDown();
             }
@@ -140,7 +139,7 @@ public class NotifierClientEndpoint implements RemoteNotifier {
                 listener);
     }
 
-    void unsubscribe(long remoteId, String type) throws RemoteException {
+    <T> void unsubscribe(long remoteId, NotificationType<T> type) throws RemoteException {
 
         if (remoteId == NotifierServerEndpoint.SYSTEM_REMOTE_ID) {
             return;
@@ -155,7 +154,7 @@ public class NotifierClientEndpoint implements RemoteNotifier {
 
         CountDownLatch latch = new CountDownLatch(1);
 
-        NotificationListener listener = notification -> {
+        NotificationListener<SubscriptionRequest> listener = notification -> {
             if (notification.getData().equals(request)) {
                 latch.countDown();
             }

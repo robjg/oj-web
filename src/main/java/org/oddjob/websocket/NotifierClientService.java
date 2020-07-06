@@ -1,6 +1,9 @@
 package org.oddjob.websocket;
 
-import org.oddjob.remote.*;
+import org.oddjob.remote.NotificationListener;
+import org.oddjob.remote.NotificationType;
+import org.oddjob.remote.RemoteException;
+import org.oddjob.remote.RemoteNotifier;
 
 import javax.websocket.DeploymentException;
 import javax.websocket.Session;
@@ -18,8 +21,6 @@ public class NotifierClientService implements RemoteNotifier {
 
     public Session session;
 
-    private NotificationInfoProvider notificationInfoProvider;
-
     private NotifierClientEndpoint endpoint;
 
     public void start() throws IOException, DeploymentException {
@@ -29,7 +30,7 @@ public class NotifierClientService implements RemoteNotifier {
         javax.websocket.WebSocketContainer container =
                 javax.websocket.ContainerProvider.getWebSocketContainer();
 
-        this.endpoint = new NotifierClientEndpoint(notificationInfoProvider);
+        this.endpoint = new NotifierClientEndpoint();
 
         this.session = container.connectToServer(endpoint, uri);
     }
@@ -57,12 +58,9 @@ public class NotifierClientService implements RemoteNotifier {
     }
 
     @Override
-    public NotificationInfo getNotificationInfo(long remoteId) throws RemoteException {
-        return notificationInfoProvider.getNotificationInfo(remoteId);
-    }
-
-    @Override
-    public void addNotificationListener(long remoteId, String notificationType, NotificationListener notificationListener) throws RemoteException {
+    public <T> void addNotificationListener(long remoteId,
+                                            NotificationType<T> notificationType,
+                                            NotificationListener<T> notificationListener) throws RemoteException {
         NotifierClientEndpoint endpoint = this.endpoint;
         if (endpoint != null) {
             endpoint.addNotificationListener(remoteId, notificationType, notificationListener);
@@ -70,18 +68,12 @@ public class NotifierClientService implements RemoteNotifier {
     }
 
     @Override
-    public void removeNotificationListener(long remoteId, String notificationType, NotificationListener notificationListener) throws RemoteException {
+    public <T> void removeNotificationListener(long remoteId,
+                                               NotificationType<T> notificationType,
+                                               NotificationListener<T> notificationListener) throws RemoteException {
         NotifierClientEndpoint endpoint = this.endpoint;
         if (endpoint != null) {
             endpoint.removeNotificationListener(remoteId, notificationType, notificationListener);
         }
-    }
-
-    public NotificationInfoProvider getNotificationInfoProvider() {
-        return notificationInfoProvider;
-    }
-
-    public void setNotificationInfoProvider(NotificationInfoProvider notificationInfoProvider) {
-        this.notificationInfoProvider = notificationInfoProvider;
     }
 }

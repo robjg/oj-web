@@ -1,7 +1,10 @@
 package org.oddjob.websocket;
 
 import org.junit.Test;
-import org.oddjob.remote.*;
+import org.oddjob.remote.Notification;
+import org.oddjob.remote.NotificationListener;
+import org.oddjob.remote.NotificationType;
+import org.oddjob.remote.RemoteException;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -14,26 +17,24 @@ public class NotificationManagerTest {
     @Test
     public void testSubscribeUnsubscribe() throws RemoteException {
 
-        NotificationInfo info = new NotificationInfoBuilder()
-                .addType("some.string.event").ofClass(String.class)
-                .build();
+        NotificationType<String> stringType =
+                NotificationType.ofName("some.string.event")
+                        .andDataType(String.class);
 
         List<String> subscribed = new ArrayList<>();
         List<String> unSubscribed = new ArrayList<>();
 
         NotificationManager test = new NotificationManager(
-                id -> info,
-                (remoteId, type) -> subscribed.add("" + remoteId + "-" + type),
-                (remoteId, type) -> unSubscribed.add("" + remoteId + "-" + type));
+                (remoteId, type) -> subscribed.add("" + remoteId + "-" + type.getName()),
+                (remoteId, type) -> unSubscribed.add("" + remoteId + "-" + type.getName()));
 
-        Notification n1 = new Notification(1L, "some.string.event", 1000L, "Hello");
+        Notification<String> n1 = new Notification<>(1L, stringType, 1000L, "Hello");
 
-        List<Notification> results = new ArrayList<>();
+        List<Notification<String>> results = new ArrayList<>();
 
-        NotificationListener listener = results::add;
+        NotificationListener<String> listener = results::add;
 
-        test.addNotificationListener(1L, "some.string.event",
-                listener);
+        test.addNotificationListener(1L, stringType, listener);
 
         assertThat(subscribed.size(), is(1));
         assertThat(subscribed.get(0), is("1-some.string.event"));
@@ -43,7 +44,7 @@ public class NotificationManagerTest {
         assertThat(results.size(), is(1));
         assertThat(results.get(0), is(n1));
 
-        test.removeNotificationListener(1L, "some.string.event", listener);
+        test.removeNotificationListener(1L, stringType, listener);
 
         assertThat(unSubscribed.size(), is(1));
         assertThat(unSubscribed.get(0), is("1-some.string.event"));

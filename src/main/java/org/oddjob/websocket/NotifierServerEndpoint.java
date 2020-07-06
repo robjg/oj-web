@@ -1,10 +1,8 @@
 package org.oddjob.websocket;
 
 import com.google.gson.Gson;
-import org.oddjob.remote.Notification;
-import org.oddjob.remote.NotificationListener;
-import org.oddjob.remote.RemoteException;
-import org.oddjob.remote.RemoteNotifier;
+import com.google.gson.GsonBuilder;
+import org.oddjob.remote.*;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -24,7 +22,9 @@ public class NotifierServerEndpoint {
 
     private static final Logger logger = LoggerFactory.getLogger(NotifierServerEndpoint.class);
 
-    public static final String ACTION_COMPLETE_TYPE = "notifier.action.complete";
+    public static final NotificationType<SubscriptionRequest> ACTION_COMPLETE_TYPE =
+            NotificationType.ofName("notifier.action.complete")
+            .andDataType(SubscriptionRequest.class);
 
     public static final long SYSTEM_REMOTE_ID = -1L;
 
@@ -32,20 +32,25 @@ public class NotifierServerEndpoint {
 
     private final AtomicLong systemSequence = new AtomicLong();
 
-    private final Gson gson = new Gson();
+    private final Gson gson;
 
     public NotifierServerEndpoint(RemoteNotifier remoteNotifier) {
 
-        AtomicReference<NotificationListener> listener = new AtomicReference<>();
+        AtomicReference<NotificationManager> mananger = new AtomicReference<>();
 
         this.notificationManager = new NotificationManager(
-                remoteNotifier,
-                (remoteId, type) -> remoteNotifier.addNotificationListener(remoteId, type, listener.get()),
-                (remoteId, type) -> remoteNotifier.removeNotificationListener(remoteId, type, listener.get()));
+                (remoteId, type) -> remoteNotifier.addNotificationListener(remoteId, type,
+                        mananger.get().getNotificationListener()),
+                (remoteId, type) -> remoteNotifier.removeNotificationListener(remoteId, type,
+                        mananger.get().getNotificationListener()));
 
-        listener.set(notificationManager);
+        mananger.set(notificationManager);
+
+        gson = new GsonBuilder()
+                .registerTypeAdapter(NotificationType.class,
+                        new NotificationTypeDesSer(getClass().getClassLoader()))
+                .create();
     }
-
 
     @OnOpen
     public void open(Session session, EndpointConfig config) {
@@ -62,24 +67,25 @@ public class NotifierServerEndpoint {
             logger.debug("Message from {}: {}", session.getId(), message);
         }
 
-        SubscriptionRequest request = gson.fromJson(message, SubscriptionRequest.class);
+        SubscriptionRequest request = gson.fromJson(message,
+                SubscriptionRequest.class);
 
         switch (request.getAction()) {
             case ADD:
                 notificationManager.addNotificationListener(
                         request.getRemoteId(), request.getType(),
-                        new SessionListener(session));
+                        new SessionListener<>(session));
                 break;
             case REMOVE:
                 notificationManager.removeNotificationListener(
                         request.getRemoteId(), request.getType(),
-                        new SessionListener(session));
+                        new SessionListener<>(session));
                 break;
             default:
                 throw new IllegalStateException();
         }
 
-        Notification response = new Notification(SYSTEM_REMOTE_ID, ACTION_COMPLETE_TYPE,
+        Notification<SubscriptionRequest> response = new Notification<>(SYSTEM_REMOTE_ID, ACTION_COMPLETE_TYPE,
                 systemSequence.getAndIncrement(), request);
 
         return gson.toJson(response);
@@ -95,7 +101,7 @@ public class NotifierServerEndpoint {
 
     }
 
-    static class SessionListener implements NotificationListener {
+    class SessionListener<T> implements NotificationListener<T> {
 
         private final Session session;
 
@@ -104,10 +110,10 @@ public class NotifierServerEndpoint {
         }
 
         @Override
-        public void handleNotification(Notification notification) {
+        public void handleNotification(Notification<T> notification) {
 
             try {
-                session.getBasicRemote().sendText(new Gson().toJson(notification));
+                session.getBasicRemote().sendText(gson.toJson(notification));
             } catch (IOException e) {
                 e.printStackTrace();
             }
@@ -117,7 +123,7 @@ public class NotifierServerEndpoint {
         public boolean equals(Object o) {
             if (this == o) return true;
             if (o == null || getClass() != o.getClass()) return false;
-            SessionListener that = (SessionListener) o;
+            SessionListener<?> that = (SessionListener<?>) o;
             return Objects.equals(session.getId(), that.session.getId());
         }
 

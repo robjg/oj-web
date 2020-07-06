@@ -1,60 +1,49 @@
 package org.oddjob.websocket;
 
 import com.google.gson.*;
+import org.oddjob.arooa.utils.ClassUtils;
 import org.oddjob.remote.Notification;
-import org.oddjob.remote.NotificationInfo;
-import org.oddjob.remote.NotificationInfoProvider;
-import org.oddjob.remote.RemoteException;
+import org.oddjob.remote.NotificationType;
 
 import java.lang.reflect.Type;
 
 /**
- * Gson deserializer for {@link Notification}s. A {@link NotificationInfoProvider} is required
- * to deserialize the user data.
+ * Gson deserializer for {@link Notification}s.
  */
-public class NotificationDeserializer implements JsonDeserializer<Notification> {
+public class NotificationDeserializer implements JsonDeserializer<Notification<?>> {
 
     public static final String TYPE = "type";
     public static final String SEQUENCE = "sequence";
     public static final String REMOTE_ID = "remoteId";
     public static final String DATA = "data";
 
-    private final NotificationInfoProvider notificationInfoProvider;
-
-    public NotificationDeserializer(NotificationInfoProvider notificationInfoProvider) {
-        this.notificationInfoProvider = notificationInfoProvider;
+    public NotificationDeserializer() {
     }
 
     @Override
-    public Notification deserialize(JsonElement json, Type typeOfT, JsonDeserializationContext context) throws JsonParseException {
+    public Notification<?> deserialize(JsonElement json, Type typeOfT, JsonDeserializationContext context) throws JsonParseException {
         JsonObject jsonObject = (JsonObject) json;
 
         long remoteId = jsonObject.getAsJsonPrimitive(REMOTE_ID).getAsLong();
-        String type = jsonObject.getAsJsonPrimitive(TYPE).getAsString();
+
+        NotificationType<?> type = context.deserialize(jsonObject.get(TYPE), NotificationType.class);
+
         long seq = jsonObject.getAsJsonPrimitive(SEQUENCE).getAsLong();
 
         JsonElement ud = jsonObject.get(DATA);
 
-        NotificationInfo notificationInfo;
-        try {
-            notificationInfo = notificationInfoProvider.getNotificationInfo(remoteId);
-        } catch (RemoteException e) {
-            throw new JsonParseException("Failed getting notification info for " + remoteId, e);
+        if (ud == null) {
+            return new Notification<>(remoteId, type, seq, null);
         }
-
-        if (notificationInfo == null) {
-            throw new JsonParseException("No notification info for " + remoteId);
+        else {
+            return inferNotificationType(remoteId, type, seq, ud, context);
         }
-
-        Class<?> dataType = notificationInfo.getTypeOf(type);
-
-        if (dataType == null) {
-            throw new JsonParseException("No notification type info for " + remoteId + " and " + type);
-        }
-
-        Object notificationData = context.deserialize(ud, dataType);
-
-        return new Notification(remoteId, type, seq, notificationData);
     }
 
+    <T> Notification<T> inferNotificationType(
+            long remoteId, NotificationType<T> type, long seq, JsonElement ud, JsonDeserializationContext context) {
+
+        T data = context.deserialize(ud, type.getDataType());
+        return new Notification<>(remoteId, type, seq, ClassUtils.cast(type.getDataType(), data));
+    }
 }

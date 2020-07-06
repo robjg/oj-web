@@ -13,14 +13,12 @@ import java.util.concurrent.atomic.AtomicBoolean;
  * <p/>
  * Threading guarantees aren't perfect. This needs fixing.
  */
-public class NotificationManager implements RemoteNotifier, NotificationListener {
+public class NotificationManager implements RemoteNotifier {
 
     @FunctionalInterface
     public interface Action {
-        void perform(long remoteId, String type) throws RemoteException;
+        void perform(long remoteId, NotificationType<?> type) throws RemoteException;
     }
-
-    private final NotificationInfoProvider notificationInfoProvider;
 
     private final Action subscribeAction;
 
@@ -29,21 +27,22 @@ public class NotificationManager implements RemoteNotifier, NotificationListener
     private final ConcurrentMap<Long, ByTypeListeners> byRemote =
             new ConcurrentHashMap<>();
 
-    public NotificationManager(NotificationInfoProvider notificationInfoProvider, Action subscribeAction, Action unSubscribeAction) {
-        this.notificationInfoProvider = notificationInfoProvider;
+    public NotificationManager(Action subscribeAction, Action unSubscribeAction) {
         this.subscribeAction = subscribeAction;
         this.unSubscribeAction = unSubscribeAction;
     }
 
-    @Override
-    public NotificationInfo getNotificationInfo(long remoteId) throws RemoteException {
-        return notificationInfoProvider.getNotificationInfo(remoteId);
+    private final NotificationListener<?> notificationListener =
+            (NotificationListener<Object>) NotificationManager.this::handleNotification;
+
+    public <T> NotificationListener<T> getNotificationListener() {
+        return (NotificationListener<T>) notificationListener;
     }
 
     @Override
-    public void addNotificationListener(long remoteId,
-                                        String notificationType,
-                                        NotificationListener notificationListener)
+    public <T> void addNotificationListener(long remoteId,
+                                        NotificationType<T> notificationType,
+                                        NotificationListener<T> notificationListener)
             throws RemoteException {
 
         byRemote.computeIfAbsent(remoteId, k -> new ByTypeListeners())
@@ -56,9 +55,9 @@ public class NotificationManager implements RemoteNotifier, NotificationListener
     }
 
     @Override
-    public void removeNotificationListener(long remoteId,
-                                           String notificationType,
-                                           NotificationListener notificationListener) throws RemoteException {
+    public <T> void removeNotificationListener(long remoteId,
+                                           NotificationType<T> notificationType,
+                                           NotificationListener<T> notificationListener) throws RemoteException {
 
         ByTypeListeners btl = byRemote.get(remoteId);
         if (btl == null) {
@@ -75,26 +74,25 @@ public class NotificationManager implements RemoteNotifier, NotificationListener
                 });
     }
 
-    @Override
-    public void handleNotification(Notification notification) {
+    public void handleNotification(Notification<?> notification) {
 
         Optional.ofNullable(byRemote.get(notification.getRemoteId()))
                 .ifPresent(btl -> btl.dispatch(notification));
     }
 
     @FunctionalInterface
-    private interface WithType {
-        void apply(String type) throws RemoteException;
+    private interface WithType<T> {
+        void apply(NotificationType<T> type) throws RemoteException;
     }
 
     static class ByTypeListeners {
 
-        private final ConcurrentMap<String, Set<NotificationListener>> byType =
+        private final ConcurrentMap<NotificationType<?>, Set<NotificationListener<?>>> byType =
                 new ConcurrentHashMap<>();
 
-        void addNotificationListener(String notificationType,
-                                     NotificationListener notificationListener,
-                                     WithType whenNew) throws RemoteException {
+        <T> void addNotificationListener(NotificationType<T> notificationType,
+                                     NotificationListener<T> notificationListener,
+                                     WithType<T> whenNew) throws RemoteException {
 
             AtomicBoolean subscribe = new AtomicBoolean();
 
@@ -108,10 +106,10 @@ public class NotificationManager implements RemoteNotifier, NotificationListener
             }
         }
 
-        void removeNotificationListener(String notificationType,
-                                        NotificationListener notificationListener,
-                                        WithType onEmpty) throws RemoteException {
-            Set<NotificationListener> listeners = byType.get(notificationType);
+        <T> void removeNotificationListener(NotificationType<T> notificationType,
+                                        NotificationListener<T> notificationListener,
+                                        WithType<T> onEmpty) throws RemoteException {
+            Set<NotificationListener<?>> listeners = byType.get(notificationType);
             if (listeners == null) {
                 return;
             }
@@ -124,11 +122,12 @@ public class NotificationManager implements RemoteNotifier, NotificationListener
             }
         }
 
-        void dispatch(Notification notification) {
+        @SuppressWarnings("unchecked")
+        <T> void dispatch(Notification<T> notification) {
 
             Optional.ofNullable(byType.get(notification.getType()))
                     .ifPresent(nls -> nls.forEach(
-                            nl -> nl.handleNotification(notification)));
+                            nl -> ((NotificationListener<T>) nl).handleNotification(notification)));
         }
     }
 

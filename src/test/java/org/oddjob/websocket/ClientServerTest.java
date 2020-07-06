@@ -3,9 +3,8 @@ package org.oddjob.websocket;
 import org.junit.Test;
 import org.oddjob.jetty.JettyHttpServer;
 import org.oddjob.remote.Notification;
-import org.oddjob.remote.NotificationInfo;
-import org.oddjob.remote.NotificationInfoBuilder;
 import org.oddjob.remote.NotificationListener;
+import org.oddjob.remote.NotificationType;
 
 import java.net.URI;
 import java.util.concurrent.BlockingQueue;
@@ -13,6 +12,7 @@ import java.util.concurrent.LinkedBlockingDeque;
 import java.util.concurrent.TimeUnit;
 
 import static org.hamcrest.MatcherAssert.assertThat;
+import static org.hamcrest.Matchers.is;
 import static org.hamcrest.Matchers.notNullValue;
 
 public class ClientServerTest {
@@ -20,16 +20,9 @@ public class ClientServerTest {
     @Test
     public void testSubscribeReceiveUnsubscribe() throws Exception {
 
-        BlockingQueue<Notification> results = new LinkedBlockingDeque<>();
-
-        NotificationInfo info = new NotificationInfoBuilder()
-                .addType(NotifierServerEndpoint.ACTION_COMPLETE_TYPE).ofClass(SubscriptionRequest.class)
-                .and()
-                .addType("some.string.event").ofClass(String.class)
-                .build();
+        BlockingQueue<Notification<String>> results = new LinkedBlockingDeque<>();
 
         NotificationManager notificationManager = new NotificationManager(
-                id -> info,
                 (remoteId, type) -> {
                 },
                 (remoteId, type) -> {
@@ -45,27 +38,30 @@ public class ClientServerTest {
         server.start();
 
         NotifierClientService client = new NotifierClientService();
-        client.setNotificationInfoProvider(id -> info);
         client.setUri(new URI("ws://localhost:" + server.getPort() + "/notifier"));
 
         client.start();
 
-        NotificationListener listener = results::add;
+        NotificationListener<String> listener = results::add;
 
-        client.addNotificationListener(1L, "some.string.event",
-                listener);
+        NotificationType<String> notificationType =
+                NotificationType.ofName("some.string.event")
+                        .andDataType(String.class);
 
-        notificationManager.handleNotification(new Notification(1L, "some.string.event",
+        client.addNotificationListener(1L, notificationType, listener);
+
+        notificationManager.handleNotification(new Notification<>(1L, notificationType,
                 1L, "Hello"));
 
-        Notification notification = results.poll(2, TimeUnit.SECONDS);
+        Notification<String> notification = results.poll(2, TimeUnit.SECONDS);
 
         assertThat(notification, notNullValue());
 
+        assertThat(notification.getData(), is("Hello"));
+
         System.out.println(notification.getData());
 
-        client.removeNotificationListener(1L, "some.string.event",
-                listener);
+        client.removeNotificationListener(1L, notificationType, listener);
 
         client.stop();
 

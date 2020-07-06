@@ -1,9 +1,14 @@
 package org.oddjob.websocket;
 
+import com.google.gson.Gson;
+import com.google.gson.GsonBuilder;
 import org.junit.Test;
 import org.mockito.ArgumentCaptor;
 import org.mockito.stubbing.Answer;
-import org.oddjob.remote.*;
+import org.oddjob.remote.Notification;
+import org.oddjob.remote.NotificationListener;
+import org.oddjob.remote.NotificationType;
+import org.oddjob.remote.RemoteException;
 
 import javax.websocket.EndpointConfig;
 import javax.websocket.RemoteEndpoint;
@@ -22,21 +27,29 @@ public class NotifierClientEndpointTest {
     @Test
     public void testSubscribeAndReceive() throws RemoteException, IOException {
 
-        NotificationInfo info = new NotificationInfoBuilder()
-                .addType(NotifierServerEndpoint.ACTION_COMPLETE_TYPE).ofClass(SubscriptionRequest.class)
-                .and()
-                .addType("some.string.event").ofClass(String.class)
-                .build();
+        NotificationType<String> stringType =
+                NotificationType.ofName("some.string.event")
+                        .andDataType(String.class);
 
-        NotifierClientEndpoint test = new NotifierClientEndpoint(id -> info);
+        Gson gson = new GsonBuilder()
+                .registerTypeAdapter(NotificationType.class,
+                        new NotificationTypeDesSer(getClass().getClassLoader()))
+                .registerTypeAdapter(Notification.class,
+                        new NotificationDeserializer())
+                .create();
+
+        String stringTypeJson = gson.toJson(stringType);
+        String subTypeJson = gson.toJson(NotifierServerEndpoint.ACTION_COMPLETE_TYPE);
+
+        NotifierClientEndpoint test = new NotifierClientEndpoint();
 
         Session session = mock(Session.class);
         RemoteEndpoint.Basic basic = mock(RemoteEndpoint.Basic.class);
 
         doAnswer((Answer<Object>) invocationOnMock -> {
             String text = (String) invocationOnMock.getArguments()[0];
-            String reply = "{\"remoteId\":-1,\"type\":\"notifier.action.complete\",\"sequence\":0,\"data\":" +
-                    text + "}";
+            String reply = "{\"remoteId\":-1,\"type\":" + subTypeJson + ",\"sequence\":0,\"data\":"
+            + text + "}";
             new Thread(() -> {test.onMessage(session, reply);}).start();
             return null;
         }).when(basic).sendText(anyString());
@@ -51,41 +64,42 @@ public class NotifierClientEndpointTest {
 
         test.open(session, config);
 
-        List<Notification> results = new ArrayList<>();
+        List<Notification<String>> results = new ArrayList<>();
 
-        NotificationListener listener = results::add;
+        NotificationListener<String> listener = results::add;
 
         // Subscribe
 
         test.addNotificationListener(1L,
-                "some.string.event", listener);
+                stringType, listener);
 
         ArgumentCaptor<String> captor = ArgumentCaptor.forClass(String.class);
 
         verify(basic).sendText(captor.capture());
 
         assertThat(captor.getValue(), is(
-                "{\"action\":\"ADD\",\"remoteId\":1,\"type\":\"some.string.event\"}"));
+                "{\"action\":\"ADD\",\"remoteId\":1,\"type\":" + stringTypeJson +"}"));
 
         // Receive
 
-        test.onMessage(session, "{\"remoteId\":1,\"type\":\"some.string.event\",\"sequence\":1000,\"data\":\"Hello\"}");
+        test.onMessage(session, "{\"remoteId\":1,\"type\":" + stringTypeJson +
+                ",\"sequence\":1000,\"data\":\"Hello\"}");
 
         assertThat(results.size(), is(1));
         assertThat(results.get(0), is(
-                new Notification(1L, "some.string.event", 1000L, "Hello")));
+                new Notification(1L, stringType, 1000L, "Hello")));
 
         // Unsubscribe
 
-        test.removeNotificationListener(1L, "some.string.event", listener);
+        test.removeNotificationListener(1L, stringType, listener);
 
-        test.onMessage(session, "{\"remoteId\":1,\"type\":\"some.string.event\",\"sequence\":1000,\"data\":\"Hello\"}");
+        test.onMessage(session, "{\"remoteId\":1,\"type\":" + stringTypeJson + ",\"sequence\":1000,\"data\":\"Hello\"}");
 
         assertThat(results.size(), is(1));
 
         verify(basic, times(2)).sendText(captor.capture());
 
         assertThat(captor.getValue(), is(
-                "{\"action\":\"REMOVE\",\"remoteId\":1,\"type\":\"some.string.event\"}"));
+                "{\"action\":\"REMOVE\",\"remoteId\":1,\"type\":" + stringTypeJson + "}"));
     }
 }

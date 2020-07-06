@@ -2,10 +2,10 @@ package org.oddjob.websocket;
 
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
+import com.google.gson.reflect.TypeToken;
 import org.junit.Test;
 import org.oddjob.remote.Notification;
-import org.oddjob.remote.NotificationInfo;
-import org.oddjob.remote.NotificationInfoBuilder;
+import org.oddjob.remote.NotificationType;
 
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.is;
@@ -38,32 +38,40 @@ public class NotificationDeserializerTest {
     @Test
     public void testNotificationFromTo() {
 
-        NotificationInfo info = new NotificationInfoBuilder()
-                .addType("some.string.event").ofClass(String.class)
-                .and()
-                .addType("some.data.event").ofClass(UserData.class)
-                .and()
-                .addType("some.ints.event").ofClass(int[].class)
-                .build();
+        NotificationType<String> stringType =
+                NotificationType.ofName("some.string.event")
+                        .andDataType(String.class);
+
+        NotificationType<UserData> dataType =
+                NotificationType.ofName("some.data.event")
+                                .andDataType(UserData.class);
+
+        NotificationType<int[]> intsType =
+                NotificationType.ofName("some.ints.event")
+                        .andDataType(int[].class);
 
         Gson gson = new GsonBuilder()
-                .registerTypeAdapter(Notification.class, new NotificationDeserializer(id -> info))
+                .registerTypeAdapter(NotificationType.class,
+                        new NotificationTypeDesSer(getClass().getClassLoader()))
+                .registerTypeAdapter(Notification.class,
+                        new NotificationDeserializer())
                 .create();
 
-        Notification n1 = new Notification(1L,
-                "some.string.event", 22L,
+        Notification<String> n1 = new Notification<>(1L,
+                stringType, 22L,
                 "green");
 
         String json = gson.toJson(n1);
 
-        Notification copy1 = gson.fromJson(json, Notification.class);
+        Notification<String> copy1 = gson.fromJson(json,
+                new TypeToken<Notification<String>>(){}.getType());
 
         assertThat(copy1.getRemoteId(), is(1L));
-        assertThat(copy1.getType(), is("some.string.event"));
+        assertThat(copy1.getType().getName(), is("some.string.event"));
         assertThat(copy1.getData(), is("green"));
 
         Notification n2 = new Notification(1L,
-                "some.data.event", 22L,
+                dataType, 22L,
                 new UserData("red", new long[]{1, 2, 3}));
 
         String json2 = gson.toJson(n2);
@@ -75,7 +83,7 @@ public class NotificationDeserializerTest {
         assertThat(ud.getSomeNumbers(), is(new long[]{1L, 2L, 3L}));
 
         Notification n3 = new Notification(1L,
-                "some.ints.event", 22L,
+                intsType, 22L,
                 new int[]{1, 2, 3});
 
         String json3 = gson.toJson(n3);
@@ -88,24 +96,28 @@ public class NotificationDeserializerTest {
     @Test
     public void testNullDataType() {
 
-        NotificationInfo info = new NotificationInfoBuilder()
-                .addType("some.void.event").ofClass(Void.class)
-                .build();
+        NotificationType<Void> notificationType =
+                NotificationType.ofName("some.void.event")
+                        .andDataType(void.class);
 
         Gson gson = new GsonBuilder()
-                .registerTypeAdapter(Notification.class, new NotificationDeserializer(id -> info))
+                .registerTypeAdapter(NotificationType.class,
+                        new NotificationTypeDesSer(getClass().getClassLoader()))
+                .registerTypeAdapter(Notification.class,
+                        new NotificationDeserializer())
                 .create();
 
         Notification n1 = new Notification(1L,
-                "some.void.event", 22L,
+                notificationType, 22L,
                 null);
 
         String json = gson.toJson(n1);
 
-        Notification copy1 = gson.fromJson(json, Notification.class);
+        Notification<Void> copy1 = gson.fromJson(json,
+                new TypeToken<Notification<Void>>(){}.getType());
 
         assertThat(copy1.getRemoteId(), is(1L));
-        assertThat(copy1.getType(), is("some.void.event"));
+        assertThat(copy1.getType(), is(notificationType));
         assertThat(copy1.getData(), nullValue());
     }
 

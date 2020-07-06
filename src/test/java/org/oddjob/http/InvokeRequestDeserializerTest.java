@@ -54,7 +54,7 @@ public class InvokeRequestDeserializerTest {
     public void testSerializeDeserializeReturningVoid() {
 
         OperationType<Void> ot = OperationType
-                .named("foo")
+                .ofName("foo")
                 .withSignature(String.class, int.class, Fruit.class)
                 .returningVoid();
 
@@ -89,7 +89,7 @@ public class InvokeRequestDeserializerTest {
     public void testSerializeDeserializeArgAsArray() {
 
         OperationType<Void> ot = OperationType
-                .named("foo")
+                .ofName("foo")
                 .withSignature(Object[].class)
                 .returningVoid();
 
@@ -122,7 +122,7 @@ public class InvokeRequestDeserializerTest {
     public void testSerializeDeserializeNullArg() {
 
         OperationType<Void> ot = OperationType
-                .named("foo")
+                .ofName("foo")
                 .withSignature(String.class, String.class)
                 .returningVoid();
 
