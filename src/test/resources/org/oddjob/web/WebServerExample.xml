@@ -1,0 +1,20 @@
+<oddjob xmlns:jmx="http://rgordon.co.uk/oddjob/jmx">
+  <job>
+    <sequential>
+      <jobs>
+        <jmx:server root="${folder}" />
+        <web:server xmlns:web="oddjob:web" id="server"
+                    port="${server.port}">
+          <handlers>
+            <bean class="org.oddjob.web.WebServerHandlerJmx" />
+          </handlers>
+        </web:server>
+        <folder id="folder">
+          <jobs>
+            <echo id="echo"><![CDATA[Hello from an Oddjob Server!]]></echo>
+          </jobs>
+        </folder>
+      </jobs>
+    </sequential>
+  </job>
+</oddjob>

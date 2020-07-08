@@ -3,6 +3,7 @@ package org.oddjob.http;
 import org.oddjob.remote.OperationType;
 
 import java.util.Arrays;
+import java.util.Objects;
 
 /**
  * Request that is sent from client to server.
@@ -17,7 +18,7 @@ public class InvokeRequest {
 
     public InvokeRequest(long remoteId, OperationType<?> operationType, Object[] args) {
         this.remoteId = remoteId;
-        this.operationType = operationType;
+        this.operationType = Objects.requireNonNull(operationType);
         this.args = args;
     }
 
@@ -80,6 +81,12 @@ public class InvokeRequest {
                     args);
         }
 
+        public InvokeRequest andNoArgs() {
+
+            return new InvokeRequest(remoteId,
+                    operationType,
+                    null);
+        }
     }
 
 }

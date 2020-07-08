@@ -33,7 +33,7 @@ public class InvokerClient implements RemoteInvoker, AutoCloseable {
 
     private final HttpClient httpClient;
 
-    public InvokerClient(URI uri) throws RemoteException {
+    private InvokerClient(URI uri) throws RemoteException {
         this.uri = uri;
 
         this.gson = new GsonBuilder()
@@ -52,6 +52,10 @@ public class InvokerClient implements RemoteInvoker, AutoCloseable {
         } catch (Exception e) {
             throw new RemoteException(e);
         }
+    }
+
+    public static InvokerClient create(URI uri) throws RemoteException {
+        return new InvokerClient(uri);
     }
 
 

@@ -37,33 +37,31 @@ public class ClientServerTest {
 
         server.start();
 
-        NotifierClientService client = new NotifierClientService();
-        client.setUri(new URI("ws://localhost:" + server.getPort() + "/notifier"));
+        try (NotifierClient client = NotifierClient.create(
+                new URI("ws://localhost:" + server.getPort() + "/notifier"))) {
 
-        client.start();
+            NotificationListener<String> listener = results::add;
 
-        NotificationListener<String> listener = results::add;
+            NotificationType<String> notificationType =
+                    NotificationType.ofName("some.string.event")
+                            .andDataType(String.class);
 
-        NotificationType<String> notificationType =
-                NotificationType.ofName("some.string.event")
-                        .andDataType(String.class);
+            client.addNotificationListener(1L, notificationType, listener);
 
-        client.addNotificationListener(1L, notificationType, listener);
+            notificationManager.handleNotification(new Notification<>(1L, notificationType,
+                    1L, "Hello"));
 
-        notificationManager.handleNotification(new Notification<>(1L, notificationType,
-                1L, "Hello"));
+            Notification<String> notification = results.poll(2, TimeUnit.SECONDS);
 
-        Notification<String> notification = results.poll(2, TimeUnit.SECONDS);
+            assertThat(notification, notNullValue());
 
-        assertThat(notification, notNullValue());
+            assertThat(notification.getData(), is("Hello"));
 
-        assertThat(notification.getData(), is("Hello"));
+            System.out.println(notification.getData());
 
-        System.out.println(notification.getData());
+            client.removeNotificationListener(1L, notificationType, listener);
 
-        client.removeNotificationListener(1L, notificationType, listener);
-
-        client.stop();
+        }
 
         server.stop();
 

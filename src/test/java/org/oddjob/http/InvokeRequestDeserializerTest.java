@@ -147,4 +147,31 @@ public class InvokeRequestDeserializerTest {
 
     }
 
+    @Test
+    public void testSerializeDeserializeWithNoArgs() {
+
+        OperationType<Void> ot = OperationType
+                .ofName("foo")
+                .returningVoid();
+
+        InvokeRequest invokeRequest = InvokeRequest.forRemoteId(1L)
+                .withOperation(ot)
+                .andNoArgs();
+
+        Gson gson = new GsonBuilder()
+                .registerTypeAdapter(OperationType.class, new OperationTypeDeSer(getClass().getClassLoader()))
+                .registerTypeAdapter(InvokeRequest.class, new InvokeRequestDeserializer())
+                .create();
+
+        String json = gson.toJson(invokeRequest);
+
+        System.out.println(json);
+
+        InvokeRequest copy = gson.fromJson(json, InvokeRequest.class);
+
+        assertThat(copy.getRemoteId(), is(1L));
+        assertThat(copy.getOperationType(), is(ot));
+        assertThat(copy.getArgs(), nullValue());
+
+    }
 }

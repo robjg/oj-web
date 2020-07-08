@@ -15,46 +15,47 @@ import java.util.Optional;
 /**
  * An Oddjob style service that provides a Web Socket {@link RemoteNotifier}.
  */
-public class NotifierClientService implements RemoteNotifier {
+public class NotifierClient implements RemoteNotifier, AutoCloseable {
 
-    private URI uri;
+    public final Session session;
 
-    public Session session;
+    private final NotifierClientEndpoint endpoint;
 
-    private NotifierClientEndpoint endpoint;
+    private NotifierClient(Session session, NotifierClientEndpoint endpoint) {
+        this.session = session;
+        this.endpoint = endpoint;
+    }
 
-    public void start() throws IOException, DeploymentException {
+    public static NotifierClient create(URI uri) throws RemoteException {
 
         Objects.requireNonNull(uri);
 
         javax.websocket.WebSocketContainer container =
                 javax.websocket.ContainerProvider.getWebSocketContainer();
 
-        this.endpoint = new NotifierClientEndpoint();
+        NotifierClientEndpoint endpoint = new NotifierClientEndpoint();
 
-        this.session = container.connectToServer(endpoint, uri);
+        try {
+            return new NotifierClient(container.connectToServer(endpoint, uri), endpoint);
+        } catch (DeploymentException | IOException e) {
+            throw new RemoteException(e);
+        }
     }
 
-    public void stop() throws IOException {
+    @Override
+    public void close() throws RemoteException {
 
-        this.session.close();
-
-        this.session = null;
-        this.endpoint = null;
+        try {
+            this.session.close();
+        } catch (IOException e) {
+            throw new RemoteException(e);
+        }
     }
 
     public String getSessionId() {
         return Optional.ofNullable(this.session)
                 .map(Session::getId)
                 .orElse(null);
-    }
-
-    public URI getUri() {
-        return uri;
-    }
-
-    public void setUri(URI uri) {
-        this.uri = uri;
     }
 
     @Override

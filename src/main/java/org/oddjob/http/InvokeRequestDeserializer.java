@@ -24,11 +24,16 @@ public class InvokeRequestDeserializer implements JsonDeserializer<InvokeRequest
                 jsonObject.getAsJsonObject(OPERATION_TYPE), OperationType.class);
 
         JsonArray argsArray = jsonObject.getAsJsonArray(ARGS);
-        Object[] args = new Object[argsArray.size()];
-        for (int i = 0; i < args.length; i++) {
-            JsonElement element = argsArray.get(i);
-            Class<?> argType = operationType.getSignature()[i];
-            args[i] = context.deserialize(element, argType);
+        Object[] args;
+        if (argsArray == null) {
+            args = null;
+        } else {
+            args = new Object[argsArray.size()];
+            for (int i = 0; i < args.length; i++) {
+                JsonElement element = argsArray.get(i);
+                Class<?> argType = operationType.getSignature()[i];
+                args[i] = context.deserialize(element, argType);
+            }
         }
 
         return new InvokeRequest(remoteId, operationType, args);

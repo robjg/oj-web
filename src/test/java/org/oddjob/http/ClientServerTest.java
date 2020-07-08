@@ -98,7 +98,7 @@ public class ClientServerTest {
         OperationType<Void> op4 = OperationType.ofName("foo")
                 .withSignature(String.class).returningVoid();
 
-        try (InvokerClient client = new InvokerClient(
+        try (InvokerClient client = InvokerClient.create(
                 new URI("http://localhost:" + server.getPort() + "/invoke")))
         {
             assertThat(client.invoke(2L, op1),
