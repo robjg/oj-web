@@ -1,11 +1,13 @@
 package org.oddjob.http;
 
 import com.google.gson.Gson;
-import com.google.gson.GsonBuilder;
 import org.oddjob.arooa.utils.ClassUtils;
 import org.oddjob.remote.OperationType;
 import org.oddjob.remote.RemoteException;
 import org.oddjob.remote.RemoteInvoker;
+import org.oddjob.web.gson.GsonUtil;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import javax.servlet.ServletConfig;
 import javax.servlet.ServletException;
@@ -21,6 +23,8 @@ import java.io.IOException;
 @WebServlet(name = "InvokableServlet", urlPatterns = "/invoke")
 public class InvokerServlet extends HttpServlet {
 
+    private static final Logger logger = LoggerFactory.getLogger(InvokerServlet.class);
+
     public static final String REMOTE_INVOKER = "remote-invoker";
 
     private final Gson gson;
@@ -28,14 +32,7 @@ public class InvokerServlet extends HttpServlet {
     private RemoteInvoker remoteInvoker;
 
     public InvokerServlet() {
-        this.gson = new GsonBuilder()
-                .registerTypeAdapter(OperationType.class,
-                        new OperationTypeDeSer(getClass().getClassLoader()))
-                .registerTypeAdapter(InvokeRequest.class,
-                        new InvokeRequestDeserializer())
-                .registerTypeAdapter(InvokeResponse.class,
-                        new InvokeResponseDesSer(getClass().getClassLoader()))
-                .create();
+        this.gson = GsonUtil.createGson(getClass().getClassLoader());
     }
 
     @Override
@@ -56,6 +53,10 @@ public class InvokerServlet extends HttpServlet {
 
         InvokeRequest invokeRequest = gson.fromJson(request.getReader(), InvokeRequest.class);
 
+        if (logger.isDebugEnabled()) {
+            logger.debug("Request:" + invokeRequest);
+        }
+
         OperationType<?> operationType = invokeRequest.getOperationType();
 
         Object result;
@@ -68,6 +69,12 @@ public class InvokerServlet extends HttpServlet {
         }
 
         Class<?> returnType = operationType.getReturnType();
+        if (result != null && result.getClass() != returnType) {
+            returnType = result.getClass();
+            if (logger.isDebugEnabled()) {
+                logger.debug("Actual return type is " + returnType.getName());
+            }
+        }
 
         InvokeResponse<?> invokeResponse = inferResponseType(returnType, result);
 

@@ -1,8 +1,8 @@
 package org.oddjob.websocket;
 
 import com.google.gson.Gson;
-import com.google.gson.GsonBuilder;
 import org.oddjob.remote.*;
+import org.oddjob.web.gson.GsonUtil;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -46,10 +46,7 @@ public class NotifierServerEndpoint {
 
         mananger.set(notificationManager);
 
-        gson = new GsonBuilder()
-                .registerTypeAdapter(NotificationType.class,
-                        new NotificationTypeDesSer(getClass().getClassLoader()))
-                .create();
+        this.gson = GsonUtil.createGson(getClass().getClassLoader());
     }
 
     @OnOpen
@@ -93,12 +90,13 @@ public class NotifierServerEndpoint {
 
     @OnClose
     public void close(Session session) {
-
+        logger.debug("Closed session " + session.getId());
     }
 
     @OnError
     public void error(Session session, Throwable t) {
-
+        logger.error("Websocket error for session id " + session.getId(),
+                t);
     }
 
     class SessionListener<T> implements NotificationListener<T> {

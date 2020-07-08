@@ -1,16 +1,13 @@
 package org.oddjob.websocket;
 
 import com.google.gson.Gson;
-import com.google.gson.GsonBuilder;
 import org.oddjob.remote.*;
+import org.oddjob.web.gson.GsonUtil;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import javax.websocket.*;
 import java.io.IOException;
-import java.util.HashMap;
-import java.util.Map;
-import java.util.Set;
 import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.TimeUnit;
 
@@ -25,9 +22,6 @@ public class NotifierClientEndpoint implements RemoteNotifier {
 
     public static final long TIMEOUT_SECONDS = 5L;
 
-    private final Map<String, Set<NotificationListener<?>>> listeners
-            = new HashMap<>();
-
     private final NotificationManager notificationManager;
 
     private final Gson gson;
@@ -40,12 +34,7 @@ public class NotifierClientEndpoint implements RemoteNotifier {
                 this::subscribe,
                 this::unsubscribe);
 
-        this.gson = new GsonBuilder()
-                .registerTypeAdapter(NotificationType.class,
-                        new NotificationTypeDesSer(getClass().getClassLoader()))
-                .registerTypeAdapter(Notification.class,
-                        new NotificationDeserializer())
-                .create();
+        this.gson = GsonUtil.createGson(getClass().getClassLoader());
     }
 
     @OnOpen
@@ -72,11 +61,13 @@ public class NotifierClientEndpoint implements RemoteNotifier {
 
     @OnClose
     public void close(Session session) {
-
+        logger.debug("Closed session " + session.getId());
     }
 
     @OnError
-    public void onError(Session session, Throwable t) {
+    public void error(Session session, Throwable t) {
+        logger.error("Websocket error for session id " + session.getId(),
+                t);
     }
 
     @Override
@@ -111,6 +102,7 @@ public class NotifierClientEndpoint implements RemoteNotifier {
         CountDownLatch latch = new CountDownLatch(1);
 
         NotificationListener<SubscriptionRequest> listener = notification -> {
+            logger.debug("Subscribe callback received: " + notification);
             if (notification.getData().equals(request)) {
                 latch.countDown();
             }
@@ -155,6 +147,7 @@ public class NotifierClientEndpoint implements RemoteNotifier {
         CountDownLatch latch = new CountDownLatch(1);
 
         NotificationListener<SubscriptionRequest> listener = notification -> {
+            logger.debug("Subscribe callback received: " + notification);
             if (notification.getData().equals(request)) {
                 latch.countDown();
             }

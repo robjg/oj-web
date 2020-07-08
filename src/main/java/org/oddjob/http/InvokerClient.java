@@ -1,7 +1,6 @@
 package org.oddjob.http;
 
 import com.google.gson.Gson;
-import com.google.gson.GsonBuilder;
 import com.google.gson.reflect.TypeToken;
 import org.eclipse.jetty.client.HttpClient;
 import org.eclipse.jetty.client.api.ContentResponse;
@@ -12,6 +11,7 @@ import org.oddjob.remote.OperationType;
 import org.oddjob.remote.RemoteException;
 import org.oddjob.remote.RemoteIdException;
 import org.oddjob.remote.RemoteInvoker;
+import org.oddjob.web.gson.GsonUtil;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -36,14 +36,7 @@ public class InvokerClient implements RemoteInvoker, AutoCloseable {
     private InvokerClient(URI uri) throws RemoteException {
         this.uri = uri;
 
-        this.gson = new GsonBuilder()
-                .registerTypeAdapter(OperationType.class,
-                        new OperationTypeDeSer(getClass().getClassLoader()))
-                .registerTypeAdapter(InvokeRequest.class,
-                        new InvokeRequestDeserializer())
-                .registerTypeAdapter(InvokeResponse.class,
-                        new InvokeResponseDesSer(getClass().getClassLoader()))
-                .create();
+        this.gson = GsonUtil.createGson(getClass().getClassLoader());
 
         this.httpClient = new HttpClient();
 
@@ -88,7 +81,7 @@ public class InvokerClient implements RemoteInvoker, AutoCloseable {
         String content = response.getContentAsString();
 
         if (HttpStatus.OK_200  == status) {
-            logger.info("Response OK, response content length " + content.length());
+            logger.debug("Response OK: " + content);
         }
         else {
             String message = "Response " + HttpStatus.getCode(status);

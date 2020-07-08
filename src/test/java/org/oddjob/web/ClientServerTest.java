@@ -1,6 +1,5 @@
 package org.oddjob.web;
 
-import org.junit.Ignore;
 import org.junit.Test;
 import org.oddjob.FailedToStopException;
 import org.oddjob.Oddjob;
@@ -11,7 +10,6 @@ import org.oddjob.arooa.xml.XMLConfiguration;
 
 public class ClientServerTest {
 
-    @Ignore
     @Test
     public void testInvoke() throws FailedToStopException, ArooaConversionException {
 
