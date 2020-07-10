@@ -25,7 +25,7 @@ public class GsonUtil {
                         new OperationTypeDeSer(classLoader))
 
                 .registerTypeAdapter(InvokeRequest.class,
-                        new InvokeRequestDeserializer())
+                        new InvokeRequestGson())
                 .registerTypeAdapter(InvokeResponse.class,
                         new InvokeResponseDesSer(classLoader))
 
@@ -33,6 +33,9 @@ public class GsonUtil {
                         new NotificationTypeDesSer(classLoader))
                 .registerTypeAdapter(Notification.class,
                         new NotificationDeserializer())
+
+                .registerTypeAdapterFactory(
+                        new SerializableDesignFactoryGson())
 
                 .create();
     }

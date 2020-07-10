@@ -60,7 +60,7 @@ class ClientSideToolkitImpl implements ClientSideToolkit {
 		Object result = clientSession.getRemoteConnection().invoke(
 					remoteId,
 					operationType,
-					args);
+					exported);
 
 		return (T) Utils.importResolve(result, clientSession);
 

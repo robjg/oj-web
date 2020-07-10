@@ -187,9 +187,9 @@ implements Structural, LogArchiver, ConsoleArchiver, RemoteDirectoryOwner {
 	@Override
 	protected void onStart() throws Throwable {
 
-		this.cntor = WebRemoteConnector.connect(host, port);
-
 		notificationProcessor = Executors.newSingleThreadScheduledExecutor();
+
+		this.cntor = WebRemoteConnector.connect(host, port, notificationProcessor);
 
 		doStart(cntor.getConnection(), notificationProcessor);
 	}
@@ -210,7 +210,6 @@ implements Structural, LogArchiver, ConsoleArchiver, RemoteDirectoryOwner {
 
 		clientSession = new ClientSessionImpl(
 				mbsc,
-				notificationProcessor,
 				managerFactory,
 				getArooaSession(),
 				logger());

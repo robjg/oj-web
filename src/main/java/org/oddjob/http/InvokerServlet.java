@@ -16,6 +16,7 @@ import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
+import java.util.stream.Collectors;
 
 /**
  * Servlet to handle invoke requests.
@@ -51,7 +52,15 @@ public class InvokerServlet extends HttpServlet {
                           HttpServletResponse response)
             throws ServletException, IOException {
 
-        InvokeRequest invokeRequest = gson.fromJson(request.getReader(), InvokeRequest.class);
+        String json = request.getReader().lines().collect(Collectors.joining());
+
+        InvokeRequest invokeRequest;
+        try {
+            invokeRequest = gson.fromJson(json, InvokeRequest.class);
+        }
+        catch (RuntimeException e) {
+            throw new ServletException("Failed parsing: " + json, e);
+        }
 
         if (logger.isDebugEnabled()) {
             logger.debug("Request:" + invokeRequest);

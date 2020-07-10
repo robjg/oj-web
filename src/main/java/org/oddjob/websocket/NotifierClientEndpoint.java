@@ -9,6 +9,7 @@ import org.slf4j.LoggerFactory;
 import javax.websocket.*;
 import java.io.IOException;
 import java.util.concurrent.CountDownLatch;
+import java.util.concurrent.Executor;
 import java.util.concurrent.TimeUnit;
 
 /**
@@ -24,11 +25,14 @@ public class NotifierClientEndpoint implements RemoteNotifier {
 
     private final NotificationManager notificationManager;
 
+    private final Executor executor;
+
     private final Gson gson;
 
     private Session session;
 
-    public NotifierClientEndpoint() {
+    public NotifierClientEndpoint(Executor executor) {
+        this.executor = executor;
 
         this.notificationManager = new NotificationManager(
                 this::subscribe,
@@ -56,7 +60,13 @@ public class NotifierClientEndpoint implements RemoteNotifier {
 
         Notification<?> notification = gson.fromJson(message, Notification.class);
 
-        notificationManager.handleNotification(notification);
+        // Process System notification on this thread otherwise unsubscribe events can deadlock
+        if (notification.getRemoteId() == NotifierServerEndpoint.SYSTEM_REMOTE_ID) {
+            notificationManager.handleNotification(notification);
+        }
+        else {
+            executor.execute(() -> notificationManager.handleNotification(notification));
+        }
     }
 
     @OnClose
@@ -147,7 +157,7 @@ public class NotifierClientEndpoint implements RemoteNotifier {
         CountDownLatch latch = new CountDownLatch(1);
 
         NotificationListener<SubscriptionRequest> listener = notification -> {
-            logger.debug("Subscribe callback received: " + notification);
+            logger.debug("Unsubscribe callback received: " + notification);
             if (notification.getData().equals(request)) {
                 latch.countDown();
             }

@@ -6,7 +6,6 @@ import org.oddjob.remote.RemoteConnection;
 import org.slf4j.Logger;
 
 import java.util.*;
-import java.util.concurrent.ScheduledExecutorService;
 
 /**
  * Simple implementation of a {@link ClientSession}
@@ -29,8 +28,6 @@ public class ClientSessionImpl implements ClientSession {
 	
 	private final RemoteConnection remoteConnection;
 
-	private final ScheduledExecutorService notificationProcessor;
-
 	private final ClientInterfaceManagerFactory interfaceManagerFactory;
 
 	/**
@@ -43,12 +40,10 @@ public class ClientSessionImpl implements ClientSession {
 	 */
 	public ClientSessionImpl(
 			RemoteConnection remoteConnection,
-			ScheduledExecutorService notificationProcessor,
 			ClientInterfaceManagerFactory interfaceManagerFactory,
 			ArooaSession arooaSession,
 			Logger logger) {
 		this.remoteConnection = remoteConnection;
-		this.notificationProcessor = notificationProcessor;
 		this.interfaceManagerFactory = Objects.requireNonNull(interfaceManagerFactory);
 		this.arooaSession = arooaSession;
 		this.logger = logger;
@@ -117,10 +112,6 @@ public class ClientSessionImpl implements ClientSession {
 		return remoteConnection;
 	}
 	
-	public ScheduledExecutorService getNotificationProcessor() {
-		return notificationProcessor;
-	}
-
 	@Override
 	public ClientInterfaceManagerFactory getInterfaceManagerFactory() {
 		return interfaceManagerFactory;

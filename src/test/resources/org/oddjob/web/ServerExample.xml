@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<oddjob id="this">
+    <job>
+        <sequential>
+            <jobs>
+                <rmireg/>
+                <jmx:server id="server1" root="${server-jobs}" url="service:jmx:rmi://ignored/jndi/rmi://localhost/freds-oddjob-server" xmlns:jmx="http://rgordon.co.uk/oddjob/jmx"/>
+                <web:server id="webServer" port="${server.port}" xmlns:web="oddjob:web">
+                    <handlers>
+                        <web:remote-handler>
+                            <beanServer>
+                                <value value="${server1.serverConnection}"/>
+                            </beanServer>
+                        </web:remote-handler>
+                    </handlers>
+                </web:server>
+                <oddjob file="${this.dir}/ServerJobs.xml" id="server-jobs"/>
+            </jobs>
+        </sequential>
+    </job>
+</oddjob>

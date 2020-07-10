@@ -3,7 +3,9 @@ package org.oddjob.http;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import org.junit.Test;
+import org.oddjob.jmx.client.ComponentTransportable;
 import org.oddjob.remote.OperationType;
+import org.oddjob.web.gson.GsonUtil;
 
 import java.util.Objects;
 
@@ -11,7 +13,7 @@ import static org.hamcrest.Matchers.is;
 import static org.hamcrest.Matchers.nullValue;
 import static org.junit.Assert.assertThat;
 
-public class InvokeRequestDeserializerTest {
+public class InvokeRequestGsonTest {
 
     public static class Fruit {
 
@@ -68,7 +70,7 @@ public class InvokeRequestDeserializerTest {
 
         Gson gson = new GsonBuilder()
                 .registerTypeAdapter(OperationType.class, new OperationTypeDeSer(getClass().getClassLoader()))
-                .registerTypeAdapter(InvokeRequest.class, new InvokeRequestDeserializer())
+                .registerTypeAdapter(InvokeRequest.class, new InvokeRequestGson())
                 .create();
 
         String json = gson.toJson(invokeRequest);
@@ -82,7 +84,6 @@ public class InvokeRequestDeserializerTest {
         assertThat(copy.getArgs()[0], is("Hello"));
         assertThat(copy.getArgs()[1], is(42));
         assertThat(copy.getArgs()[2], is(fruit));
-
     }
 
     @Test
@@ -101,7 +102,7 @@ public class InvokeRequestDeserializerTest {
 
         Gson gson = new GsonBuilder()
                 .registerTypeAdapter(OperationType.class, new OperationTypeDeSer(getClass().getClassLoader()))
-                .registerTypeAdapter(InvokeRequest.class, new InvokeRequestDeserializer())
+                .registerTypeAdapter(InvokeRequest.class, new InvokeRequestGson())
                 .create();
 
         String json = gson.toJson(invokeRequest);
@@ -132,7 +133,7 @@ public class InvokeRequestDeserializerTest {
 
         Gson gson = new GsonBuilder()
                 .registerTypeAdapter(OperationType.class, new OperationTypeDeSer(getClass().getClassLoader()))
-                .registerTypeAdapter(InvokeRequest.class, new InvokeRequestDeserializer())
+                .registerTypeAdapter(InvokeRequest.class, new InvokeRequestGson())
                 .create();
 
         String json = gson.toJson(invokeRequest);
@@ -160,7 +161,7 @@ public class InvokeRequestDeserializerTest {
 
         Gson gson = new GsonBuilder()
                 .registerTypeAdapter(OperationType.class, new OperationTypeDeSer(getClass().getClassLoader()))
-                .registerTypeAdapter(InvokeRequest.class, new InvokeRequestDeserializer())
+                .registerTypeAdapter(InvokeRequest.class, new InvokeRequestGson())
                 .create();
 
         String json = gson.toJson(invokeRequest);
@@ -174,4 +175,33 @@ public class InvokeRequestDeserializerTest {
         assertThat(copy.getArgs(), nullValue());
 
     }
+
+    @Test
+    public void testWhenArgsChange() {
+
+        OperationType<Void> ot = OperationType
+                .ofName("foo")
+                .withSignature(Object.class)
+                .returningVoid();
+
+        ComponentTransportable transportable = new ComponentTransportable(42L);
+
+        InvokeRequest invokeRequest = InvokeRequest.forRemoteId(1L)
+                .withOperation(ot)
+                .andArgs(transportable);
+
+        Gson gson = GsonUtil.createGson(getClass().getClassLoader());
+
+        String json = gson.toJson(invokeRequest);
+
+        System.out.println(json);
+
+        InvokeRequest copy = gson.fromJson(json, InvokeRequest.class);
+
+        assertThat(copy.getRemoteId(), is(1L));
+        assertThat(copy.getOperationType(), is(ot));
+        assertThat(copy.getArgs(), is(new Object[]  { transportable }));
+    }
+
+
 }

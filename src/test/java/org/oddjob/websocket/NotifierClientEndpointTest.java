@@ -41,7 +41,7 @@ public class NotifierClientEndpointTest {
         String stringTypeJson = gson.toJson(stringType);
         String subTypeJson = gson.toJson(NotifierServerEndpoint.ACTION_COMPLETE_TYPE);
 
-        NotifierClientEndpoint test = new NotifierClientEndpoint();
+        NotifierClientEndpoint test = new NotifierClientEndpoint(Runnable::run);
 
         Session session = mock(Session.class);
         RemoteEndpoint.Basic basic = mock(RemoteEndpoint.Basic.class);
@@ -50,7 +50,7 @@ public class NotifierClientEndpointTest {
             String text = (String) invocationOnMock.getArguments()[0];
             String reply = "{\"remoteId\":-1,\"type\":" + subTypeJson + ",\"sequence\":0,\"data\":"
             + text + "}";
-            new Thread(() -> {test.onMessage(session, reply);}).start();
+            new Thread(() -> test.onMessage(session, reply)).start();
             return null;
         }).when(basic).sendText(anyString());
 
@@ -87,7 +87,7 @@ public class NotifierClientEndpointTest {
 
         assertThat(results.size(), is(1));
         assertThat(results.get(0), is(
-                new Notification(1L, stringType, 1000L, "Hello")));
+                new Notification<>(1L, stringType, 1000L, "Hello")));
 
         // Unsubscribe
 

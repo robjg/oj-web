@@ -3,6 +3,8 @@
   <values>
     <arooa:bean-def element='oddjob-web'
       className='org.oddjob.jetty.OddjobWebHandler'/>
+    <arooa:bean-def element='remote-handler'
+                    className='org.oddjob.web.WebServerHandlerJmx'/>
     <arooa:bean-def element='resource'
       className='org.oddjob.jetty.ResourceHandlerType'/>
   </values>
@@ -12,6 +14,9 @@
     </arooa:bean-def>
     <arooa:bean-def element='client'
       className='org.oddjob.jetty.JettyHttpClient'>
+    </arooa:bean-def>
+    <arooa:bean-def element='remote-client'
+                    className='org.oddjob.web.WebClientJob'>
     </arooa:bean-def>
   </components>
 </arooa:descriptor>

@@ -1,0 +1,32 @@
+<oddjob id="this" xmlns:arooa="http://rgordon.co.uk/oddjob/arooa"
+    xmlns:jmx='http://rgordon.co.uk/oddjob/jmx'>
+	<job>
+		<sequential>
+			<jobs>
+
+				<sequential>
+					<jobs>
+						<oddjob id="oj">
+							<configuration>
+								<arooa:configuration resource="org/oddjob/web/TogetherForEachTestOddjob.xml"/>
+							</configuration>
+						</oddjob>
+						<jmx:server id='server' url='service:jmx:rmi://' root='${oj}' />
+						<web:server xmlns:web="oddjob:web" id="webServer">
+							<handlers>
+								<bean class="org.oddjob.web.WebServerHandlerJmx">
+									<beanServer>
+										<value value="${server.serverConnection}"/>
+									</beanServer>
+								</bean>
+							</handlers>
+						</web:server>
+						<web:remote-client
+								host="localhost" id="client"
+								port="${webServer.port}" xmlns:web="oddjob:web"/>
+					</jobs>
+				</sequential>
+			</jobs>
+		</sequential>
+	</job>
+</oddjob>

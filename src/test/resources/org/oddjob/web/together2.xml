@@ -1,0 +1,61 @@
+<oddjob xmlns:jmx="http://rgordon.co.uk/oddjob/jmx">
+	<job>
+		<sequential>
+			<jobs>
+				<rmireg />
+		
+		<!-- Server 2 serves Client 1 which is attached to stuff. -->
+				<jmx:server id='server1'
+					url='service:jmx:rmi://ignored/jndi/rmi://localhost/TogetherTest_together2_server1' root='${stuff}' />
+				<web:server xmlns:web="oddjob:web" id="webServer1">
+					<handlers>
+						<bean class="org.oddjob.web.WebServerHandlerJmx">
+							<beanServer>
+								<value value="${server1.serverConnection}"/>
+							</beanServer>
+						</bean>
+					</handlers>
+				</web:server>
+				<web:remote-client
+						host="localhost" id="client1"
+						port="${webServer1.port}" xmlns:web="oddjob:web"/>
+
+				<jmx:server id='server2'
+					url='service:jmx:rmi://ignored/jndi/rmi://localhost/TogetherTest_together2_server2' root='${client1}' />
+				<web:server xmlns:web="oddjob:web" id="webServer2">
+					<handlers>
+						<bean class="org.oddjob.web.WebServerHandlerJmx">
+							<beanServer>
+								<value value="${server2.serverConnection}"/>
+							</beanServer>
+						</bean>
+					</handlers>
+				</web:server>
+				<web:remote-client
+						host="localhost" id="client2"
+						port="${webServer2.port}" xmlns:web="oddjob:web"/>
+
+		<!-- The root of server 1 -->
+				<sequential id='stuff'>
+					<jobs>
+						<variables id='result' />
+						<echo name="Server Echo" id='fruit'>apples</echo>
+					</jobs>
+				</sequential>
+				<wait for='${client2/client1/fruit.text}' />
+				<echo name="Client Echo">${client2/client1/fruit.text}</echo>
+				<set>
+					<values>
+						<value key='client2/client1/result.echo' value='${client2/client1/fruit.text}' />
+					</values>
+				</set>
+				<stop job='${client2}' />
+				<stop job='${webServer2}' />
+				<stop job='${server2}' />
+				<stop job='${client1}' />
+				<stop job='${webServer1}' />
+				<stop job='${server1}' />
+			</jobs>
+		</sequential>
+	</job>
+</oddjob>

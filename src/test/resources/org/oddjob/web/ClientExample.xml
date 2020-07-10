@@ -1,0 +1,6 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<oddjob>
+    <job>
+        <web:remote-client host="${hosts.freds.pc}" id="freds-pc" name="Connection to Freds PC" port="${server.port}" xmlns:web="oddjob:web"/>
+    </job>
+</oddjob>

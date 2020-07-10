@@ -7,6 +7,7 @@ import org.oddjob.websocket.NotifierClient;
 import java.net.URI;
 import java.net.URISyntaxException;
 import java.util.Objects;
+import java.util.concurrent.Executor;
 
 /**
  * Client Connect that connects to a {@link org.oddjob.web.WebServerHandler}.
@@ -20,7 +21,7 @@ public class WebRemoteConnector implements RemoteConnector {
     }
 
 
-    public static WebRemoteConnector connect(String host, int port) throws RemoteException {
+    public static WebRemoteConnector connect(String host, int port, Executor executor) throws RemoteException {
 
         Objects.requireNonNull(host);
 
@@ -37,7 +38,7 @@ public class WebRemoteConnector implements RemoteConnector {
             throw new RemoteException(e);
         }
 
-        NotifierClient notifierClient = NotifierClient.create(notifierUri);
+        NotifierClient notifierClient = NotifierClient.create(notifierUri, executor);
         InvokerClient invokerClient = InvokerClient.create(invokerUri);
 
         return new WebRemoteConnector(new WebConnection(notifierClient, invokerClient));

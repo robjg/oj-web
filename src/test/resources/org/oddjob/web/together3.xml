@@ -1,0 +1,38 @@
+<oddjob id="this" xmlns:jmx="http://rgordon.co.uk/oddjob/jmx">
+	<job>
+		<sequential>
+			<jobs>
+		<!-- root for server. -->
+				<oddjob id="oj">
+					<configuration>
+						<value value="${child-config}"/>
+					</configuration>
+				</oddjob>
+				
+				<jmx:server id='server1' url='service:jmx:rmi://' root='${oj}' />
+				<web:server xmlns:web="oddjob:web" id="webServer1">
+					<handlers>
+						<bean class="org.oddjob.web.WebServerHandlerJmx">
+							<beanServer>
+								<value value="${server1.serverConnection}"/>
+							</beanServer>
+						</bean>
+					</handlers>
+				</web:server>
+				<web:remote-client
+						host="localhost" id="client1"
+						port="${webServer1.port}" xmlns:web="oddjob:web"/>
+		
+				<echo>${client1/oj/fruit.text}</echo>
+				<set>
+					<values>
+						<value key='client1/oj/result.echo' value='${client1/oj/fruit.text}' />
+					</values>
+				</set>
+				<stop job='${client1}' />
+				<stop job='${webServer1}' />
+				<stop job='${server1}' />
+			</jobs>
+		</sequential>
+	</job>
+</oddjob>

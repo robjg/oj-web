@@ -11,6 +11,7 @@ import java.io.IOException;
 import java.net.URI;
 import java.util.Objects;
 import java.util.Optional;
+import java.util.concurrent.Executor;
 
 /**
  * An Oddjob style service that provides a Web Socket {@link RemoteNotifier}.
@@ -26,14 +27,14 @@ public class NotifierClient implements RemoteNotifier, AutoCloseable {
         this.endpoint = endpoint;
     }
 
-    public static NotifierClient create(URI uri) throws RemoteException {
+    public static NotifierClient create(URI uri, Executor executor) throws RemoteException {
 
         Objects.requireNonNull(uri);
 
         javax.websocket.WebSocketContainer container =
                 javax.websocket.ContainerProvider.getWebSocketContainer();
 
-        NotifierClientEndpoint endpoint = new NotifierClientEndpoint();
+        NotifierClientEndpoint endpoint = new NotifierClientEndpoint(executor);
 
         try {
             return new NotifierClient(container.connectToServer(endpoint, uri), endpoint);

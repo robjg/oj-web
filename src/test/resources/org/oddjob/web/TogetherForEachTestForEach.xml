@@ -1,0 +1,5 @@
+<foreach id='loop'>
+    <job>
+        <echo>Hello ${loop.current}</echo>
+    </job>
+</foreach>

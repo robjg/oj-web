@@ -38,7 +38,8 @@ public class ClientServerTest {
         server.start();
 
         try (NotifierClient client = NotifierClient.create(
-                new URI("ws://localhost:" + server.getPort() + "/notifier"))) {
+                new URI("ws://localhost:" + server.getPort() + "/notifier"),
+                Runnable::run)) {
 
             NotificationListener<String> listener = results::add;
 

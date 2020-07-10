@@ -1,0 +1,21 @@
+<oddjob>
+    <job>
+        <sequential>
+            <jobs>
+                <web:remote-client host="${hosts.freds.pc}" id="freds-pc"
+                                   name="Connection to Freds PC" port="${server.port}" xmlns:web="oddjob:web"/>
+                <scheduling:trigger on="${freds-pc/server-jobs/greeting}"
+                    xmlns:scheduling="http://rgordon.co.uk/oddjob/scheduling">
+                    <job>
+                        <sequential>
+                            <jobs>
+                                <echo id="local-job">Server Job Ran!</echo>
+                                <stop job="${freds-pc}"/>
+                            </jobs>
+                        </sequential>
+                    </job>
+                </scheduling:trigger>
+            </jobs>
+        </sequential>
+    </job>
+</oddjob>
