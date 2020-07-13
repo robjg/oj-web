@@ -1,6 +1,15 @@
-<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 <oddjob>
     <job>
-        <web:remote-client host="${hosts.freds.pc}" id="freds-pc" name="Connection to Freds PC" port="${server.port}" xmlns:web="oddjob:web"/>
+        <sequential>
+            <jobs>
+                <web:remote-client xmlns:web="oddjob:web" host="${hosts.freds.pc}" id="freds-pc" name="Connection to Freds PC" port="${server.port}"/>
+                <folder>
+                    <jobs>
+                        <jmx:client xmlns:jmx="http://rgordon.co.uk/oddjob/jmx" id="freds-pc2" name="Connection to Freds PC" url="service:jmx:rmi:///jndi/rmi://${hosts.freds-pc}/freds-oddjob-server"/>
+                    </jobs>
+                </folder>
+            </jobs>
+        </sequential>
     </job>
 </oddjob>

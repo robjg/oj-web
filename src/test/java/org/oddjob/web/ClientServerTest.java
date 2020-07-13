@@ -1,6 +1,7 @@
 package org.oddjob.web;
 
 import org.junit.Test;
+import org.oddjob.Iconic;
 import org.oddjob.Oddjob;
 import org.oddjob.OddjobLookup;
 import org.oddjob.Stateful;
@@ -21,6 +22,7 @@ import org.slf4j.LoggerFactory;
 
 import javax.management.MBeanServer;
 import javax.management.MBeanServerFactory;
+import javax.swing.*;
 import java.io.File;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -205,4 +207,48 @@ public class ClientServerTest {
         close.close();
     }
 
+    @Test
+    public void testIconic() throws Exception {
+
+        Oddjob serverJobs = new Oddjob();
+        serverJobs.setFile(new File(getClass().getResource("serverJobs.xml")
+                .getFile()));
+        serverJobs.run();
+
+        ArooaSession session = new StandardArooaSession();
+        session.getBeanRegistry().register("serverJobs", serverJobs);
+
+        MBeanServer mbs = MBeanServerFactory.createMBeanServer();
+
+        ServerSideBuilder.Close close = ServerSideBuilder
+                .withSession(session)
+                .buildWith(mbs, "OurServer", serverJobs);
+
+        WebServerHandlerJmx jmxHandler = new WebServerHandlerJmx();
+        jmxHandler.setBeanServer(mbs);
+        JettyHttpServer server = new JettyHttpServer();
+        server.setHandlers(0, jmxHandler.toValue());
+
+        server.start();
+
+        WebClientJob clientJob = new WebClientJob();
+        clientJob.setArooaSession(new StandardArooaSession());
+        clientJob.setHost("localhost");
+        clientJob.setPort(server.getPort());
+
+        clientJob.run();
+
+        Iconic remoteOj = new OddjobLookup(clientJob).lookup("serverJobs",
+                Iconic.class);
+
+        logger.info("** Getting Icon **");
+
+        ImageIcon icon = remoteOj.iconForId("complete");
+
+        assertThat(icon, notNullValue());
+
+        clientJob.stop();
+        server.stop();
+        close.close();
+    }
 }
