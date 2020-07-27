@@ -26,8 +26,17 @@
 	    
 	    <dependency org="org.eclipse.jetty" name="jetty-servlets" rev="${jetty.version}"
 	    			conf="default->default" />
-	    
-	    <dependency org="com.google.code.gson" name="gson" rev="${gson.version}"
+
+		<dependency org="javax.websocket" name="javax.websocket-api" rev="1.1"
+					conf="default->default" />
+
+		<dependency org="org.eclipse.jetty.websocket" name="javax-websocket-server-impl" rev="${jetty.version}"
+					conf="default->default" />
+
+		<dependency org="org.eclipse.jetty.websocket" name="javax-websocket-client-impl" rev="${jetty.version}"
+					conf="default->default" />
+
+		<dependency org="com.google.code.gson" name="gson" rev="${gson.version}"
 	    			conf="default->default" />
 	    			
 	    <dependency org="org.jboss.resteasy" name="resteasy-servlet-initializer" rev="${resteasy.version}"
