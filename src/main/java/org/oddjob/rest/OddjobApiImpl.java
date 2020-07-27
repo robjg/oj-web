@@ -1,31 +1,19 @@
 package org.oddjob.rest;
 
-import java.io.File;
-import java.util.Properties;
-import java.util.concurrent.Executors;
+import com.google.gson.Gson;
+import com.google.gson.GsonBuilder;
+import org.oddjob.rest.model.*;
+import org.oddjob.rest.util.FormData;
+import org.oddjob.rest.util.MultipartRequestMap;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.ws.rs.core.MultivaluedMap;
 import javax.ws.rs.core.Response;
-
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-import org.oddjob.rest.model.ActionBean;
-import org.oddjob.rest.model.ActionStatus;
-import org.oddjob.rest.model.ComponentSummary;
-import org.oddjob.rest.model.ExceptionBean;
-import org.oddjob.rest.model.LogLines;
-import org.oddjob.rest.model.NodeInfos;
-import org.oddjob.rest.model.OddjobTracker;
-import org.oddjob.rest.model.PropertiesDTO;
-import org.oddjob.rest.model.StateDTO;
-import org.oddjob.rest.model.WebActionFactory;
-import org.oddjob.rest.model.WebDialog;
-import org.oddjob.rest.util.FormData;
-import org.oddjob.rest.util.MultipartRequestMap;
-
-import com.google.gson.Gson;
-import com.google.gson.GsonBuilder;
+import java.io.File;
+import java.util.Properties;
+import java.util.concurrent.Executors;
 
 /**
  * Implementation of the Oddjob Web Service API.
@@ -55,7 +43,7 @@ public class OddjobApiImpl implements OddjobApi {
 			throw new NullPointerException("No " + OddjobApplication.ROOT_ATTRIBUTE_NAME + 
 					" in Servlet Context.");
 		}
-		this.tracker = new OddjobTracker(webExport.getBeanDirectory(), webExport.getDescriber());
+		this.tracker = new OddjobTrackerContained(webExport.getBeanDirectory(), webExport.getDescriber());
 		this.tracker.track(webExport.getRootComponent());
 		
 		this.uploadDirectory = webExport.getUploadDirectory();

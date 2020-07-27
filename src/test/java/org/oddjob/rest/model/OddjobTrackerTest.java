@@ -1,15 +1,15 @@
 package org.oddjob.rest.model;
 
-import org.oddjob.arooa.ArooaSession;
-import org.oddjob.describe.UniversalDescriber;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.junit.Assert;
 import org.junit.Test;
 import org.oddjob.Oddjob;
+import org.oddjob.arooa.ArooaSession;
 import org.oddjob.arooa.standard.StandardArooaSession;
 import org.oddjob.arooa.xml.XMLConfiguration;
+import org.oddjob.describe.UniversalDescriber;
 import org.oddjob.state.FlagState;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 public class OddjobTrackerTest extends Assert {
 	
@@ -20,7 +20,8 @@ public class OddjobTrackerTest extends Assert {
 		FlagState flagJob = new FlagState();
 
 		ArooaSession session = new StandardArooaSession();
-		OddjobTracker tracker = new OddjobTracker(session.getBeanRegistry(), new UniversalDescriber(session));
+		OddjobTracker tracker = new OddjobTrackerContained(
+				session.getBeanRegistry(), new UniversalDescriber(session));
 
 		int nodeId = tracker.track(flagJob);
 		
@@ -40,7 +41,7 @@ public class OddjobTrackerTest extends Assert {
 		assertEquals(0, nodeInfo.getNodeId());
 		assertEquals(FlagState.class.getSimpleName(), nodeInfo.getName());
 		assertEquals("ready", nodeInfo.getIcon());
-		assertEquals(null, nodeInfo.getChildren());
+		assertNull(nodeInfo.getChildren());
 		
 		flagJob.run();
 		
@@ -55,7 +56,7 @@ public class OddjobTrackerTest extends Assert {
 		assertEquals(0, nodeInfo.getNodeId());
 		assertEquals(FlagState.class.getSimpleName(), nodeInfo.getName());
 		assertEquals("complete", nodeInfo.getIcon());
-		assertEquals(null, nodeInfo.getChildren());
+		assertNull(nodeInfo.getChildren());
 	
 		// Third Info
 		
@@ -74,9 +75,9 @@ public class OddjobTrackerTest extends Assert {
 		nodeInfo = nodeInfos.getNodeInfo()[0];
 		
 		assertEquals(0, nodeInfo.getNodeId());
-		assertEquals(null, nodeInfo.getName());
+		assertNull(nodeInfo.getName());
 		assertEquals("ready", nodeInfo.getIcon());
-		assertEquals(null, nodeInfo.getChildren());
+		assertNull(nodeInfo.getChildren());
 	}
 
 	@Test
@@ -101,7 +102,8 @@ public class OddjobTrackerTest extends Assert {
 		oddjob.load();
 
 		ArooaSession session = new StandardArooaSession();
-		OddjobTracker test = new OddjobTracker(session.getBeanRegistry(), new UniversalDescriber(session));
+		OddjobTracker test = new OddjobTrackerContained(
+				session.getBeanRegistry(), new UniversalDescriber(session));
 		
 		int oddjobId = test.track(oddjob);
 		Assert.assertEquals(0, oddjobId);
@@ -162,10 +164,10 @@ public class OddjobTrackerTest extends Assert {
 				sequentialNodeInfos.getEventSeq());
 		
 		sequentialNodeInfo = sequentialNodeInfos.getNodeInfo()[0];
-		
-		Assert.assertEquals(null, sequentialNodeInfo.getName());
+
+		Assert.assertNull(sequentialNodeInfo.getName());
 		Assert.assertEquals("complete", sequentialNodeInfo.getIcon());
-		Assert.assertEquals(null, sequentialNodeInfo.getChildren());
+		Assert.assertNull(sequentialNodeInfo.getChildren());
 	}
 	
 	@Test
@@ -184,7 +186,8 @@ public class OddjobTrackerTest extends Assert {
 		oddjob.run();
 
 		ArooaSession session = new StandardArooaSession();
-		OddjobTracker test = new OddjobTracker(session.getBeanRegistry(), new UniversalDescriber(session));
+		OddjobTracker test = new OddjobTrackerContained(
+				session.getBeanRegistry(), new UniversalDescriber(session));
 		
 		int oddjobId = test.track(oddjob);
 		
@@ -212,7 +215,8 @@ public class OddjobTrackerTest extends Assert {
 		oddjob.run();
 
 		ArooaSession session = new StandardArooaSession();
-		OddjobTracker test = new OddjobTracker(session.getBeanRegistry(), new UniversalDescriber(session));
+		OddjobTracker test = new OddjobTrackerContained(
+				session.getBeanRegistry(), new UniversalDescriber(session));
 		
 		test.track(oddjob);
 		

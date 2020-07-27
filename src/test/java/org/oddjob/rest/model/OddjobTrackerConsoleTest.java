@@ -1,21 +1,21 @@
 package org.oddjob.rest.model;
 
-import org.oddjob.arooa.ArooaSession;
-import org.oddjob.describe.UniversalDescriber;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.junit.Assert;
 import org.junit.Test;
 import org.oddjob.OddjobConsole;
 import org.oddjob.Structural;
+import org.oddjob.arooa.ArooaSession;
 import org.oddjob.arooa.logging.LogLevel;
 import org.oddjob.arooa.standard.StandardArooaSession;
+import org.oddjob.describe.UniversalDescriber;
 import org.oddjob.logging.ConsoleOwner;
 import org.oddjob.logging.LogArchive;
 import org.oddjob.logging.LogArchiver;
 import org.oddjob.logging.cache.LogArchiveImpl;
 import org.oddjob.structural.StructuralEvent;
 import org.oddjob.structural.StructuralListener;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 public class OddjobTrackerConsoleTest extends Assert {
 
@@ -48,18 +48,19 @@ public class OddjobTrackerConsoleTest extends Assert {
 	}
 	
 	@Test
-	public void testConsoleLines() throws ClassNotFoundException {
+	public void testConsoleLines() {
 		
 		logger.info("-------------  testConsoleLines  -------------------");
 
 		ArooaSession session = new StandardArooaSession();
-		OddjobTracker test = new OddjobTracker(session.getBeanRegistry(), new UniversalDescriber(session));
+		OddjobTracker test = new OddjobTrackerContained(
+				session.getBeanRegistry(), new UniversalDescriber(session));
 		
 		Job1 job1 = new Job1();
 		
 		int rootId = test.track(job1);
 
-		try (OddjobConsole.Close consoleClose = OddjobConsole.initialise()) {
+		try (OddjobConsole.Close ignored = OddjobConsole.initialise()) {
 			
 			System.out.println("Job1 - Console Line 1");
 			System.out.println("Job1 - Console Line 2");

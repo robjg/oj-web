@@ -1,16 +1,16 @@
 package org.oddjob.rest.model;
 
-import org.oddjob.arooa.ArooaSession;
-import org.oddjob.describe.UniversalDescriber;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.junit.Assert;
 import org.junit.Test;
 import org.oddjob.Structural;
+import org.oddjob.arooa.ArooaSession;
 import org.oddjob.arooa.standard.StandardArooaSession;
+import org.oddjob.describe.UniversalDescriber;
 import org.oddjob.logging.LogEnabled;
 import org.oddjob.structural.StructuralEvent;
 import org.oddjob.structural.StructuralListener;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 public class OddjobTrackerLogTest extends Assert {
 
@@ -47,7 +47,8 @@ public class OddjobTrackerLogTest extends Assert {
 	public void testLogLines() {
 
 		ArooaSession session = new StandardArooaSession();
-		OddjobTracker test = new OddjobTracker(session.getBeanRegistry(), new UniversalDescriber(session));
+		OddjobTracker test = new OddjobTrackerContained(
+				session.getBeanRegistry(), new UniversalDescriber(session));
 		
 		int rootId = test.track(new Job1());
 		
