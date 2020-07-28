@@ -6,8 +6,7 @@ import org.oddjob.Structural;
 import org.oddjob.arooa.logging.LogLevel;
 import org.oddjob.arooa.registry.BeanDirectory;
 import org.oddjob.describe.Describer;
-import org.oddjob.images.IconEvent;
-import org.oddjob.images.IconListener;
+import org.oddjob.jmx.RemoteIdMappings;
 import org.oddjob.logging.ConsoleArchiver;
 import org.oddjob.logging.LogArchiver;
 import org.oddjob.logging.LogEvent;
@@ -18,27 +17,21 @@ import org.oddjob.structural.StructuralListener;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Map;
-import java.util.Objects;
+import java.util.*;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ConcurrentMap;
 import java.util.concurrent.atomic.AtomicInteger;
 import java.util.concurrent.atomic.AtomicLong;
 
 /**
- * Track changes in an Oddjob tree and provide {@link NodeInfo} records
- * based on a last sequence number.
- * <p>
- * The first event will be for sequence number 0;
- * 
+ * An implementation of {@link OddjobTracker} that uses a local node ids.
+ *
  * @author rob
  *
  */
-public class OddjobTrackerContained implements OddjobTracker {
+public class OddjobTrackerLocal implements OddjobTracker {
 
-	private static final Logger logger = LoggerFactory.getLogger(OddjobTrackerContained.class);
+	private static final Logger logger = LoggerFactory.getLogger(OddjobTrackerLocal.class);
 
 	private final BeanDirectory beanDirectory;
 
@@ -46,22 +39,27 @@ public class OddjobTrackerContained implements OddjobTracker {
 
 	private final AtomicLong sequenceNumber = new AtomicLong();
 
-	private final AtomicInteger nodeId = new AtomicInteger();
-
 	private final ConcurrentMap<Integer, NodeTracker> nodes = new ConcurrentHashMap<>();
 
-	private final ConcurrentMap<Object, Integer> componentsToNodIds = new ConcurrentHashMap<>();
+	private final NodeIds nodeIds;
 
 	private final IconRegistry iconRegistry = new IconRegistry();
 
-	public OddjobTrackerContained(BeanDirectory beanDirectory, Describer describer) {
+	public OddjobTrackerLocal(BeanDirectory beanDirectory, Describer describer) {
+		this(null, beanDirectory, describer);
+	}
+
+	public OddjobTrackerLocal(RemoteIdMappings remoteIdMappings, BeanDirectory beanDirectory, Describer describer) {
 
 		this.beanDirectory = Objects.requireNonNull(beanDirectory);
 		this.describer = Objects.requireNonNull(describer);
+		this.nodeIds = Optional.ofNullable(remoteIdMappings)
+				.<NodeIds>map(NodeIdsFromMappings::new)
+				.orElseGet(NodeIdsContained::new);
 	}
 	
 	public ComponentSummary[] nodeIdFor(String... componentPaths) {
-		
+
 		List<ComponentSummary> results = new ArrayList<>();
 		
 		for (String path : componentPaths) {
@@ -71,7 +69,7 @@ public class OddjobTrackerContained implements OddjobTracker {
 				continue;
 			}
 			
-			Integer nodeId = componentsToNodIds.get(maybeComponent);
+			Integer nodeId = nodeIds.getIdFor(maybeComponent);
 			
 			if (nodeId == null) {
 				continue;
@@ -82,16 +80,22 @@ public class OddjobTrackerContained implements OddjobTracker {
 				state = ((Stateful) maybeComponent).lastStateEvent().getState();
 			}
 			
-			results.add(new ComponentSummary(nodeId.intValue(), 
-					maybeComponent.toString(), path, state.toString()));
+			results.add(new ComponentSummary(nodeId,
+					maybeComponent.toString(),
+					path,
+					Optional.ofNullable(state)
+							.map(State::toString)
+							.orElse(null)));
 		}
 
-		return results.toArray(new ComponentSummary[results.size()]);
+		return results.toArray(new ComponentSummary[0]);
 	}
 	
 	public int track(Object node) {
-		
-		return track(new NodeTracker(node, nodeId.getAndIncrement(), 
+
+		int newNodeId = nodeIds.newNodeIdFor(node);
+
+		return track(new NodeTracker(node, newNodeId,
 				sequenceNumber.get()));
 	}
 	
@@ -106,14 +110,10 @@ public class OddjobTrackerContained implements OddjobTracker {
 		Object node = tracker.getNode(); 
 		
 		if (node instanceof Iconic) {
-			((Iconic) node).addIconListener(new IconListener() {
-				
-				@Override
-				public void iconEvent(IconEvent e) {
-					String iconId = e.getIconId();
-					iconRegistry.register(iconId, e.getSource());
-					tracker.updateIcon(iconId, sequenceNumber.incrementAndGet());
-				}
+			((Iconic) node).addIconListener(e -> {
+				String iconId = e.getIconId();
+				iconRegistry.register(iconId, e.getSource());
+				tracker.updateIcon(iconId, sequenceNumber.incrementAndGet());
 			});
 		}
 		
@@ -124,20 +124,21 @@ public class OddjobTrackerContained implements OddjobTracker {
 				public void childRemoved(StructuralEvent event) {
 					int childId = tracker.removeChild(event.getIndex(), sequenceNumber.incrementAndGet());
 					NodeTracker nodeTracker = nodes.remove(childId);
-					componentsToNodIds.remove(nodeTracker.getNode());
+					nodeIds.remove(nodeTracker.getNode());
 				}
 				
 				@Override
 				public void childAdded(StructuralEvent event) {
-					track(tracker.addChild(event.getIndex(), event.getChild(), 
-							nodeId.getAndIncrement(), sequenceNumber.incrementAndGet()));
+					Object child = event.getChild();
+					int newNodeId = nodeIds.newNodeIdFor(child);
+					track(tracker.addChild(event.getIndex(), child,
+							newNodeId, sequenceNumber.incrementAndGet()));
 				}
 			});
 		}
-		
+
 		nodes.put(tracker.getNodeId(), tracker);
-		componentsToNodIds.put(tracker.getNode(), tracker.getNodeId());
-		
+
 		return tracker.getNodeId();
 	}
 	
@@ -147,23 +148,21 @@ public class OddjobTrackerContained implements OddjobTracker {
 		long lastSequence = sequenceNumber.get();
 		
 		List<NodeInfo> nodeInfoList = new ArrayList<>();
-		for (int i = 0; i < nodeIds.length; ++i) {
-			int nodeId = nodeIds[i];
-			
+		for (int nodeId : nodeIds) {
 			NodeTracker tracker = nodes.get(nodeId);
-			
+
 			if (tracker == null) {
 				logger.debug("Node Info request for unknown Id [" + nodeId + "]");
 				continue;
 			}
-			
+
 			NodeInfo nodeInfo = tracker.infoFor(fromSequence);
 			if (nodeInfo != null) {
 				nodeInfoList.add(nodeInfo);
 			}
 		}
 		NodeInfo[] info = nodeInfoList.toArray(
-				new NodeInfo[nodeInfoList.size()]);
+				new NodeInfo[0]);
 		
 		return new NodeInfos(lastSequence, info);
 	}
@@ -213,8 +212,8 @@ public class OddjobTrackerContained implements OddjobTracker {
 		}
 		
 		class LL implements LogListener {
-			List<LogEvent> list = 
-				new ArrayList<LogEvent>();
+			final List<LogEvent> list =
+					new ArrayList<>();
 			
 			public void logEvent(LogEvent logEvent) {
 				list.add(logEvent);
@@ -248,8 +247,8 @@ public class OddjobTrackerContained implements OddjobTracker {
 		}
 		
 		class LL implements LogListener {
-			List<LogEvent> list = 
-				new ArrayList<LogEvent>();
+			final List<LogEvent> list =
+					new ArrayList<>();
 			
 			public void logEvent(LogEvent logEvent) {
 				list.add(logEvent);
@@ -284,5 +283,72 @@ public class OddjobTrackerContained implements OddjobTracker {
 		Map<String, String> properties = describer.describe(node);
 		
 		return new PropertiesDTO(nodeId, properties);
+	}
+
+	interface NodeIds {
+
+
+		Integer getIdFor(Object maybeComponent);
+
+		int newNodeIdFor(Object node);
+
+		void remove(Object node);
+	}
+
+	static class NodeIdsContained implements NodeIds {
+
+		private final AtomicInteger nodeId = new AtomicInteger();
+
+		private final ConcurrentMap<Object, Integer> componentsToNodIds = new ConcurrentHashMap<>();
+
+		@Override
+		public Integer getIdFor(Object maybeComponent) {
+			return componentsToNodIds.get(maybeComponent);
+		}
+
+		@Override
+		public int newNodeIdFor(Object node) {
+			int newNodeId = nodeId.getAndIncrement();
+			componentsToNodIds.put(node, newNodeId);
+			return newNodeId;
+		}
+
+		@Override
+		public void remove(Object node) {
+			componentsToNodIds.remove(node);
+		}
+	}
+
+	static class NodeIdsFromMappings implements NodeIds {
+
+		private final RemoteIdMappings idMappings;
+
+		NodeIdsFromMappings(RemoteIdMappings idMappings) {
+			this.idMappings = idMappings;
+		}
+
+		@Override
+		public Integer getIdFor(Object maybeComponent) {
+			long id = idMappings.idFor(maybeComponent);
+			if (id < 0) {
+				return null;
+			}
+			else {
+				return (int) id;
+			}
+		}
+
+		@Override
+		public int newNodeIdFor(Object node) {
+			long id = idMappings.idFor(node);
+			if (id < 0) {
+				throw new IllegalStateException("No id for " + node);
+			}
+			return (int) id;
+		}
+
+		@Override
+		public void remove(Object node) {
+		}
 	}
 }

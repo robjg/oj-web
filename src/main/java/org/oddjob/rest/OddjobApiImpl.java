@@ -36,17 +36,12 @@ public class OddjobApiImpl implements OddjobApi {
 	/**
 	 * Only constructor.
 	 * 
-	 * @param webExport The root of the Oddjob component hierarchy.
+	 * @param tracker Provide the root of the Oddjob component hierarchy.
 	 */
-	public OddjobApiImpl(WebRoot webExport) {
-		if (webExport == null) {
-			throw new NullPointerException("No " + OddjobApplication.ROOT_ATTRIBUTE_NAME + 
-					" in Servlet Context.");
-		}
-		this.tracker = new OddjobTrackerContained(webExport.getBeanDirectory(), webExport.getDescriber());
-		this.tracker.track(webExport.getRootComponent());
+	public OddjobApiImpl(OddjobTracker tracker, File uploadDirectory) {
+		this.tracker = tracker;
 		
-		this.uploadDirectory = webExport.getUploadDirectory();
+		this.uploadDirectory = uploadDirectory;
 	}
 
 	@Override

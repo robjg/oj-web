@@ -47,7 +47,7 @@ public class OddjobTrackerLogTest extends Assert {
 	public void testLogLines() {
 
 		ArooaSession session = new StandardArooaSession();
-		OddjobTracker test = new OddjobTrackerContained(
+		OddjobTrackerLocal test = new OddjobTrackerLocal(
 				session.getBeanRegistry(), new UniversalDescriber(session));
 		
 		int rootId = test.track(new Job1());

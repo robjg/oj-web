@@ -1,13 +1,5 @@
 package org.oddjob.jetty;
 
-import java.io.File;
-import java.net.MalformedURLException;
-import java.util.EnumSet;
-import java.util.Objects;
-
-import javax.servlet.DispatcherType;
-import javax.servlet.MultipartConfigElement;
-
 import org.eclipse.jetty.server.Handler;
 import org.eclipse.jetty.server.handler.HandlerList;
 import org.eclipse.jetty.server.handler.ResourceHandler;
@@ -18,15 +10,19 @@ import org.eclipse.jetty.servlets.CrossOriginFilter;
 import org.eclipse.jetty.util.resource.Resource;
 import org.jboss.resteasy.plugins.server.servlet.HttpServletDispatcher;
 import org.oddjob.arooa.ArooaSession;
-import org.oddjob.arooa.convert.ArooaConversionException;
 import org.oddjob.arooa.deploy.annotations.ArooaAttribute;
 import org.oddjob.arooa.deploy.annotations.ArooaHidden;
 import org.oddjob.arooa.life.ArooaSessionAware;
 import org.oddjob.arooa.types.ValueFactory;
-import org.oddjob.describe.UniversalDescriber;
 import org.oddjob.rest.OddjobApi;
 import org.oddjob.rest.OddjobApplication;
-import org.oddjob.rest.WebRoot;
+
+import javax.servlet.DispatcherType;
+import javax.servlet.MultipartConfigElement;
+import javax.servlet.ServletContext;
+import java.io.File;
+import java.util.EnumSet;
+import java.util.Objects;
 
 /**
  * @oddjob.description Provide the Oddjob Web Service and Oddjob Web interface.
@@ -130,7 +126,7 @@ implements ValueFactory<Handler>, ArooaSessionAware {
 	}
 	
 	@Override
-	public Handler toValue() throws ArooaConversionException {
+	public Handler toValue() {
 
 		Object root = Objects.requireNonNull(this.root, "No root job.");
 
@@ -152,10 +148,16 @@ implements ValueFactory<Handler>, ArooaSessionAware {
 		ServletContextHandler contextHandler = new ServletContextHandler(
 				ServletContextHandler.SESSIONS);
 		contextHandler.setContextPath(contextPath);
-		contextHandler.getServletContext().setAttribute(
+		ServletContext servletContext = contextHandler.getServletContext();
+		servletContext.setAttribute(
 				OddjobApplication.ROOT_ATTRIBUTE_NAME, 
-				new WebRoot(root, session.getBeanRegistry(), new UniversalDescriber(session), uploadDirectory));
-		
+				root);
+		servletContext.setAttribute(
+				OddjobApplication.SESSION_ATTRIBUTE_NAME, session);
+		servletContext.setAttribute(
+				OddjobApplication.UPLOAD_DIR_ATTRIBUTE_NAME, uploadDirectory);
+
+
 		contextHandler.addServlet(wsServletHolder(), servicePath);
 		
 		if (allowCrossOrigin) {

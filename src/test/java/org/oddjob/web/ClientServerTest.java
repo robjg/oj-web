@@ -14,6 +14,7 @@ import org.oddjob.arooa.standard.StandardArooaSession;
 import org.oddjob.jetty.JettyHttpServer;
 import org.oddjob.jmx.RemoteDirectory;
 import org.oddjob.jmx.RemoteDirectoryOwner;
+import org.oddjob.jmx.server.ServerSide;
 import org.oddjob.jmx.server.ServerSideBuilder;
 import org.oddjob.state.StateConditions;
 import org.oddjob.tools.StateSteps;
@@ -48,7 +49,7 @@ public class ClientServerTest {
 
         MBeanServer mbs = MBeanServerFactory.createMBeanServer();
 
-        try (ServerSideBuilder.Close ignored = ServerSideBuilder
+        try (ServerSide ignored = ServerSideBuilder
                 .withSession(session)
                 .buildWith(mbs, "OurServer", serverJobs)) {
 
@@ -98,7 +99,7 @@ public class ClientServerTest {
 
         MBeanServer mbs = MBeanServerFactory.createMBeanServer();
 
-        try (ServerSideBuilder.Close ignored = ServerSideBuilder
+        try (ServerSide ignored = ServerSideBuilder
                 .withSession(session)
                 .buildWith(mbs, "OurServer", serverJobs)) {
 
@@ -167,7 +168,7 @@ public class ClientServerTest {
 
         MBeanServer mbs = MBeanServerFactory.createMBeanServer();
 
-        ServerSideBuilder.Close close = ServerSideBuilder
+        ServerSide close = ServerSideBuilder
                 .withSession(session)
                 .buildWith(mbs, "OurServer", serverJobs);
 
@@ -220,7 +221,7 @@ public class ClientServerTest {
 
         MBeanServer mbs = MBeanServerFactory.createMBeanServer();
 
-        ServerSideBuilder.Close close = ServerSideBuilder
+        ServerSide close = ServerSideBuilder
                 .withSession(session)
                 .buildWith(mbs, "OurServer", serverJobs);
 

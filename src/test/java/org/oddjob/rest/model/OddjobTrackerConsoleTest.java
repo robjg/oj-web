@@ -53,7 +53,7 @@ public class OddjobTrackerConsoleTest extends Assert {
 		logger.info("-------------  testConsoleLines  -------------------");
 
 		ArooaSession session = new StandardArooaSession();
-		OddjobTracker test = new OddjobTrackerContained(
+		OddjobTrackerLocal test = new OddjobTrackerLocal(
 				session.getBeanRegistry(), new UniversalDescriber(session));
 		
 		Job1 job1 = new Job1();

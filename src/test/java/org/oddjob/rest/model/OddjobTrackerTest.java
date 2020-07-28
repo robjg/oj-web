@@ -16,11 +16,11 @@ public class OddjobTrackerTest extends Assert {
 	private static final Logger logger = LoggerFactory.getLogger(OddjobTrackerTest.class);
 	
 	@Test
-	public void testSimleIconEvents() {
+	public void testSimpleIconEvents() {
 		FlagState flagJob = new FlagState();
 
 		ArooaSession session = new StandardArooaSession();
-		OddjobTracker tracker = new OddjobTrackerContained(
+		OddjobTrackerLocal tracker = new OddjobTrackerLocal(
 				session.getBeanRegistry(), new UniversalDescriber(session));
 
 		int nodeId = tracker.track(flagJob);
@@ -102,7 +102,7 @@ public class OddjobTrackerTest extends Assert {
 		oddjob.load();
 
 		ArooaSession session = new StandardArooaSession();
-		OddjobTracker test = new OddjobTrackerContained(
+		OddjobTrackerLocal test = new OddjobTrackerLocal(
 				session.getBeanRegistry(), new UniversalDescriber(session));
 		
 		int oddjobId = test.track(oddjob);
@@ -186,7 +186,7 @@ public class OddjobTrackerTest extends Assert {
 		oddjob.run();
 
 		ArooaSession session = new StandardArooaSession();
-		OddjobTracker test = new OddjobTrackerContained(
+		OddjobTrackerLocal test = new OddjobTrackerLocal(
 				session.getBeanRegistry(), new UniversalDescriber(session));
 		
 		int oddjobId = test.track(oddjob);
@@ -215,7 +215,7 @@ public class OddjobTrackerTest extends Assert {
 		oddjob.run();
 
 		ArooaSession session = new StandardArooaSession();
-		OddjobTracker test = new OddjobTrackerContained(
+		OddjobTrackerLocal test = new OddjobTrackerLocal(
 				session.getBeanRegistry(), new UniversalDescriber(session));
 		
 		test.track(oddjob);
