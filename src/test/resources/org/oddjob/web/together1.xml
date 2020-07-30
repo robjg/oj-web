@@ -9,9 +9,9 @@
 				<web:server xmlns:web="oddjob:web" id="webServer1">
 					<handlers>
 						<bean class="org.oddjob.web.WebServerHandlerJmx">
-							<beanServer>
-								<value value="${server1.serverConnection}"/>
-							</beanServer>
+							<jmxServer>
+								<value value="${server1}"/>
+							</jmxServer>
 						</bean>
 					</handlers>
 				</web:server>
@@ -23,9 +23,9 @@
 				<web:server xmlns:web="oddjob:web" id="webServer2">
 					<handlers>
 						<bean class="org.oddjob.web.WebServerHandlerJmx">
-							<beanServer>
-								<value value="${server2.serverConnection}"/>
-							</beanServer>
+							<jmxServer>
+								<value value="${server2}"/>
+							</jmxServer>
 						</bean>
 					</handlers>
 				</web:server>

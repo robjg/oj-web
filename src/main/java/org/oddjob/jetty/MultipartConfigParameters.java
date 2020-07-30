@@ -1,5 +1,12 @@
 package org.oddjob.jetty;
 
+import javax.servlet.MultipartConfigElement;
+
+/**
+ * Bean to provide configuration for an {@link javax.servlet.MultipartConfigElement}.
+ *
+ * @see OddjobWebHandler
+ */
 public class MultipartConfigParameters {
 
 	private volatile String location;
@@ -42,4 +49,10 @@ public class MultipartConfigParameters {
 		this.fileSizeThreshold = fileSizeThresholdK;
 	}
 	    
+	public MultipartConfigElement toMultipartConfigElement() {
+
+		return new MultipartConfigElement(location,
+				maxFileSize, maxRequestSize, fileSizeThreshold);
+	}
+
 }

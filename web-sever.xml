@@ -3,9 +3,15 @@
     <job>
         <sequential>
             <jobs>
+                <properties>
+                    <values>
+                        <file file="${oddjob.dir}/../oj-reactjs/dist" key="webBundle"/>
+                    </values>
+                </properties>
+                <jmx:server id="jmxServer" root="${serverJobs}" xmlns:jmx="http://rgordon.co.uk/oddjob/jmx"/>
                 <web:server port="8080" xmlns:web="oddjob:web">
                     <handlers>
-                        <web:resource base="c:/users/rob/projects/oj-reactjs/dist">
+                        <web:resource base="${webBundle}">
                             <welcomeFiles>
                                 <list>
                                     <values>
@@ -14,7 +20,11 @@
                                 </list>
                             </welcomeFiles>
                         </web:resource>
-                        <web:oddjob-web root="${serverJobs}" serviceOnly="true"/>
+                        <web:remote-handler>
+                            <jmxServer>
+                                <value value="${jmxServer}"/>
+                            </jmxServer>
+                        </web:remote-handler>
                     </handlers>
                 </web:server>
                 <oddjob file="${oddjob.dir}/server-jobs.xml" id="serverJobs"/>

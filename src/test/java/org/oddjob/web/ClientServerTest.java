@@ -49,12 +49,14 @@ public class ClientServerTest {
 
         MBeanServer mbs = MBeanServerFactory.createMBeanServer();
 
-        try (ServerSide ignored = ServerSideBuilder
+        try (ServerSide jmxServer = ServerSideBuilder
                 .withSession(session)
                 .buildWith(mbs, "OurServer", serverJobs)) {
 
             WebServerHandlerJmx jmxHandler = new WebServerHandlerJmx();
-            jmxHandler.setBeanServer(mbs);
+            jmxHandler.setJmxServer(jmxServer);
+            jmxHandler.setArooaSession(session);
+
             JettyHttpServer server = new JettyHttpServer();
             server.setHandlers(0, jmxHandler.toValue());
 
@@ -66,7 +68,6 @@ public class ClientServerTest {
             clientJob.setPort(server.getPort());
 
             clientJob.run();
-
 
             Runnable runnable = new OddjobLookup(clientJob).lookup("serverJobs", Runnable.class);
 
@@ -81,9 +82,7 @@ public class ClientServerTest {
             clientJob.stop();
 
             server.stop();
-
         }
-
     }
 
     @Test
@@ -99,12 +98,14 @@ public class ClientServerTest {
 
         MBeanServer mbs = MBeanServerFactory.createMBeanServer();
 
-        try (ServerSide ignored = ServerSideBuilder
+        try (ServerSide jmxServer = ServerSideBuilder
                 .withSession(session)
                 .buildWith(mbs, "OurServer", serverJobs)) {
 
             WebServerHandlerJmx jmxHandler = new WebServerHandlerJmx();
-            jmxHandler.setBeanServer(mbs);
+            jmxHandler.setJmxServer(jmxServer);
+            jmxHandler.setArooaSession(session);
+
             JettyHttpServer server = new JettyHttpServer();
             server.setHandlers(0, jmxHandler.toValue());
 
@@ -168,12 +169,14 @@ public class ClientServerTest {
 
         MBeanServer mbs = MBeanServerFactory.createMBeanServer();
 
-        ServerSide close = ServerSideBuilder
+        ServerSide jmxServer = ServerSideBuilder
                 .withSession(session)
                 .buildWith(mbs, "OurServer", serverJobs);
 
         WebServerHandlerJmx jmxHandler = new WebServerHandlerJmx();
-        jmxHandler.setBeanServer(mbs);
+        jmxHandler.setJmxServer(jmxServer);
+        jmxHandler.setArooaSession(session);
+
         JettyHttpServer server = new JettyHttpServer();
         server.setHandlers(0, jmxHandler.toValue());
 
@@ -205,7 +208,7 @@ public class ClientServerTest {
 
         clientJob.stop();
         server.stop();
-        close.close();
+        jmxServer.close();
     }
 
     @Test
@@ -221,12 +224,14 @@ public class ClientServerTest {
 
         MBeanServer mbs = MBeanServerFactory.createMBeanServer();
 
-        ServerSide close = ServerSideBuilder
+        ServerSide jmxServer = ServerSideBuilder
                 .withSession(session)
                 .buildWith(mbs, "OurServer", serverJobs);
 
         WebServerHandlerJmx jmxHandler = new WebServerHandlerJmx();
-        jmxHandler.setBeanServer(mbs);
+        jmxHandler.setJmxServer(jmxServer);
+        jmxHandler.setArooaSession(session);
+
         JettyHttpServer server = new JettyHttpServer();
         server.setHandlers(0, jmxHandler.toValue());
 
@@ -250,6 +255,6 @@ public class ClientServerTest {
 
         clientJob.stop();
         server.stop();
-        close.close();
+        jmxServer.close();
     }
 }

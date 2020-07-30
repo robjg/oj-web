@@ -15,9 +15,9 @@
 						<web:server xmlns:web="oddjob:web" id="webServer">
 							<handlers>
 								<bean class="org.oddjob.web.WebServerHandlerJmx">
-									<beanServer>
-										<value value="${server.serverConnection}"/>
-									</beanServer>
+									<jmxServer>
+										<value value="${server}"/>
+									</jmxServer>
 								</bean>
 							</handlers>
 						</web:server>

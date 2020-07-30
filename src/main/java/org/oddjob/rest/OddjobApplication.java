@@ -51,8 +51,6 @@ public class OddjobApplication extends Application {
 					servletContext.getAttribute(UPLOAD_DIR_ATTRIBUTE_NAME),
 					"No " + UPLOAD_DIR_ATTRIBUTE_NAME + " in Servlet Context.");
 
-
-
 			OddjobTrackerLocal oddjobTracker;
 
 			RemoteIdMappings idMappings = (RemoteIdMappings) servletContext.getAttribute(ID_MAPPINGS_ATTRIBUTE_NAME);
