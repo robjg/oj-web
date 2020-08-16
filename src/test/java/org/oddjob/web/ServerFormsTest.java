@@ -81,5 +81,7 @@ public class ServerFormsTest {
                 JSONCompareMode.LENIENT);
 
         System.out.println(response.getValue());
+
+        server.stop();
     }
 }

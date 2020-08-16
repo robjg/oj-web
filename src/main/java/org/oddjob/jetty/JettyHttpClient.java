@@ -1,19 +1,19 @@
 package org.oddjob.jetty;
 
-import java.util.LinkedHashMap;
-import java.util.Map;
-import java.util.concurrent.Callable;
-import java.util.concurrent.ExecutionException;
-import java.util.concurrent.TimeoutException;
-
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.eclipse.jetty.client.HttpClient;
 import org.eclipse.jetty.client.api.ContentResponse;
 import org.eclipse.jetty.client.api.Request;
 import org.eclipse.jetty.client.util.StringContentProvider;
 import org.eclipse.jetty.http.HttpStatus;
 import org.eclipse.jetty.util.Fields;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
+import java.util.LinkedHashMap;
+import java.util.Map;
+import java.util.concurrent.Callable;
+import java.util.concurrent.ExecutionException;
+import java.util.concurrent.TimeoutException;
 
 /**
  * @oddjob.description Execute an HTTP client request.
@@ -65,14 +65,21 @@ public class JettyHttpClient implements Callable<Integer> {
 	 */
 	private volatile int status;
 	
-	/** 
+	/**
 	 * @oddjob.property
 	 * @oddjob.description The content retrieved or to send.
 	 * @oddjob.required No.
 	 */
-	private volatile String content;
-	
-	/** 
+	private volatile String requestBody;
+
+	/**
+	 * @oddjob.property
+	 * @oddjob.description The content retrieved or to send.
+	 * @oddjob.required No.
+	 */
+	private volatile String responseBody;
+
+	/**
 	 * @oddjob.property
 	 * @oddjob.description Parameters.
 	 * @oddjob.required No.
@@ -121,7 +128,7 @@ public class JettyHttpClient implements Callable<Integer> {
 						JettyHttpClient.this.parameters);
 			}
 			
-			content = JettyHttpClient.this.content;
+			content = JettyHttpClient.this.requestBody;
 			contentType = JettyHttpClient.this.contentType;
 		}
 		
@@ -154,7 +161,7 @@ public class JettyHttpClient implements Callable<Integer> {
 				if (self.parameters == null) {
 					
 					Request request = httpClient.POST(self.url);
-					request.content(new StringContentProvider(self.content), 
+					request.content(new StringContentProvider(self.content),
 							self.contentType);
 					
 					return request.send();
@@ -192,10 +199,10 @@ public class JettyHttpClient implements Callable<Integer> {
 			ContentResponse response = method.doRequest(httpClient, config);
 			
 			status = response.getStatus();
-			content = response.getContentAsString();
+			responseBody = response.getContentAsString();
 			
 			if (HttpStatus.OK_200  == status) {
-				logger.info("Response OK, response content length " + content.length());
+				logger.info("Response OK, response content length " + responseBody.length());
 				return 0;
 			}
 			else {
@@ -222,13 +229,25 @@ public class JettyHttpClient implements Callable<Integer> {
 	}
 	
 	public String getContent() {
-		return content;
+		return responseBody;
 	}
 
 	public void setContent(String content) {
-		this.content = content;
+		this.requestBody = content;
 	}
-	
+
+	public String getRequestBody() {
+		return requestBody;
+	}
+
+	public void setRequestBody(String requestBody) {
+		this.requestBody = requestBody;
+	}
+
+	public String getResponseBody() {
+		return responseBody;
+	}
+
 	public RequestMethod getMethod() {
 		return method;
 	}
