@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 <oddjob id="oddjob">
     <job>
         <sequential>
@@ -8,8 +8,8 @@
                         <file file="${oddjob.dir}/../oj-reactjs/dist" key="webBundle"/>
                     </values>
                 </properties>
-                <jmx:server id="jmxServer" root="${serverJobs}" xmlns:jmx="http://rgordon.co.uk/oddjob/jmx"/>
-                <web:server port="8080" xmlns:web="oddjob:web">
+                <jmx:server xmlns:jmx="http://rgordon.co.uk/oddjob/jmx" id="jmxServer" root="${serverJobs}"/>
+                <web:server xmlns:web="oddjob:web" port="8080">
                     <handlers>
                         <web:resource base="${webBundle}">
                             <welcomeFiles>
@@ -20,7 +20,7 @@
                                 </list>
                             </welcomeFiles>
                         </web:resource>
-                        <web:remote-handler>
+                        <web:remote-handler allowCrossOrigin="true">
                             <jmxServer>
                                 <value value="${jmxServer}"/>
                             </jmxServer>

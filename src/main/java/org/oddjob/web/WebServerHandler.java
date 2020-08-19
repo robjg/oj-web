@@ -17,8 +17,10 @@ import org.oddjob.rest.OddjobApplication;
 import org.oddjob.websocket.NotifierConfigurator;
 import org.oddjob.websocket.NotifierServerEndpoint;
 
+import javax.servlet.DispatcherType;
 import javax.websocket.server.ServerEndpointConfig;
 import java.io.File;
+import java.util.EnumSet;
 import java.util.Objects;
 import java.util.Optional;
 
@@ -46,6 +48,13 @@ public class WebServerHandler implements ValueFactory<Handler>, ArooaSessionAwar
      * @oddjob.required No. Defaults tmp dir.
      */
     private volatile File uploadDirectory;
+
+    /**
+     * @oddjob.property
+     * @oddjob.description Is cross origin content allowed?
+     * @oddjob.required No. Default to false.
+     */
+    private volatile boolean allowCrossOrigin;
 
     @ArooaHidden
     @Override
@@ -101,6 +110,12 @@ public class WebServerHandler implements ValueFactory<Handler>, ArooaSessionAwar
                 ),
                 OddjobWebHandler.SERVICE_PATH);
 
+        if (allowCrossOrigin) {
+            contextHandler.addFilter(OddjobWebHandler.crossOriginFilter(),
+                    "/*",
+                    EnumSet.of(DispatcherType.REQUEST));
+        }
+
         return contextHandler;
     }
 
@@ -135,4 +150,13 @@ public class WebServerHandler implements ValueFactory<Handler>, ArooaSessionAwar
     public void setUploadDirectory(File uploadDirectory) {
         this.uploadDirectory = uploadDirectory;
     }
+
+    public boolean isAllowCrossOrigin() {
+        return allowCrossOrigin;
+    }
+
+    public void setAllowCrossOrigin(boolean allowCrossOrigin) {
+        this.allowCrossOrigin = allowCrossOrigin;
+    }
+
 }

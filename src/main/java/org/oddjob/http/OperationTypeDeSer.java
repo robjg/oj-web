@@ -6,6 +6,7 @@ import org.oddjob.remote.OperationType;
 
 import java.lang.reflect.Type;
 import java.util.Arrays;
+import java.util.Optional;
 
 /**
  * Gson deserializer for {@link OperationType}s.
@@ -42,10 +43,17 @@ public class OperationTypeDeSer implements JsonSerializer<OperationType<?>>, Jso
 
         JsonObject jsonObject = (JsonObject) json;
 
-        String name = jsonObject.getAsJsonPrimitive(NAME).getAsString();
+        String name = Optional.ofNullable(jsonObject.getAsJsonPrimitive(NAME))
+                .map(JsonPrimitive::getAsString)
+                .orElseThrow(() -> new JsonParseException("No required field " + NAME));
+
         Class<?> type;
         try {
-            type = ClassUtils.classFor(jsonObject.getAsJsonPrimitive(TYPE).getAsString(), classLoader);
+            type = ClassUtils.classFor(
+                    Optional.ofNullable(jsonObject.getAsJsonPrimitive(TYPE))
+                            .map(JsonPrimitive::getAsString)
+                            .orElseThrow(() -> new JsonParseException("No required field " + TYPE)),
+                    classLoader);
         } catch (ClassNotFoundException e) {
             throw new JsonParseException(e);
         }

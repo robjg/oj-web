@@ -36,6 +36,13 @@ public class WebServerHandlerJmx implements ValueFactory<Handler>, ArooaSessionA
      */
     private volatile File uploadDirectory;
 
+    /**
+     * @oddjob.property
+     * @oddjob.description Is cross origin content allowed?
+     * @oddjob.required No. Default to false.
+     */
+    private volatile boolean allowCrossOrigin;
+
     @ArooaHidden
     @Override
     public void setArooaSession(ArooaSession session) {
@@ -58,7 +65,7 @@ public class WebServerHandlerJmx implements ValueFactory<Handler>, ArooaSessionA
         webServerHandler.setArooaSession(session);
         webServerHandler.setMultiPartConfig(multiPartConfig);
         webServerHandler.setUploadDirectory(uploadDirectory);
-
+        webServerHandler.setAllowCrossOrigin(allowCrossOrigin);
         return webServerHandler.toValue();
     }
 
@@ -85,4 +92,13 @@ public class WebServerHandlerJmx implements ValueFactory<Handler>, ArooaSessionA
     public void setUploadDirectory(File uploadDirectory) {
         this.uploadDirectory = uploadDirectory;
     }
+
+    public boolean isAllowCrossOrigin() {
+        return allowCrossOrigin;
+    }
+
+    public void setAllowCrossOrigin(boolean allowCrossOrigin) {
+        this.allowCrossOrigin = allowCrossOrigin;
+    }
+
 }

@@ -195,7 +195,7 @@ public class OddjobWebHandler
         return servletHolder;
     }
 
-    protected FilterHolder crossOriginFilter() {
+    public static FilterHolder crossOriginFilter() {
         FilterHolder holder = new FilterHolder(CrossOriginFilter.class);
         holder.setInitParameter(CrossOriginFilter.ALLOWED_ORIGINS_PARAM, "*");
         holder.setInitParameter(CrossOriginFilter.ACCESS_CONTROL_ALLOW_ORIGIN_HEADER, "*");
