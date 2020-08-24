@@ -169,16 +169,18 @@ public class NotifierClientEndpoint implements RemoteNotifier {
 
         try {
             session.getBasicRemote().sendText(gson.toJson(request));
-        } catch (IOException e) {
-            throw new RemoteIdException(remoteId, e);
-        }
 
-        try {
-            if (!latch.await(TIMEOUT_SECONDS, TimeUnit.SECONDS)) {
-                throw new RemoteIdException(remoteId, "Time out waiting for " + request);
+            try {
+                if (!latch.await(TIMEOUT_SECONDS, TimeUnit.SECONDS)) {
+                    throw new RemoteIdException(remoteId, "Time out waiting for " + request);
+                }
+            } catch (InterruptedException e) {
+                Thread.currentThread().interrupt();
             }
-        } catch (InterruptedException e) {
-            Thread.currentThread().interrupt();
+        }
+        catch (IOException e) {
+            // We just keep going here
+            logger.warn("Failed sending unsubscribe request for " + remoteId + " of type " + type, e);
         }
 
         this.removeNotificationListener(NotifierServerEndpoint.SYSTEM_REMOTE_ID,
