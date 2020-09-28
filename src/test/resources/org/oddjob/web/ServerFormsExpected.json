@@ -4,6 +4,11 @@
   "title": "folder",
   "formItems": [
     {
+      "@element": "forms:text",
+      "property": "id",
+      "title": "Id"
+    },
+    {
       "@element": "forms:group",
       "title": "General",
       "bordered": "true",
@@ -29,6 +34,12 @@
           "element": "echo",
           "title": "echo",
           "formItems": [
+            {
+              "@element": "forms:text",
+              "property": "id",
+              "title": "Id",
+              "value": "greeting"
+            },
             {
               "@element": "forms:group",
               "title": "General",

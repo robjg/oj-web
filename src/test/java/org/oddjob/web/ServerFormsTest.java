@@ -75,12 +75,12 @@ public class ServerFormsTest {
         String expected = FileUtils.readToString(
                 getClass().getResource("ServerFormsExpected.json"));
 
+        System.out.println(response.getValue());
+
         JSONAssert.assertEquals(
                 response.getValue(),
                 expected,
                 JSONCompareMode.LENIENT);
-
-        System.out.println(response.getValue());
 
         server.stop();
     }

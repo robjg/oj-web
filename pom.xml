@@ -128,7 +128,6 @@
 
     </dependencies>
     <build>
-        <finalName>oj-web</finalName>
         <plugins>
             <plugin>
                 <groupId>org.codehaus.mojo</groupId>

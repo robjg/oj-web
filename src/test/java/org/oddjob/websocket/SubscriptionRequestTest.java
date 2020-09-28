@@ -6,12 +6,15 @@ import com.google.gson.reflect.TypeToken;
 import org.junit.Test;
 import org.oddjob.remote.Notification;
 import org.oddjob.remote.NotificationType;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import static org.hamcrest.Matchers.is;
 import static org.junit.Assert.assertThat;
 
 public class SubscriptionRequestTest {
 
+    private static final Logger logger = LoggerFactory.getLogger(SubscriptionRequestTest.class);
     @Test
     public void testJson() {
 
@@ -30,6 +33,8 @@ public class SubscriptionRequestTest {
         test.setType(stringType);
 
         String json = gson.toJson(test);
+
+        logger.debug(json);
 
         SubscriptionRequest copy = gson.fromJson(json, SubscriptionRequest.class);
 

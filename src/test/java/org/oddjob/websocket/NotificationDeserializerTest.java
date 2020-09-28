@@ -6,12 +6,16 @@ import com.google.gson.reflect.TypeToken;
 import org.junit.Test;
 import org.oddjob.remote.Notification;
 import org.oddjob.remote.NotificationType;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.is;
 import static org.hamcrest.Matchers.nullValue;
 
 public class NotificationDeserializerTest {
+
+    private static final Logger logger = LoggerFactory.getLogger(NotificationDeserializerTest.class);
 
     public static class UserData {
 
@@ -62,6 +66,8 @@ public class NotificationDeserializerTest {
                 "green");
 
         String json = gson.toJson(n1);
+
+        logger.debug(json);
 
         Notification<String> copy1 = gson.fromJson(json,
                 new TypeToken<Notification<String>>(){}.getType());
