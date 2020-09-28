@@ -309,6 +309,8 @@
 				<include name="NOTICE.txt"/>
 				<include name="README.md"/>
 				<include name="pom.xml"/>
+				<include name="server-web.xml"/>
+				<include name="server-job.xml"/>
 			</fileset>
 		</copy>
 
@@ -327,6 +329,11 @@
 			<fileset dir="${oddball.dir}"/>
 		</copy>
 
+		<copy todir="${dist.bin.dir}">
+			<fileset dir=".">
+				<include name="server-web.xml"/>
+			</fileset>
+		</copy>
 	</target>
 	
 	<!-- =================================================================== -->
