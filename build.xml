@@ -82,7 +82,7 @@
         <property name="build.test.tsc"     value="${test.dir}/webapp/scripts"/>
 
 		<property name="oddball.dir"		value="${build.dir}/oddball"/>
-		<property name="oddball.lib.dir"    value="${oddball.dir}/lib"/>
+		<property name="oddball.lib"    value="${oddball.dir}/lib"/>
 
 		<property name="test.reports" 		value="${build.dir}/test-reports"/>
 		
@@ -184,7 +184,7 @@
 
 		<mkdir dir="${oddball.dir}"/>
 
-		<jar destfile="${oddball.lib.dir}/${jar.name}"
+		<jar destfile="${oddball.lib}/${jar.name}"
 			 basedir="${build.classes}">
 			<metainf dir=".">
 				<include name="LICENSE.txt"/>
@@ -192,7 +192,7 @@
 			</metainf>
 		</jar>
 
-		<ivy:retrieve pattern="${oddball.lib.dir}/[artifact]-[revision].[ext]" conf="default" />
+		<ivy:retrieve pattern="${oddball.lib}/[artifact]-[revision].[ext]" conf="default" />
 		
 	</target>
 
@@ -282,9 +282,11 @@
 	<!-- Publish the jars in local ivy                                       -->
 	<!-- =================================================================== -->
 	<target name="install" depends="jar">
-		
-		<!-- Not yet implemented -->
-		
+
+		<ivy:publish resolver="local" pubrevision="${build.version}" overwrite="true">
+			<artifacts pattern="${oddball.lib}/[artifact]-[revision].[ext]" />
+		</ivy:publish>
+
 	</target>
 		
 	<!-- =================================================================== -->
