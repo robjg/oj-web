@@ -25,6 +25,7 @@ import java.io.File;
 
 public class ServerFormsTest {
 
+    // Todo: This is really fragile and fails every time a new value is added!
     @Test
     public void testFormsConfiguration() throws Exception {
 

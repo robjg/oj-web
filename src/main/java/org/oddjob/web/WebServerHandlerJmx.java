@@ -14,10 +14,18 @@ import java.io.File;
 import java.util.Objects;
 
 /**
- * Provide a Jetty Server Handler that connects to a local JMX implementation.
+ * @oddjob.description Provide a Jetty Server Handler that connects to a local JMX implementation.
+ * <p>
+ *     This is a Work In Progress for the new React-JS front end.
+ * </p>
  */
 public class WebServerHandlerJmx implements ValueFactory<Handler>, ArooaSessionAware {
 
+    /**
+     * @oddjob.property
+     * @oddjob.description An Oddjob JMX Server.
+     * @oddjob.required Yes, for the time being. Will default soon.
+     */
     private JmxServer jmxServer;
 
     private ArooaSession session;
