@@ -16,7 +16,11 @@ import java.util.Set;
 /**
  * Main entry point into the Web Service. See 
  * <a href="https://jax-rs-spec.java.net/nonav/2.0-rev-a/apidocs/javax/ws/rs/core/Application.html">Application</>. 
- * 
+ * <p>
+ *     This works in two modes depending on if id mappings are provided or not. Provided
+ *     Id mappings means it's running with the new web application with web sockets. No id mappings
+ *     means it's running standalone the old way as just a Rest Service.
+ * </p>
  * 
  * @author rob
  *
@@ -75,12 +79,9 @@ public class OddjobApplication extends Application {
 			}
 
 			services.add(new OddjobApiImpl(oddjobTracker, uploadDirectory));
-			
-			return services;
 		}
-		else {
-			return services;
-		}
+
+		return services;
 	}
 
 }
