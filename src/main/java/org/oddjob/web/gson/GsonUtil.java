@@ -3,7 +3,7 @@ package org.oddjob.web.gson;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import org.oddjob.http.*;
-import org.oddjob.images.ImageIconData;
+import org.oddjob.images.ImageData;
 import org.oddjob.remote.Notification;
 import org.oddjob.remote.NotificationType;
 import org.oddjob.remote.OperationType;
@@ -35,7 +35,7 @@ public class GsonUtil {
                 .registerTypeAdapter(Notification.class,
                         new NotificationDeserializer())
 
-                .registerTypeAdapter(ImageIconData.class, new ImageIconDataGson())
+                .registerTypeAdapter(ImageData.class, new ImageDataGson())
 
                 .registerTypeAdapterFactory(
                         new SerializableDesignFactoryGson())

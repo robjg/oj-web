@@ -3,21 +3,12 @@
  */
 package org.oddjob.rest.model;
 
-import java.awt.Color;
-import java.awt.Graphics2D;
-import java.awt.Image;
-import java.awt.image.BufferedImage;
-import java.awt.image.RenderedImage;
-import java.io.ByteArrayOutputStream;
-import java.io.IOException;
-import java.io.OutputStream;
-import java.util.HashMap;
-import java.util.Map;
-
-import javax.imageio.ImageIO;
-import javax.swing.ImageIcon;
-
 import org.oddjob.Iconic;
+import org.oddjob.images.ImageData;
+
+import java.util.Map;
+import java.util.Optional;
+import java.util.concurrent.ConcurrentHashMap;
 
 /**
  * A registry of icons so they can be served up to 
@@ -29,7 +20,7 @@ import org.oddjob.Iconic;
 public class IconRegistry {
 
 	/** The icons. */
-	final private Map<String, byte[]> icons = new HashMap<String, byte[]>();
+	final private Map<String, ImageData> icons = new ConcurrentHashMap<>();
 
 	/**
 	 * Register an iconId. If the icon id isn't
@@ -40,51 +31,9 @@ public class IconRegistry {
 	 * the lookup.
 	 */
 	public void register(String iconId, Iconic iconic) {
-		synchronized (icons) {
-			if (!icons.containsKey(iconId)) {
-				ImageIcon icon = iconic.iconForId(iconId);
-				
-				ByteArrayOutputStream out = new ByteArrayOutputStream();
-
-				writeIcon(icon, out);
-				
-				icons.put(iconId, out.toByteArray());
-			}
-		}
+		icons.computeIfAbsent(iconId, iconic::iconForId);
 	}
 
-	/**
-	 * Write the icon to an output stream.
-	 * 
-	 * @param icon The icon.
-	 * @param out The output stream. This method will close the output
-	 * stream.
-	 */
-	protected void writeIcon(ImageIcon icon, OutputStream out) {
-		
-		Image image = icon.getImage();
-		RenderedImage rendered;
-		if (image instanceof RenderedImage) {
-			rendered = (RenderedImage) image;
-		}
-		else {
-			BufferedImage buffered = new BufferedImage(
-					icon.getIconWidth(),
-					icon.getIconHeight(),
-					BufferedImage.TYPE_INT_RGB);
-			Graphics2D g = buffered.createGraphics();
-			g.drawImage(image, 0, 0, Color.WHITE, null);
-			g.dispose();
-			rendered = buffered;
-		}
-		try {
-			ImageIO.write((BufferedImage) rendered, "gif", out);
-			out.close();
-		} catch (IOException e) {
-			throw new RuntimeException(e);
-		}
-	}
-	
 	/**
 	 * Retrieve an IconTip for a given icon id.
 	 * 
@@ -93,8 +42,8 @@ public class IconRegistry {
 	 * nothing is registered for that id.
 	 */
 	public byte[] retrieve(String iconId) {
-		synchronized (icons) {
-			return icons.get(iconId);
-		}
+		return Optional.ofNullable(icons.get(iconId))
+				.map(ImageData::getBytes)
+				.orElse(null);
 	}
 }

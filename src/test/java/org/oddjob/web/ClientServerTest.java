@@ -11,6 +11,7 @@ import org.oddjob.arooa.parsing.ConfigurationSession;
 import org.oddjob.arooa.parsing.DragPoint;
 import org.oddjob.arooa.registry.BeanDirectoryOwner;
 import org.oddjob.arooa.standard.StandardArooaSession;
+import org.oddjob.images.ImageData;
 import org.oddjob.jetty.JettyHttpServer;
 import org.oddjob.jmx.RemoteDirectory;
 import org.oddjob.jmx.RemoteDirectoryOwner;
@@ -23,7 +24,6 @@ import org.slf4j.LoggerFactory;
 
 import javax.management.MBeanServer;
 import javax.management.MBeanServerFactory;
-import javax.swing.*;
 import java.io.File;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -249,7 +249,7 @@ public class ClientServerTest {
 
         logger.info("** Getting Icon **");
 
-        ImageIcon icon = remoteOj.iconForId("complete");
+        ImageData icon = remoteOj.iconForId("complete");
 
         assertThat(icon, notNullValue());
 
