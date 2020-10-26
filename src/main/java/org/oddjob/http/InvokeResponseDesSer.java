@@ -36,7 +36,7 @@ public class InvokeResponseDesSer implements JsonSerializer<InvokeResponse<?>>, 
     public InvokeResponse<?> deserialize(JsonElement json, Type typeOfT, JsonDeserializationContext context) throws JsonParseException {
         JsonObject jsonObject = (JsonObject) json;
 
-        Class<?> type = null;
+        Class<?> type;
         try {
             type = ClassUtils.classFor(jsonObject.getAsJsonPrimitive(TYPE).getAsString(), classLoader);
         } catch (ClassNotFoundException e) {
@@ -46,13 +46,10 @@ public class InvokeResponseDesSer implements JsonSerializer<InvokeResponse<?>>, 
         JsonElement valueJson = jsonObject.get(VALUE);
 
         if (valueJson == null) {
-            return new InvokeResponse(type, null );
+            return new InvokeResponse<>(type, null );
         }
         else {
-            Object value = context.deserialize(valueJson, type);
-
-            return new InvokeResponse(type, ClassUtils.cast(type, value));
+            return InvokeResponse.from(type, context.deserialize(valueJson, type));
         }
     }
-
 }

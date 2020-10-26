@@ -62,6 +62,8 @@ public class InvokerClient implements RemoteInvoker, AutoCloseable {
 
         String jsonRequest = gson.toJson(invokeRequest);
 
+        logger.debug("Request: {}", jsonRequest);
+
         Request request = httpClient.POST(uri);
 
         request.content(new StringContentProvider(jsonRequest),

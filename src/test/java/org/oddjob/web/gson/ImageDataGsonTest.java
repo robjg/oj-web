@@ -6,26 +6,10 @@ import org.junit.Test;
 import org.oddjob.images.IconHelper;
 import org.oddjob.images.ImageData;
 
-import java.io.IOException;
-import java.net.URL;
-import java.util.Base64;
-
 import static org.hamcrest.Matchers.is;
 import static org.junit.Assert.assertThat;
 
 public class ImageDataGsonTest {
-
-
-    @Test
-    public void foo() throws IOException {
-
-        URL url = IconHelper.class.getResource("triangle_green.gif");
-
-        ImageData imageData = ImageData.fromUrl(url, "Executing");
-
-        System.out.println(Base64.getEncoder().encodeToString(imageData.getBytes()));
-    }
-
 
     @Test
     public void testSerializeDeserialize() {

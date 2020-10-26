@@ -4,9 +4,7 @@ import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import org.oddjob.http.*;
 import org.oddjob.images.ImageData;
-import org.oddjob.remote.Notification;
-import org.oddjob.remote.NotificationType;
-import org.oddjob.remote.OperationType;
+import org.oddjob.remote.*;
 import org.oddjob.websocket.NotificationDeserializer;
 import org.oddjob.websocket.NotificationTypeDesSer;
 
@@ -34,6 +32,11 @@ public class GsonUtil {
                         new NotificationTypeDesSer(classLoader))
                 .registerTypeAdapter(Notification.class,
                         new NotificationDeserializer())
+
+                .registerTypeAdapter(Initialisation.class,
+                        new InitialisationGson(classLoader))
+                .registerTypeAdapter(Implementation.class,
+                        new ImplementationGson())
 
                 .registerTypeAdapter(ImageData.class, new ImageDataGson())
 

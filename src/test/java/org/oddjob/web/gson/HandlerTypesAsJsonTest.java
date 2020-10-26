@@ -54,7 +54,12 @@ public class HandlerTypesAsJsonTest {
         StatefulHandlerFactory.StateData copy  = gson.fromJson(json,
                 StatefulHandlerFactory.StateData.class);
 
-        assertThat(GenericState.statesEquivalent(state, data.getJobState()), is(true));
+        assertThat(GenericState.statesEquivalent(state, copy.getJobState()), is(true));
+
+        Throwable exception = copy.getThrowable();
+
+        assertThat(exception.getClass(), is(Throwable.class));
+        assertThat(exception.getMessage(), is("Ahhh!"));
     }
 
     @Test
