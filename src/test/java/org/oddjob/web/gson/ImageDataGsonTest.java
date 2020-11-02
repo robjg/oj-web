@@ -6,6 +6,10 @@ import org.junit.Test;
 import org.oddjob.images.IconHelper;
 import org.oddjob.images.ImageData;
 
+import java.io.IOException;
+import java.net.URL;
+import java.util.Base64;
+
 import static org.hamcrest.Matchers.is;
 import static org.junit.Assert.assertThat;
 
@@ -31,4 +35,16 @@ public class ImageDataGsonTest {
         assertThat(copy.getDescription(), is(test.getDescription()));
     }
 
+    // Gets base64 for web.
+    public static void main(String[] args) throws IOException {
+
+        URL url = ImageDataGsonTest.class.getResource(
+                "/org/oddjob/webapp/gfx/plus.png");
+
+        ImageData imageData = ImageData.fromUrl(url, null);
+
+        System.out.println(imageData.getMimeType());
+        System.out.println(Base64.getEncoder().encodeToString(
+                imageData.getBytes()));
+    }
 }
