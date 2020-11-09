@@ -87,6 +87,10 @@ public class InvokerServlet extends HttpServlet {
 
         InvokeResponse<?> invokeResponse = inferResponseType(returnType, result);
 
+        if (logger.isDebugEnabled()) {
+            logger.debug("Response:" + gson.toJson(invokeResponse));
+        }
+
         gson.toJson(invokeResponse, response.getWriter());
     }
 
