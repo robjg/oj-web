@@ -111,9 +111,13 @@ public class NotifierServerEndpoint {
         public void handleNotification(Notification<T> notification) {
 
             try {
-                session.getBasicRemote().sendText(gson.toJson(notification));
+                String json = gson.toJson(notification);
+                if (logger.isDebugEnabled()) {
+                    logger.debug("Sending: " + json);
+                }
+                session.getBasicRemote().sendText(json);
             } catch (IOException e) {
-                e.printStackTrace();
+                logger.error("Failed sending notification" + notification, e);
             }
         }
 
