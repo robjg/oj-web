@@ -76,6 +76,8 @@ public class TogetherTest {
 
         oj.run();
 
+        assertThat(oj.lastStateEvent().getState(), is(ParentState.STARTED));
+
         OddjobLookup lookup = new OddjobLookup(oj);
 
         assertEquals("apples", lookup.lookup("result.fruit", String.class));
@@ -112,7 +114,11 @@ public class TogetherTest {
 
         archiver2.addConsoleListener(results2, fruit2, -1, 1);
 
-        assertThat(results2.messages.contains("apples"), is(true));
+        // Fails if debugs on because console generates too many messages. Why do we get more than
+        // one anyway?
+
+        assertThat("Should contain 'apples': " + results2.messages.toString(),
+                results2.messages.contains("apples"), is(true));
 
         archiver2.removeConsoleListener(results2, fruit2);
 

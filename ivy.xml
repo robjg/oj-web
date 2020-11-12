@@ -51,7 +51,7 @@
 	    <dependency org="net.sourceforge.htmlunit" name="htmlunit" rev="${htmlunit.version}"
 	    			conf="test->default" />
 	    			
-	    <dependency org="org.mockito" name="mockito-all" rev="${mockito.version}"
+	    <dependency org="org.mockito" name="mockito-core" rev="${mockito.version}"
 	    			conf="test->default" />
 
 	</dependencies>

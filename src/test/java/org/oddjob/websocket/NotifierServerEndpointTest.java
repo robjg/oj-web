@@ -22,7 +22,8 @@ public class NotifierServerEndpointTest {
 
 
     @Test
-    public void test() throws RemoteException, IOException {
+    public void givenSubscribeUnsubscribeSubscribeWhenNotificationsThenSentAsExpected()
+            throws RemoteException, IOException {
 
         NotificationType<String> stringType =
                 NotificationType.ofName("some.string.event")
@@ -40,34 +41,71 @@ public class NotifierServerEndpointTest {
         List<String> subscribed = new ArrayList<>();
         List<String> unSubscribed = new ArrayList<>();
 
+        // Providing a real notification manager with a fake RemoteNotifier
         NotificationManager notificationManager = new NotificationManager(
                 (remoteId, type) -> subscribed.add("" + remoteId + "-" + type),
                 (remoteId, type) -> unSubscribed.add("" + remoteId + "-" + type));
 
+        // Mock the session
         RemoteEndpoint.Basic basic = mock(RemoteEndpoint.Basic.class);
 
         Session session = mock(Session.class);
         when(session.getBasicRemote()).thenReturn(basic);
         when(session.getId()).thenReturn("1234");
 
+        // Subject Under Test
         NotifierServerEndpoint test = new NotifierServerEndpoint(notificationManager);
+
+        // Subscribe
+
         test.onMessage(session, "{\"action\":\"ADD\",\"remoteId\":1,\"type\":" + stringTypeJson + "}");
 
         assertThat(subscribed.size(), is(1));
 
-        Notification n1 = new Notification(1L, stringType, 1000L, "Hello");
+        // Send
+
+        Notification<String> n1 = new Notification<>(1L, stringType, 1000L, "Hello");
 
         notificationManager.handleNotification(n1);
 
         ArgumentCaptor<String> captor = ArgumentCaptor.forClass(String.class);
 
-        verify(basic).sendText(captor.capture());
+        verify(basic, times(1)).sendText(captor.capture());
 
         assertThat(captor.getValue(), is(
                 "{\"remoteId\":1,\"type\":" + stringTypeJson + ",\"sequence\":1000,\"data\":\"Hello\"}"));
 
+        // Unsubscribe
+
         test.onMessage(session, "{\"action\":\"REMOVE\",\"remoteId\":1,\"type\":" + stringTypeJson + "}");
 
         assertThat(unSubscribed.size(), is(1));
+
+        // Send Again
+
+        Notification<String> n2 = new Notification<>(1L, stringType, 1001L, "You'll Miss this");
+
+        notificationManager.handleNotification(n2);
+
+        verifyNoMoreInteractions(basic);
+
+        // Subscribe Again
+
+        test.onMessage(session, "{\"action\":\"ADD\",\"remoteId\":1,\"type\":" + stringTypeJson + "}");
+
+        assertThat(subscribed.size(), is(2));
+
+        // Send
+
+        Notification<String> n3 = new Notification<>(1L, stringType, 1002L, "Hello Again");
+
+        notificationManager.handleNotification(n3);
+
+        ArgumentCaptor<String> captor3 = ArgumentCaptor.forClass(String.class);
+
+        verify(basic, times(2)).sendText(captor3.capture());
+
+        assertThat(captor3.getValue(), is(
+                "{\"remoteId\":1,\"type\":" + stringTypeJson + ",\"sequence\":1002,\"data\":\"Hello Again\"}"));
     }
 }
