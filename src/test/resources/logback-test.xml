@@ -14,8 +14,8 @@
   
   <logger name="org.oddjob" level="INFO"/>
   <logger name="org.oddjob.web" level="INFO"/>
-  <logger name="org.oddjob.http" level="INFO"/>
-  <logger name="org.oddjob.websocket" level="INFO"/>
+  <logger name="org.oddjob.http" level="DEBUG"/>
+  <logger name="org.oddjob.websocket" level="DEBUG"/>
   <logger name="org.oddjob.jetty" level="INFO"/>
 
 </configuration>

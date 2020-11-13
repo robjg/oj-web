@@ -45,13 +45,18 @@ public class NotificationManager implements RemoteNotifier {
                                         NotificationListener<T> notificationListener)
             throws RemoteException {
 
-        byRemote.computeIfAbsent(remoteId, k -> new ByTypeListeners())
-                .addNotificationListener(notificationType, notificationListener,
-                        type -> {
-                            if (subscribeAction != null) {
-                                subscribeAction.perform(remoteId, type);
-                            }
-                        });
+        try {
+            byRemote.computeIfAbsent(remoteId, k -> new ByTypeListeners())
+                    .addNotificationListener(notificationType, notificationListener,
+                            type -> {
+                                if (subscribeAction != null) {
+                                    subscribeAction.perform(remoteId, type);
+                                }
+                            });
+        }
+        catch (RemoteException e) {
+            throw new RemoteIdException(remoteId, e);
+        }
     }
 
     @Override
@@ -61,17 +66,25 @@ public class NotificationManager implements RemoteNotifier {
 
         ByTypeListeners btl = byRemote.get(remoteId);
         if (btl == null) {
-            return;
+            throw new RemoteIdException(remoteId, "No listener " + notificationListener +
+                    " of type " + notificationType);
         }
 
-        btl.removeNotificationListener(notificationType, notificationListener,
-                (type) ->
-                {
-                    byRemote.remove(remoteId);
-                    if (unSubscribeAction != null) {
-                        unSubscribeAction.perform(remoteId, type);
-                    }
-                });
+        try {
+            // returns true if no more byType
+            if (btl.removeNotificationListener(notificationType, notificationListener,
+                    (type) ->
+                    {
+                        if (unSubscribeAction != null) {
+                            unSubscribeAction.perform(remoteId, type);
+                        }
+                    })) {
+                byRemote.remove(remoteId);
+            };
+        }
+        catch (RemoteException e) {
+            throw new RemoteIdException(remoteId, e);
+        }
     }
 
     public void handleNotification(Notification<?> notification) {
@@ -96,30 +109,44 @@ public class NotificationManager implements RemoteNotifier {
 
             AtomicBoolean subscribe = new AtomicBoolean();
 
-            byType.computeIfAbsent(notificationType, k -> {
+            Set<NotificationListener<?>> listeners = byType.computeIfAbsent(notificationType, k -> {
                 subscribe.set(true);
                 return ConcurrentHashMap.newKeySet();
-            }).add(notificationListener);
+            });
+
+            if (listeners.contains(notificationListener)) {
+                throw new RemoteException("Listener " + notificationListener +
+                        " already registered for type " + notificationType);
+            }
+            listeners.add(notificationListener);
 
             if (subscribe.get()) {
                 whenNew.apply(notificationType);
             }
         }
 
-        <T> void removeNotificationListener(NotificationType<T> notificationType,
+        <T> boolean removeNotificationListener(NotificationType<T> notificationType,
                                         NotificationListener<T> notificationListener,
                                         WithType<T> onEmpty) throws RemoteException {
+
             Set<NotificationListener<?>> listeners = byType.get(notificationType);
+
             if (listeners == null) {
-                return;
+                throw new RemoteException("No listener " + notificationListener +
+                        " of type " + notificationType);
             }
 
-            listeners.remove(notificationListener);
+            if (!listeners.remove(notificationListener)) {
+                throw new RemoteException("No listener " + notificationListener +
+                        " of type " + notificationType);
+            }
 
             if (listeners.isEmpty()) {
                 byType.remove(notificationType);
                 onEmpty.apply(notificationType);
             }
+
+            return byType.isEmpty();
         }
 
         @SuppressWarnings("unchecked")
