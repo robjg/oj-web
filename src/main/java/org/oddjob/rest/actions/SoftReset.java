@@ -1,48 +1,45 @@
 package org.oddjob.rest.actions;
 
+import org.oddjob.Resettable;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.oddjob.Resetable;
 
 public class SoftReset extends SimpleAction {
 
 	private static final Logger logger = LoggerFactory.getLogger(SoftReset.class);
 	
-	private final String name = "soft-reset";
+	private static final String NAME = "soft-reset";
 	
-	private final String displayName = "Soft Reset";
+	private static final String DISPLAY_NAME = "Soft Reset";
 
 	@Override
 	public String getName() {
-		return name;
+		return NAME;
 	}
 
 	@Override
 	public String getDisplayName() {
-		return displayName;
+		return DISPLAY_NAME;
 	}
 
 	@Override
 	public void actOn(final Object node) {
-		if (node instanceof Resetable) {
+		if (node instanceof Resettable) {
 			getExecutor().execute(
-				new Runnable() {
-					@Override
-					public void run() {
+					() -> {
 						try {
-							((Resetable) node).softReset();
+							((Resettable) node).softReset();
 						} catch (RuntimeException e) {
-							logger.info("Failed to Hard Reset [" + node + "]", 
+							logger.info("Failed to Hard Reset [" + node + "]",
 									e);
 						}
-					}
-				});
+					});
 		}
 	}
 
 	@Override
 	public boolean isFor(Object node) {
-		return node instanceof Resetable;
+		return node instanceof Resettable;
 	}
 
 }
