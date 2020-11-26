@@ -27,10 +27,8 @@ public class SubscriptionRequestTest {
                         new NotificationTypeDesSer(getClass().getClassLoader()))
                 .create();
 
-        SubscriptionRequest test = new SubscriptionRequest();
-        test.setAction(SubscriptionRequest.Action.REMOVE);
-        test.setRemoteId(42L);
-        test.setType(stringType);
+        SubscriptionRequest test = new SubscriptionRequest(
+                SubscriptionRequest.Action.REMOVE,42L, stringType);
 
         String json = gson.toJson(test);
 
@@ -57,10 +55,8 @@ public class SubscriptionRequestTest {
                         new NotificationDeserializer())
                 .create();
 
-        SubscriptionRequest test = new SubscriptionRequest();
-        test.setAction(SubscriptionRequest.Action.REMOVE);
-        test.setRemoteId(42L);
-        test.setType(stringType);
+        SubscriptionRequest test = new SubscriptionRequest(
+                SubscriptionRequest.Action.REMOVE, 42L, stringType);
 
         Notification<SubscriptionRequest> ack = new Notification<>(
                 NotifierServerEndpoint.SYSTEM_REMOTE_ID,

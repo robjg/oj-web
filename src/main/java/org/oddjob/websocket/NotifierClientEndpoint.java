@@ -8,8 +8,12 @@ import org.slf4j.LoggerFactory;
 
 import javax.websocket.*;
 import java.io.IOException;
+import java.time.Clock;
+import java.time.Duration;
+import java.time.Instant;
 import java.util.concurrent.CountDownLatch;
-import java.util.concurrent.Executor;
+import java.util.concurrent.ScheduledExecutorService;
+import java.util.concurrent.ScheduledFuture;
 import java.util.concurrent.TimeUnit;
 
 /**
@@ -21,24 +25,42 @@ public class NotifierClientEndpoint implements RemoteNotifier {
 
     private static final Logger logger = LoggerFactory.getLogger(NotifierClientEndpoint.class);
 
+    public static final long HEARTBEAT_SECONDS = 10L;
+
     public static final long TIMEOUT_SECONDS = 5L;
 
     private final NotificationManager notificationManager;
 
-    private final Executor executor;
+    private final ScheduledExecutorService executor;
 
     private final Gson gson;
 
+    private final Clock clock;
+
     private Session session;
 
-    public NotifierClientEndpoint(Executor executor) {
+    private long lastMessage;
+
+    private ScheduledFuture<?> heartbeatFuture;
+
+    private Instant lastMessageTime;
+
+    public NotifierClientEndpoint(ScheduledExecutorService executor) {
+        this(executor, Clock.systemDefaultZone());
+    }
+
+    public NotifierClientEndpoint(ScheduledExecutorService executor,
+                                  Clock clock) {
         this.executor = executor;
+        this.clock = clock;
 
         this.notificationManager = new NotificationManager(
                 this::subscribe,
                 this::unsubscribe);
 
         this.gson = GsonUtil.createGson(getClass().getClassLoader());
+
+        this.lastMessageTime = Instant.EPOCH;
     }
 
     @OnOpen
@@ -49,6 +71,20 @@ public class NotifierClientEndpoint implements RemoteNotifier {
         }
 
         this.session = session;
+
+        this.heartbeatFuture = executor.scheduleWithFixedDelay(() -> {
+
+            Instant now = clock.instant();
+            if (Duration.between(this.lastMessageTime,
+                    clock.instant()).getSeconds() >= HEARTBEAT_SECONDS) {
+                try {
+                    session.getBasicRemote()
+                            .sendText(gson.toJson(NotifierServerEndpoint.HEARTBEAT_REQUEST));
+                } catch (IOException e) {
+                    logger.error("Failed sending heartbeat", e);
+                }
+            }
+        }, HEARTBEAT_SECONDS, HEARTBEAT_SECONDS, TimeUnit.SECONDS);
     }
 
     @OnMessage
@@ -57,6 +93,8 @@ public class NotifierClientEndpoint implements RemoteNotifier {
         if (logger.isDebugEnabled()) {
             logger.debug("Message from {}: {}", session.getId(), message);
         }
+
+        this.lastMessageTime = clock.instant();
 
         Notification<?> notification = gson.fromJson(message, Notification.class);
 
@@ -71,6 +109,7 @@ public class NotifierClientEndpoint implements RemoteNotifier {
 
     @OnClose
     public void close(Session session) {
+        this.heartbeatFuture.cancel(false);
         logger.debug("Closed session " + session.getId());
     }
 
@@ -104,10 +143,8 @@ public class NotifierClientEndpoint implements RemoteNotifier {
 
         logger.debug("Subscribing to remote Id {}, {}", remoteId, type);
 
-        SubscriptionRequest request = new SubscriptionRequest();
-        request.setAction(SubscriptionRequest.Action.ADD);
-        request.setRemoteId(remoteId);
-        request.setType(type);
+        SubscriptionRequest request = new SubscriptionRequest(
+                SubscriptionRequest.Action.ADD, remoteId, type);
 
         CountDownLatch latch = new CountDownLatch(1);
 
@@ -149,10 +186,8 @@ public class NotifierClientEndpoint implements RemoteNotifier {
 
         logger.debug("Unsubscribing from remote Id {}, {}", remoteId, type);
 
-        SubscriptionRequest request = new SubscriptionRequest();
-        request.setAction(SubscriptionRequest.Action.REMOVE);
-        request.setRemoteId(remoteId);
-        request.setType(type);
+        SubscriptionRequest request = new SubscriptionRequest(
+                SubscriptionRequest.Action.REMOVE, remoteId, type);
 
         CountDownLatch latch = new CountDownLatch(1);
 

@@ -9,39 +9,34 @@ import java.util.Objects;
  */
 public class SubscriptionRequest {
 
-    enum Action {
-        ADD,
-        REMOVE
+    public SubscriptionRequest(Action action, long remoteId, NotificationType<?> type) {
+        this.action = action;
+        this.remoteId = remoteId;
+        this.type = type;
     }
 
-    private Action action;
+    enum Action {
+        ADD,
+        REMOVE,
+        HEARTBEAT,
+    }
 
-    private long remoteId;
+    private final Action action;
 
-    private NotificationType<?> type;
+    private final long remoteId;
+
+    private final NotificationType<?> type;
 
     public Action getAction() {
         return action;
-    }
-
-    public void setAction(Action action) {
-        this.action = action;
     }
 
     public long getRemoteId() {
         return remoteId;
     }
 
-    public void setRemoteId(long remoteId) {
-        this.remoteId = remoteId;
-    }
-
     public NotificationType<?> getType() {
         return type;
-    }
-
-    public void setType(NotificationType<?> type) {
-        this.type = type;
     }
 
     @Override

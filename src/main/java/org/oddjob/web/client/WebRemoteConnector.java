@@ -7,7 +7,7 @@ import org.oddjob.websocket.NotifierClient;
 import java.net.URI;
 import java.net.URISyntaxException;
 import java.util.Objects;
-import java.util.concurrent.Executor;
+import java.util.concurrent.ScheduledExecutorService;
 
 /**
  * Client Connect that connects to a {@link org.oddjob.web.WebServerHandler}.
@@ -21,7 +21,7 @@ public class WebRemoteConnector implements RemoteConnector {
     }
 
 
-    public static WebRemoteConnector connect(String host, int port, Executor executor) throws RemoteException {
+    public static WebRemoteConnector connect(String host, int port, ScheduledExecutorService executor) throws RemoteException {
 
         Objects.requireNonNull(host);
 

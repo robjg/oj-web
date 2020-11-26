@@ -108,4 +108,57 @@ public class NotifierServerEndpointTest {
         assertThat(captor3.getValue(), is(
                 "{\"remoteId\":1,\"type\":" + stringTypeJson + ",\"sequence\":1002,\"data\":\"Hello Again\"}"));
     }
+
+    @Test
+    public void testHeartbeat()
+            throws RemoteException {
+
+        Gson gson = new GsonBuilder()
+                .registerTypeAdapter(NotificationType.class,
+                        new NotificationTypeDesSer(getClass().getClassLoader()))
+                .registerTypeAdapter(Notification.class,
+                        new NotificationDeserializer())
+                .create();
+
+        List<String> subscribed = new ArrayList<>();
+        List<String> unSubscribed = new ArrayList<>();
+
+        // Providing a real notification manager with a fake RemoteNotifier
+        NotificationManager notificationManager = new NotificationManager(
+                (remoteId, type) -> subscribed.add("" + remoteId + "-" + type),
+                (remoteId, type) -> unSubscribed.add("" + remoteId + "-" + type));
+
+        // Mock the session
+        RemoteEndpoint.Basic basic = mock(RemoteEndpoint.Basic.class);
+
+        Session session = mock(Session.class);
+        when(session.getBasicRemote()).thenReturn(basic);
+        when(session.getId()).thenReturn("1234");
+
+        // Subject Under Test
+        NotifierServerEndpoint test = new NotifierServerEndpoint(notificationManager);
+
+        // Heartbeat request
+
+        SubscriptionRequest request = NotifierServerEndpoint.HEARTBEAT_REQUEST;
+        String requestJson = gson.toJson(request);
+
+        String response = test.onMessage(session, requestJson);
+
+        assertThat(subscribed.size(), is(0));
+        assertThat(unSubscribed.size(), is(0));
+
+        // Heartbeat Received
+
+        Notification<SubscriptionRequest> expected =
+                new Notification<>(NotifierServerEndpoint.SYSTEM_REMOTE_ID,
+                        NotifierServerEndpoint.ACTION_COMPLETE_TYPE, 0L,
+                        request);
+
+        assertThat(response, is(gson.toJson(expected)));
+
+        verifyNoInteractions(basic);
+
+    }
+
 }

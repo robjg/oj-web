@@ -9,11 +9,15 @@ import org.oddjob.remote.NotificationType;
 import java.net.URI;
 import java.util.concurrent.BlockingQueue;
 import java.util.concurrent.LinkedBlockingDeque;
+import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.TimeUnit;
 
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.is;
 import static org.hamcrest.Matchers.notNullValue;
+import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.Mockito.doAnswer;
+import static org.mockito.Mockito.mock;
 
 public class ClientServerTest {
 
@@ -37,9 +41,15 @@ public class ClientServerTest {
 
         server.start();
 
+        ScheduledExecutorService ses = mock(ScheduledExecutorService.class);
+        doAnswer(inv -> {
+            inv.getArgument(0, Runnable.class).run();
+            return null;
+        }).when(ses).execute(any(Runnable.class));
+
         try (NotifierClient client = NotifierClient.create(
                 new URI("ws://localhost:" + server.getPort() + "/notifier"),
-                Runnable::run)) {
+                ses)) {
 
             NotificationListener<String> listener = results::add;
 

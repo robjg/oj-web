@@ -28,6 +28,15 @@ public class NotifierServerEndpoint {
 
     public static final long SYSTEM_REMOTE_ID = -1L;
 
+    public static NotificationType<Void> HEARTBEAT_TYPE =
+            NotificationType.ofName("heartbeat")
+                    .andNoData();
+
+    public static final SubscriptionRequest HEARTBEAT_REQUEST = new SubscriptionRequest(
+            SubscriptionRequest.Action.HEARTBEAT,
+            SYSTEM_REMOTE_ID,
+            HEARTBEAT_TYPE);
+
     private final NotificationManager notificationManager;
 
     private final AtomicLong systemSequence = new AtomicLong();
@@ -36,15 +45,15 @@ public class NotifierServerEndpoint {
 
     public NotifierServerEndpoint(RemoteNotifier remoteNotifier) {
 
-        AtomicReference<NotificationManager> mananger = new AtomicReference<>();
+        AtomicReference<NotificationManager> manager = new AtomicReference<>();
 
         this.notificationManager = new NotificationManager(
                 (remoteId, type) -> remoteNotifier.addNotificationListener(remoteId, type,
-                        mananger.get().getNotificationListener()),
+                        manager.get().getNotificationListener()),
                 (remoteId, type) -> remoteNotifier.removeNotificationListener(remoteId, type,
-                        mananger.get().getNotificationListener()));
+                        manager.get().getNotificationListener()));
 
-        mananger.set(notificationManager);
+        manager.set(notificationManager);
 
         this.gson = GsonUtil.createGson(getClass().getClassLoader());
     }
@@ -77,6 +86,8 @@ public class NotifierServerEndpoint {
                 notificationManager.removeNotificationListener(
                         request.getRemoteId(), request.getType(),
                         new SessionListener<>(session));
+                break;
+            case HEARTBEAT:
                 break;
             default:
                 throw new IllegalStateException();

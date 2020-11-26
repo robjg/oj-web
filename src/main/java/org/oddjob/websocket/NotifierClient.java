@@ -11,7 +11,7 @@ import java.io.IOException;
 import java.net.URI;
 import java.util.Objects;
 import java.util.Optional;
-import java.util.concurrent.Executor;
+import java.util.concurrent.ScheduledExecutorService;
 
 /**
  * An Oddjob style service that provides a Web Socket {@link RemoteNotifier}.
@@ -27,7 +27,7 @@ public class NotifierClient implements RemoteNotifier, AutoCloseable {
         this.endpoint = endpoint;
     }
 
-    public static NotifierClient create(URI uri, Executor executor) throws RemoteException {
+    public static NotifierClient create(URI uri, ScheduledExecutorService executor) throws RemoteException {
 
         Objects.requireNonNull(uri);
 
