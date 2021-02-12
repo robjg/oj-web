@@ -7,6 +7,7 @@ import org.mockito.ArgumentCaptor;
 import org.oddjob.remote.Notification;
 import org.oddjob.remote.NotificationType;
 import org.oddjob.remote.RemoteException;
+import org.oddjob.remote.util.NotificationManager;
 
 import javax.websocket.RemoteEndpoint;
 import javax.websocket.Session;

@@ -9,6 +9,11 @@ import org.oddjob.remote.NotificationType;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import java.util.Arrays;
+import java.util.EnumSet;
+import java.util.Set;
+import java.util.stream.Collectors;
+
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.is;
 import static org.hamcrest.Matchers.nullValue;
@@ -48,7 +53,7 @@ public class NotificationDeserializerTest {
 
         NotificationType<UserData> dataType =
                 NotificationType.ofName("some.data.event")
-                                .andDataType(UserData.class);
+                        .andDataType(UserData.class);
 
         NotificationType<int[]> intsType =
                 NotificationType.ofName("some.ints.event")
@@ -70,7 +75,8 @@ public class NotificationDeserializerTest {
         logger.debug(json);
 
         Notification<String> copy1 = gson.fromJson(json,
-                new TypeToken<Notification<String>>(){}.getType());
+                new TypeToken<Notification<String>>() {
+                }.getType());
 
         assertThat(copy1.getRemoteId(), is(1L));
         assertThat(copy1.getType().getName(), is("some.string.event"));
@@ -96,7 +102,7 @@ public class NotificationDeserializerTest {
 
         Notification copy3 = gson.fromJson(json3, Notification.class);
 
-        assertThat(copy3.getData(), is(new int[] {1, 2, 3}));
+        assertThat(copy3.getData(), is(new int[]{1, 2, 3}));
     }
 
     @Test
@@ -120,11 +126,54 @@ public class NotificationDeserializerTest {
         String json = gson.toJson(n1);
 
         Notification<Void> copy1 = gson.fromJson(json,
-                new TypeToken<Notification<Void>>(){}.getType());
+                new TypeToken<Notification<Void>>() {
+                }.getType());
 
         assertThat(copy1.getRemoteId(), is(1L));
         assertThat(copy1.getType(), is(notificationType));
         assertThat(copy1.getData(), nullValue());
+    }
+
+    enum Colour {
+        RED,
+        ORANGE,
+        YELLOW,
+        GREEN,
+        BLUE,
+        INDIGO,
+        VIOLET
+    }
+
+    @Test
+    public void testEnumSet() {
+
+        NotificationType<Set> notificationType =
+                NotificationType.ofName("some.enums.event")
+                        .andDataType(Set.class);
+
+        Gson gson = new GsonBuilder()
+                .registerTypeAdapter(NotificationType.class,
+                        new NotificationTypeDesSer(getClass().getClassLoader()))
+                .registerTypeAdapter(Notification.class,
+                        new NotificationDeserializer())
+                .create();
+
+        Notification n1 = new Notification(1L,
+                notificationType, 22L,
+                EnumSet.of(Colour.RED, Colour.VIOLET, Colour.YELLOW));
+
+        String json = gson.toJson(n1);
+
+        logger.debug(json);
+
+        Notification<Set> copy1 = gson.fromJson(json,
+                new TypeToken<Notification<Set>>() {
+                }.getType());
+
+        // Converted back to a Set of Strings.
+        assertThat(copy1.getData(), is(Arrays.asList(
+                Colour.RED.toString(), Colour.VIOLET.toString(), Colour.YELLOW.toString())
+                .stream().collect(Collectors.toSet())));
     }
 
 }

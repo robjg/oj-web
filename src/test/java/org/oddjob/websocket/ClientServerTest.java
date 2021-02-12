@@ -5,6 +5,7 @@ import org.oddjob.jetty.JettyHttpServer;
 import org.oddjob.remote.Notification;
 import org.oddjob.remote.NotificationListener;
 import org.oddjob.remote.NotificationType;
+import org.oddjob.remote.util.NotificationManager;
 
 import java.net.URI;
 import java.util.concurrent.BlockingQueue;

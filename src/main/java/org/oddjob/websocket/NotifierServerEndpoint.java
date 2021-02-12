@@ -2,6 +2,8 @@ package org.oddjob.websocket;
 
 import com.google.gson.Gson;
 import org.oddjob.remote.*;
+import org.oddjob.remote.util.NotificationListenerTracker;
+import org.oddjob.remote.util.NotificationManager;
 import org.oddjob.web.gson.GsonUtil;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -37,7 +39,7 @@ public class NotifierServerEndpoint {
             SYSTEM_REMOTE_ID,
             HEARTBEAT_TYPE);
 
-    private final NotificationManager notificationManager;
+    private final NotificationListenerTracker<String> notificationManager;
 
     private final AtomicLong systemSequence = new AtomicLong();
 
@@ -47,13 +49,7 @@ public class NotifierServerEndpoint {
 
         AtomicReference<NotificationManager> manager = new AtomicReference<>();
 
-        this.notificationManager = new NotificationManager(
-                (remoteId, type) -> remoteNotifier.addNotificationListener(remoteId, type,
-                        manager.get().getNotificationListener()),
-                (remoteId, type) -> remoteNotifier.removeNotificationListener(remoteId, type,
-                        manager.get().getNotificationListener()));
-
-        manager.set(notificationManager);
+        this.notificationManager = new NotificationListenerTracker<>(remoteNotifier);
 
         this.gson = GsonUtil.createGson(getClass().getClassLoader());
     }
@@ -79,13 +75,14 @@ public class NotifierServerEndpoint {
         switch (request.getAction()) {
             case ADD:
                 notificationManager.addNotificationListener(
+                        session.getId(),
                         request.getRemoteId(), request.getType(),
                         new SessionListener<>(session));
                 break;
             case REMOVE:
                 notificationManager.removeNotificationListener(
-                        request.getRemoteId(), request.getType(),
-                        new SessionListener<>(session));
+                        session.getId(),
+                        request.getRemoteId(), request.getType());
                 break;
             case HEARTBEAT:
                 break;
@@ -100,8 +97,9 @@ public class NotifierServerEndpoint {
     }
 
     @OnClose
-    public void close(Session session) {
+    public void close(Session session) throws RemoteException {
         logger.debug("Closed session " + session.getId());
+        notificationManager.removeAll(session.getId());
     }
 
     @OnError
