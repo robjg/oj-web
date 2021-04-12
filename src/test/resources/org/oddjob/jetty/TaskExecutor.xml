@@ -9,13 +9,13 @@
                     </values>
                 </properties>
                 <web:server xmlns:web="oddjob:web" id="server" port="${server.port}">
-                    <handlers>
+                    <handler>
                         <web:oddjob-web root="${jobs}">
                             <webappDir>
                                 <file file="${basedir}/src/main/resources/org/oddjob/webapp"/>
                             </webappDir>
                         </web:oddjob-web>
-                    </handlers>
+                    </handler>
                 </web:server>
                 <sequential id="jobs">
                     <jobs>

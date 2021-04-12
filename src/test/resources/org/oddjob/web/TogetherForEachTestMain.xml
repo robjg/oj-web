@@ -13,13 +13,13 @@
 						</oddjob>
 						<jmx:server id='server' url='service:jmx:rmi://' root='${oj}' />
 						<web:server xmlns:web="oddjob:web" id="webServer">
-							<handlers>
+							<handler>
 								<bean class="org.oddjob.web.WebServerHandlerJmx">
 									<jmxServer>
 										<value value="${server}"/>
 									</jmxServer>
 								</bean>
-							</handlers>
+							</handler>
 						</web:server>
 						<web:remote-client
 								host="localhost" id="client"

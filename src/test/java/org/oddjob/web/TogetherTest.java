@@ -101,7 +101,8 @@ public class TogetherTest {
 
         archiver1.addConsoleListener(results1, fruit1, -1, 1);
 
-        assertThat(results1.messages.contains("apples"), is(true));
+        assertThat("Messages should contain apples but didn't. Messages are: " + results1.messages,
+                results1.messages.contains("apples"), is(true));
 
         archiver1.removeConsoleListener(results1, fruit1);
 

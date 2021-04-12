@@ -1,0 +1,10 @@
+<oddjob id="oddjob">
+    <job>
+        <web:client xmlns:web="oddjob:web" id="client"
+                    url="http://localhost:${server.port}">
+            <basicAuthentication>
+                <is username="alice" password="secret"/>
+            </basicAuthentication>
+        </web:client>
+    </job>
+</oddjob>

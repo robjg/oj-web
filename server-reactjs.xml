@@ -10,22 +10,26 @@
                 </properties>
                 <jmx:server xmlns:jmx="http://rgordon.co.uk/oddjob/jmx" id="jmxServer" root="${serverJobs}"/>
                 <web:server xmlns:web="oddjob:web" port="8080">
-                    <handlers>
-                        <web:resource base="${webBundle}">
-                            <welcomeFiles>
-                                <list>
-                                    <values>
-                                        <value value="index.html"/>
-                                    </values>
-                                </list>
-                            </welcomeFiles>
-                        </web:resource>
-                        <web:remote-handler allowCrossOrigin="true">
-                            <jmxServer>
-                                <value value="${jmxServer}"/>
-                            </jmxServer>
-                        </web:remote-handler>
-                    </handlers>
+                    <handler>
+                        <web:handlers>
+                            <handlers>
+                                <web:resource base="${webBundle}">
+                                    <welcomeFiles>
+                                        <list>
+                                            <values>
+                                                <value value="index.html"/>
+                                            </values>
+                                        </list>
+                                    </welcomeFiles>
+                                </web:resource>
+                                <web:remote-handler allowCrossOrigin="true">
+                                    <jmxServer>
+                                        <value value="${jmxServer}"/>
+                                    </jmxServer>
+                                </web:remote-handler>
+                            </handlers>
+                        </web:handlers>
+                    </handler>
                 </web:server>
                 <oddjob file="${oddjob.dir}/server-jobs.xml" id="serverJobs"/>
             </jobs>

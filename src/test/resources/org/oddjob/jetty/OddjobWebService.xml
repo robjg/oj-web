@@ -4,9 +4,9 @@
     <sequential>
       <jobs>
         <web:server xmlns:web="oddjob:web" id="server">
-          <handlers>
+          <handler>
             <web:oddjob-web serviceOnly="true" root="${jobs}" />
-          </handlers>
+          </handler>
         </web:server>
         <sequential id="jobs">
           <jobs>

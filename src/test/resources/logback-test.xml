@@ -16,6 +16,9 @@
   <logger name="org.oddjob.web" level="INFO"/>
   <logger name="org.oddjob.http" level="DEBUG"/>
   <logger name="org.oddjob.websocket" level="DEBUG"/>
-  <logger name="org.oddjob.jetty" level="INFO"/>
+  <logger name="org.oddjob.jetty" level="DEBUG"/>
+
+  <!-- Console Tracker tests fail with debugs on -->
+  <logger name="org.eclipse.jetty" level="INFO"/>
 
 </configuration>

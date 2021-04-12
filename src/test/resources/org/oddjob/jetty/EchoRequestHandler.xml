@@ -1,10 +1,10 @@
-<oddjob id="this">
+<oddjob id="oddjob">
   <job>
     <web:server xmlns:web="oddjob:web" id="server"
       port="${server.port}">
-      <handlers>
+      <handler>
         <bean class="org.oddjob.jetty.EchoRequestHandler" />
-      </handlers>
+      </handler>
     </web:server>
   </job>
 </oddjob>

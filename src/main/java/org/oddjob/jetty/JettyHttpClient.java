@@ -1,16 +1,21 @@
 package org.oddjob.jetty;
 
 import org.eclipse.jetty.client.HttpClient;
+import org.eclipse.jetty.client.api.Authentication;
 import org.eclipse.jetty.client.api.ContentResponse;
 import org.eclipse.jetty.client.api.Request;
+import org.eclipse.jetty.client.util.BasicAuthentication;
 import org.eclipse.jetty.client.util.StringContentProvider;
 import org.eclipse.jetty.http.HttpStatus;
 import org.eclipse.jetty.util.Fields;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import java.net.URI;
+import java.net.URISyntaxException;
 import java.util.LinkedHashMap;
 import java.util.Map;
+import java.util.Optional;
 import java.util.concurrent.Callable;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.TimeoutException;
@@ -28,7 +33,13 @@ import java.util.concurrent.TimeoutException;
  * Get the content of a URL using a parameter.
  * 
  * {@oddjob.xml.resource org/oddjob/jetty/ClientGetExample.xml}
- * 
+ *
+ * @oddjob.example
+ *
+ * Basic Authentication.
+ *
+ * {@oddjob.xml.resource org/oddjob/jetty/BasicAuthClient.xml}
+ *
  * @author rob
  *
  */
@@ -92,7 +103,15 @@ public class JettyHttpClient implements Callable<Integer> {
 	 * @oddjob.required No.
 	 */
 	private volatile String contentType;
-	
+
+	/**
+	 * @oddjob.property
+	 * @oddjob.description Provide Username/Password for Basic Authentication.
+	 * @oddjob.required No.
+	 */
+	private volatile UsernamePassword basicAuthentication;
+
+
 	private interface RequestStrategy {
 		
 		ContentResponse doRequest(HttpClient httpClient, RequestConfiguration self)
@@ -111,8 +130,10 @@ public class JettyHttpClient implements Callable<Integer> {
 		private final String content;
 		
 		private final String contentType;
-		
-		public RequestConfiguration() {
+
+		private final URI uri;
+
+		public RequestConfiguration() throws URISyntaxException {
 
 			url = JettyHttpClient.this.url;
 			
@@ -130,6 +151,8 @@ public class JettyHttpClient implements Callable<Integer> {
 			
 			content = JettyHttpClient.this.requestBody;
 			contentType = JettyHttpClient.this.contentType;
+
+			this.uri = new URI(url);
 		}
 		
 	}
@@ -186,15 +209,25 @@ public class JettyHttpClient implements Callable<Integer> {
 		
 		HttpClient httpClient = new HttpClient();
 		httpClient.start();
-		
+
+
 		try {
 			RequestConfiguration config = new RequestConfiguration();
-			
+
+			Optional.ofNullable(this.basicAuthentication)
+					.ifPresent(up ->
+							httpClient.getAuthenticationStore().addAuthentication(
+									new BasicAuthentication(
+											config.uri,
+											Authentication.ANY_REALM,
+											up.username,
+											up.password)));
+
 			if (method == null) {
 				method = RequestMethod.GET;
 			}
 					
-			logger.info("Making " + method + " to " + config.url);
+			logger.info("Making " + method + " request to " + config.url);
 			
 			ContentResponse response = method.doRequest(httpClient, config);
 			
@@ -279,7 +312,15 @@ public class JettyHttpClient implements Callable<Integer> {
 	public void setContentType(String contentType) {
 		this.contentType = contentType;
 	}
-	
+
+	public UsernamePassword getBasicAuthentication() {
+		return basicAuthentication;
+	}
+
+	public void setBasicAuthentication(UsernamePassword basicAuthentication) {
+		this.basicAuthentication = basicAuthentication;
+	}
+
 	@Override
 	public String toString() {
 		if (name == null) {
@@ -287,6 +328,29 @@ public class JettyHttpClient implements Callable<Integer> {
 		}
 		else {
 			return name;
+		}
+	}
+
+	public static class UsernamePassword {
+
+		private volatile String username;
+
+		private volatile String password;
+
+		public String getUsername() {
+			return username;
+		}
+
+		public void setUsername(String username) {
+			this.username = username;
+		}
+
+		public String getPassword() {
+			return password;
+		}
+
+		public void setPassword(String password) {
+			this.password = password;
 		}
 	}
 }

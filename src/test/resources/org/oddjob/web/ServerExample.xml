@@ -6,13 +6,13 @@
                 <rmireg/>
                 <jmx:server id="server1" root="${server-jobs}" url="service:jmx:rmi://ignored/jndi/rmi://localhost/freds-oddjob-server" xmlns:jmx="http://rgordon.co.uk/oddjob/jmx"/>
                 <web:server id="webServer" port="${server.port}" xmlns:web="oddjob:web">
-                    <handlers>
+                    <handler>
                         <web:remote-handler>
                             <jmxServer>
                                 <value value="${server1}"/>
                             </jmxServer>
                         </web:remote-handler>
-                    </handlers>
+                    </handler>
                 </web:server>
                 <oddjob file="${this.dir}/ServerJobs.xml" id="server-jobs"/>
             </jobs>

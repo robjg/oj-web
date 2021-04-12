@@ -1,0 +1,40 @@
+<oddjob id="oddjob">
+    <job>
+        <web:server xmlns:web="oddjob:web" id="server"
+                    port="${server.port}">
+            <handler>
+                <bean class="org.eclipse.jetty.security.ConstraintSecurityHandler" >
+                    <loginService>
+                        <bean class="org.eclipse.jetty.security.HashLoginService"
+                              name="FooRealm"
+                              config="${oddjob.dir}/realm.txt"
+                              hotReload="false"/>
+                    </loginService>
+                    <constraintMappings>
+                        <list>
+                            <values>
+                                <bean class="org.eclipse.jetty.security.ConstraintMapping"
+                                      pathSpec="/*">
+                                    <constraint>
+                                        <bean class="org.eclipse.jetty.util.security.Constraint"
+                                              name="auth" authenticate="true">
+                                            <roles>
+                                                <value value="**"/>
+                                            </roles>
+                                        </bean>
+                                    </constraint>
+                                </bean>
+                            </values>
+                        </list>
+                    </constraintMappings>
+                    <authenticator>
+                        <bean class="org.eclipse.jetty.security.authentication.BasicAuthenticator"/>
+                    </authenticator>
+                    <handler>
+                        <bean class="org.oddjob.jetty.EchoRequestHandler" />
+                    </handler>
+                </bean>
+            </handler>
+        </web:server>
+    </job>
+</oddjob>

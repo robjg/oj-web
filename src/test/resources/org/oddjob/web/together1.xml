@@ -7,13 +7,13 @@
 				<jmx:server id='server1'
 					url='service:jmx:rmi://ignored/jndi/rmi://localhost/TogetherTest_together1_server1' root='${fruit}' />
 				<web:server xmlns:web="oddjob:web" id="webServer1">
-					<handlers>
+					<handler>
 						<bean class="org.oddjob.web.WebServerHandlerJmx">
 							<jmxServer>
 								<value value="${server1}"/>
 							</jmxServer>
 						</bean>
-					</handlers>
+					</handler>
 				</web:server>
 				<web:remote-client
 						host="localhost" id="client1"
@@ -21,13 +21,13 @@
 				<jmx:server id='server2'
 					url='service:jmx:rmi://ignored/jndi/rmi://localhost/TogetherTest_together1_server2' root='${client1}' />
 				<web:server xmlns:web="oddjob:web" id="webServer2">
-					<handlers>
+					<handler>
 						<bean class="org.oddjob.web.WebServerHandlerJmx">
 							<jmxServer>
 								<value value="${server2}"/>
 							</jmxServer>
 						</bean>
-					</handlers>
+					</handler>
 				</web:server>
 				<web:remote-client
 						host="localhost" id="client2"

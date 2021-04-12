@@ -5,9 +5,9 @@
       <jobs>
         <web:server id="server" port="${server.port}"
           xmlns:web="oddjob:web">
-          <handlers>
+          <handler>
             <web:oddjob-web root="${jobs}" />
-          </handlers>
+          </handler>
         </web:server>
         <sequential id="jobs">
           <jobs>

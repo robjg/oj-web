@@ -1,8 +1,5 @@
 package org.oddjob.jetty;
 
-import java.util.List;
-import java.util.concurrent.CopyOnWriteArrayList;
-
 import org.eclipse.jetty.server.Handler;
 import org.eclipse.jetty.server.Server;
 import org.eclipse.jetty.server.ServerConnector;
@@ -11,6 +8,10 @@ import org.eclipse.jetty.server.handler.HandlerList;
 import org.oddjob.FailedToStopException;
 import org.oddjob.arooa.utils.ListSetterHelper;
 import org.oddjob.framework.Service;
+
+import java.util.List;
+import java.util.Optional;
+import java.util.concurrent.CopyOnWriteArrayList;
 
 /**
  * @oddjob.description An HTTP server.
@@ -31,8 +32,13 @@ import org.oddjob.framework.Service;
  * The simplest web server without any handlers.
  * 
  * {@oddjob.xml.resource org/oddjob/jetty/DefaultServerExample.xml}
- * 
- * 
+ *
+ * @oddjob.example
+ *
+ * Using Basic Authentication.
+ *
+ * {@oddjob.xml.resource org/oddjob/jetty/BasicAuthServer.xml}
+ *
  * @author rob
  *
  */
@@ -54,11 +60,21 @@ public class JettyHttpServer implements Service {
 
 	/** 
 	 * @oddjob.property
-	 * @oddjob.description List of Jetty Handlers.
+	 * @oddjob.description The Jetty Handler. To provide a list of handlers that will be tried in order
+	 * use {@link HandlerListType}.
 	 * @oddjob.required No, but pointless if missing.
 	 */
-	private final List<Handler> handlers = new CopyOnWriteArrayList<>();
-	
+	private volatile Handler handler;
+
+	/**
+	 * @oddjob.property
+	 * @oddjob.description Provide Beans directly to the Jetty Server for management by Jetty.
+	 * Currently untested.
+	 * @oddjob.required No.
+	 */
+	private final List<Object> beans = new CopyOnWriteArrayList<>();
+
+
 	/** The Jetty Server instance. */
 	private volatile Server server;
 
@@ -70,23 +86,17 @@ public class JettyHttpServer implements Service {
 		}
 
 		server = new Server(port);
-		
-		try {
-			
-			if (handlers.size() > 0) {
-				HandlerList handlerList = new HandlerList();
-				
-				handlerList.setHandlers(handlers.toArray(
-						new Handler[handlers.size()]));
 
-				handlerList.addHandler(new DefaultHandler());
-				
-				server.setHandler(handlerList);
-			}
-			else {
-				server.setHandler(new WelcomeHandler());
-			}
-			
+		beans.forEach(server::addBean);
+
+		try {
+
+			Handler handler = Optional.ofNullable(this.handler)
+					.<Handler>map(h -> new HandlerList(h, new DefaultHandler()))
+					.orElseGet(WelcomeHandler::new);
+
+			server.setHandler(handler);
+
 			server.start();
 			
 			port = ((ServerConnector) server.getConnectors()[0]).getLocalPort();
@@ -129,14 +139,24 @@ public class JettyHttpServer implements Service {
 		this.port = port;
 	}
 	
-	public Handler getHandlers(int index) {
-		return handlers.get(index);
+	public Handler getHandler() {
+		return handler;
 	}
 	
-	public void setHandlers(int index, Handler handler) {
-		new ListSetterHelper<Handler>(handlers).set(index, handler);
+	public void setHandler(Handler handler) {
+		this.handler = handler;
 	}
-	
+
+	public Object getBeans(int index) {
+
+		return beans.get(index);
+	}
+
+	public void setBeans(int index, Object bean) {
+
+		new ListSetterHelper<>(beans).set(index, bean);
+	}
+
 	@Override
 	public String toString() {
 		if (name == null) {

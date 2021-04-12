@@ -76,12 +76,10 @@ public class OddjobTrackerConsoleTest extends Assert {
 			
 			int lineCount = job1Lines.length;
 			
-			assertEquals(lineCount - 2, job1Lines[lineCount - 2].getLogSeq());
 			assertEquals("INFO", job1Lines[lineCount - 2].getLevel());
 			assertTrue(job1Lines[lineCount - 2].getMessage(), 
 					job1Lines[lineCount - 2].getMessage().trim().endsWith("Job1 - Console Line 1"));
 			
-			assertEquals(lineCount - 1, job1Lines[lineCount - 1].getLogSeq());
 			assertEquals("INFO", job1Lines[lineCount - 1].getLevel());
 			assertTrue(job1Lines[lineCount - 1].getMessage(), 
 					job1Lines[lineCount - 1].getMessage().trim().endsWith("Job1 - Console Line 2"));

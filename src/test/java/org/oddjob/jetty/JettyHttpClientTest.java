@@ -1,12 +1,12 @@
 package org.oddjob.jetty;
 
-import java.io.File;
-import java.util.Properties;
-
 import org.junit.Assert;
 import org.junit.Test;
 import org.oddjob.Oddjob;
 import org.oddjob.OddjobLookup;
+
+import java.io.File;
+import java.util.Properties;
 
 public class JettyHttpClientTest extends Assert {
 
@@ -18,7 +18,7 @@ public class JettyHttpClientTest extends Assert {
 		resourceHandler.setResourceType(ResourceHandlerType.ResourceType.CLASSPATH);
 		
 		JettyHttpServer server = new JettyHttpServer();
-		server.setHandlers(0, resourceHandler.toValue());
+		server.setHandler(resourceHandler.toValue());
 		
 		server.start();
 		

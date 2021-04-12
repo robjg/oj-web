@@ -1,17 +1,16 @@
 package org.oddjob.jetty;
 
-import java.io.IOException;
-import java.net.MalformedURLException;
-import java.util.Arrays;
-
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.eclipse.jetty.server.Handler;
 import org.eclipse.jetty.server.handler.ResourceHandler;
 import org.eclipse.jetty.util.resource.Resource;
 import org.oddjob.arooa.convert.ArooaConversionException;
 import org.oddjob.arooa.deploy.annotations.ArooaAttribute;
 import org.oddjob.arooa.types.ValueFactory;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
+import java.io.IOException;
+import java.util.Arrays;
 
 /**
  * @oddjob.description Provides a Handler to Serve file content from the file system or
@@ -45,7 +44,7 @@ public class ResourceHandlerType implements ValueFactory<Handler>{
 	 * @oddjob.description The type of resource, FILE or CLASSPATH.
 	 * @oddjob.required No, defaults to FILE.
 	 */
-	private JettyResourceType resourceType;
+	private ResourceType resourceType;
 	
 	/** 
 	 * @oddjob.property
@@ -159,11 +158,11 @@ public class ResourceHandlerType implements ValueFactory<Handler>{
 		this.minMemoryMappedContentLength = minMemoryMappedFileSize;
 	}
 	
-	public JettyResourceType getResourceType() {
+	public ResourceType getResourceType() {
 		return resourceType;
 	}
 
-	public void setResourceType(JettyResourceType resourceType) {
+	public void setResourceType(ResourceType resourceType) {
 		this.resourceType = resourceType;
 	}
 

@@ -58,7 +58,7 @@ public class ClientServerTest {
             jmxHandler.setArooaSession(session);
 
             JettyHttpServer server = new JettyHttpServer();
-            server.setHandlers(0, jmxHandler.toValue());
+            server.setHandler(jmxHandler.toValue());
 
             server.start();
 
@@ -107,7 +107,7 @@ public class ClientServerTest {
             jmxHandler.setArooaSession(session);
 
             JettyHttpServer server = new JettyHttpServer();
-            server.setHandlers(0, jmxHandler.toValue());
+            server.setHandler(jmxHandler.toValue());
 
             server.start();
 
@@ -178,7 +178,7 @@ public class ClientServerTest {
         jmxHandler.setArooaSession(session);
 
         JettyHttpServer server = new JettyHttpServer();
-        server.setHandlers(0, jmxHandler.toValue());
+        server.setHandler(jmxHandler.toValue());
 
         server.start();
 
@@ -233,7 +233,7 @@ public class ClientServerTest {
         jmxHandler.setArooaSession(session);
 
         JettyHttpServer server = new JettyHttpServer();
-        server.setHandlers(0, jmxHandler.toValue());
+        server.setHandler(jmxHandler.toValue());
 
         server.start();
 

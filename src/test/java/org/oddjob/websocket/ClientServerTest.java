@@ -38,7 +38,7 @@ public class ClientServerTest {
         JettyNotifierEndpointHandler handler = new JettyNotifierEndpointHandler();
         handler.setRemoteNotifier(notificationManager);
 
-        server.setHandlers(0, handler.toValue());
+        server.setHandler(handler.toValue());
 
         server.start();
 

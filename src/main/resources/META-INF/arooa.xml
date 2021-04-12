@@ -1,6 +1,8 @@
 <arooa:descriptor xmlns:arooa="http://rgordon.co.uk/oddjob/arooa"
   prefix="web" namespace="oddjob:web">
   <values>
+    <arooa:bean-def element='handlers'
+                    className='org.oddjob.jetty.HandlerListType'/>
     <arooa:bean-def element='oddjob-web'
       className='org.oddjob.jetty.OddjobWebHandler'/>
     <arooa:bean-def element='remote-handler'

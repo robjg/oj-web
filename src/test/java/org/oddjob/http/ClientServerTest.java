@@ -85,7 +85,7 @@ public class ClientServerTest {
         JettyInvokerHandler handler = new JettyInvokerHandler();
         handler.setRemoteInvoker(invoker);
 
-        server.setHandlers(0, handler.toValue());
+        server.setHandler(handler.toValue());
 
         server.start();
 
