@@ -22,6 +22,7 @@ import org.skyscreamer.jsonassert.JSONCompareMode;
 import javax.management.MBeanServer;
 import javax.management.MBeanServerFactory;
 import java.io.File;
+import java.util.Objects;
 
 public class ServerFormsTest {
 
@@ -30,7 +31,7 @@ public class ServerFormsTest {
     public void testFormsConfiguration() throws Exception {
 
         Oddjob serverJobs = new Oddjob();
-        serverJobs.setFile(new File(getClass().getResource("serverJobs.xml")
+        serverJobs.setFile(new File(Objects.requireNonNull(getClass().getResource("serverJobs.xml"))
                 .getFile()));
         serverJobs.run();
 
@@ -74,7 +75,7 @@ public class ServerFormsTest {
                         new TypeToken<InvokeResponse<String>>() {}.getType() );
 
         String expected = FileUtils.readToString(
-                getClass().getResource("ServerFormsExpected.json"));
+                Objects.requireNonNull(getClass().getResource("ServerFormsExpected.json")));
 
         System.out.println(response.getValue());
 
