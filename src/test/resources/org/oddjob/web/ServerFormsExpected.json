@@ -26,7 +26,7 @@
         "@element": "forms:indexed",
         "title": "",
         "property": "jobs",
-        "options": "archive,archive-browser,bean,bean-bus,bean-report,cascade,check,copy,delete,depends,echo,exec,exists,explorer,folder,foreach,grab,grep,input,invoke,is,java,launch,mkdir,oddjob,parallel,properties,rename,repeat,reset,rmireg,run,script,sequence,sequential,services,set,sql,sql-keeper-service,sql-persister-service,start,stop,task-request,task-service,variables,wait,events:file-watch,events:file-watch-service,events:for,events:list,events:trigger,events:when,jmx:client,jmx:server,jmx:service,scheduling:retry,scheduling:timer,scheduling:trigger,state:and,state:cascade,state:equals,state:evaluate,state:flag,state:if,state:join,state:mirror,state:or,state:resets,state:watch,web:client,web:remote-client,web:server",
+        "options": "SOME_OPTIONS_THAT_CHANGE_TOO_MUCH",
         "propertyClass": "java.lang.Object",
         "component": "true",
         "value": {
@@ -67,7 +67,7 @@
                     "@element": "forms:single",
                     "title": "Lines",
                     "property": "lines",
-                    "options": "append,bean,buffer,class,convert,date,file,file-persister,files,format,identify,import,input-confirm,input-file,input-message,input-password,input-text,invoke,list,logout,oddballs,properties,resource,schedule,sql-results-bean,sql-results-sheet,stderr,stdin,stdout,tee,tokenizer,url-class-loader,value,xml,arooa:annotation,arooa:bean-def,arooa:conversion,arooa:descriptor,arooa:descriptors,arooa:magic-beans,arooa:property,design:form,design:group,design:indexed,design:mapped,design:radio,design:single,design:tabs,design:text,design:textarea,schedules:after,schedules:broken,schedules:count,schedules:daily,schedules:date,schedules:day-after,schedules:day-before,schedules:interval,schedules:last,schedules:list,schedules:monthly,schedules:now,schedules:time,schedules:weekly,schedules:yearly",
+                    "options": "SOME_OPTIONS_THAT_CHANGE_TOO_MUCH",
                     "propertyClass": "[Ljava.lang.String;"
                   }
                 ]
@@ -81,7 +81,7 @@
                 "@element": "forms:single",
                 "title": "Output",
                 "property": "output",
-                "options": "append,bean,buffer,convert,file,format,identify,import,invoke,logout,resource,stderr,stdout,tee,value,xml",
+                "options": "SOME_OPTIONS_THAT_CHANGE_TOO_MUCH",
                 "propertyClass": "java.io.OutputStream"
               }
             }

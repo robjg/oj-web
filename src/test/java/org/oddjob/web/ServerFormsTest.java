@@ -79,8 +79,11 @@ public class ServerFormsTest {
 
         System.out.println(response.getValue());
 
+        String formDef = response.getValue().replaceAll("\"options\":\"[a-z,-:]*\"",
+                "\"options\":\"SOME_OPTIONS_THAT_CHANGE_TOO_MUCH\"");
+
         JSONAssert.assertEquals(
-                response.getValue(),
+                formDef,
                 expected,
                 JSONCompareMode.LENIENT);
 
