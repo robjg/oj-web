@@ -6,6 +6,7 @@ import com.gargoylesoftware.htmlunit.html.DomElement;
 import com.gargoylesoftware.htmlunit.html.HtmlElement;
 import com.gargoylesoftware.htmlunit.html.HtmlPage;
 import org.junit.Assert;
+import org.junit.Ignore;
 import org.junit.Test;
 import org.oddjob.OurDirs;
 import org.slf4j.Logger;
@@ -15,6 +16,7 @@ import java.io.File;
 import java.net.URL;
 import java.util.List;
 
+@Ignore("Old JQuery htmlunit test - needs updating or replacing.")
 public class OjJobActionsScriptTest extends Assert {
 
 	private static Logger logger = LoggerFactory.getLogger(OjJobActionsScriptTest.class);

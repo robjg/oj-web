@@ -3,11 +3,7 @@
     <job>
         <sequential>
             <jobs>
-                <web:server id="server" port="8080" xmlns:web="oddjob:web">
-                    <handlers>
-                        <web:oddjob-web root="${serverJobs}"/>
-                    </handlers>
-                </web:server>
+                <web:ui-server id="server" port="8080" xmlns:web="oddjob:web" root="${serverJobs}"/>
                 <oddjob file="${oddjob.dir}/server-jobs.xml" id="serverJobs" name="Server Jobs"/>
             </jobs>
         </sequential>

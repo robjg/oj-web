@@ -5,7 +5,7 @@ import javax.servlet.MultipartConfigElement;
 /**
  * Bean to provide configuration for an {@link javax.servlet.MultipartConfigElement}.
  *
- * @see OddjobWebHandler
+ * @see OddjobRestHandler
  */
 public class MultipartConfigParameters {
 

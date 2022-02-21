@@ -1,5 +1,0 @@
-{
-	"compilerOptions": {
-		"outFile": "../resources/org/oddjob/webapp/scripts/oddjob.js"
-	}
-}

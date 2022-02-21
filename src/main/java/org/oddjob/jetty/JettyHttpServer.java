@@ -24,7 +24,7 @@ import java.util.concurrent.CopyOnWriteArrayList;
  * Common handlers to use are:
  * <ul>
  * <li>{@link ResourceHandlerType}</li>
- * <li>{@link OddjobWebHandler}</li>
+ * <li>{@link OddjobRestHandler}</li>
  * </ul>
  * 
  * @oddjob.example

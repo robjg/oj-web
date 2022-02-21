@@ -24,6 +24,27 @@
         <htmlunit.version>2.37.0</htmlunit.version>
     </properties>
 
+    <profiles>
+        <!-- required to test the ui. -->
+        <profile>
+            <id>ui-test</id>
+            <activation>
+                <activeByDefault>false</activeByDefault>
+            </activation>
+            <dependencies>
+                <dependency>
+                    <groupId>uk.co.rgordon</groupId>
+                    <artifactId>oj-reactjs</artifactId>
+                    <version>${project.version}</version>
+                    <scope>system</scope>
+                    <!-- Why doesn't this work!!! -->
+                    <!--systemPath>${project.basedir}/../oj-reactjs/build/oj-reactjs-${project.version}.jar</systemPath -->
+                    <systemPath>C:/Users/Rob/projects/oj-reactjs/build/oj-reactjs-1.6-SNAPSHOT.jar</systemPath>
+                </dependency>
+            </dependencies>
+        </profile>
+    </profiles>
+
     <dependencies>
         <dependency>
             <groupId>org.eclipse.jetty</groupId>
@@ -129,41 +150,6 @@
     </dependencies>
     <build>
         <plugins>
-            <plugin>
-                <groupId>org.codehaus.mojo</groupId>
-                <artifactId>exec-maven-plugin</artifactId>
-                <version>1.3.2</version>
-                <executions>
-                    <execution>
-                        <id>exec-main-tsc</id>
-                        <phase>generate-sources</phase>
-                        <configuration>
-                            <executable>tsc</executable>
-                            <arguments>
-                                <argument>-p</argument>
-                                <argument>${project.basedir}\src\main\ts</argument>
-                            </arguments>
-                        </configuration>
-                        <goals>
-                            <goal>exec</goal>
-                        </goals>
-                    </execution>
-                    <execution>
-                        <id>exec-test-tsc</id>
-                        <phase>generate-sources</phase>
-                        <configuration>
-                            <executable>tsc</executable>
-                            <arguments>
-                                <argument>-p</argument>
-                                <argument>${project.basedir}\src\test\ts</argument>
-                            </arguments>
-                        </configuration>
-                        <goals>
-                            <goal>exec</goal>
-                        </goals>
-                    </execution>
-                </executions>
-            </plugin>
             <plugin>
                 <artifactId>maven-assembly-plugin</artifactId>
                 <version>3.2.0</version>

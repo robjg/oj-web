@@ -4,33 +4,7 @@
 	<taskdef resource="org/apache/ivy/ant/antlib.xml"
 	                 uri="antlib:org.apache.ivy.ant" 
 		classpath="../oj-assembly/antlibs/ivy-2.5.0.jar"/>
-	
-	<property environment="env"/>
-	<!-- TODO: Linux -->
-	<property name="typescript.compiler.path" value="${env.APPDATA}/npm/tsc.cmd"/>
-	
-    <!--
-    Run typescript compler. Use a tsconfig.json to set compiler opitons.
-	-->
-	<macrodef name="TypeScriptCompileDir">
-	
-	    <!-- required attribute -->
-	    <attribute name="src" />
-	
-	    <sequential>
-	
-	        <!-- Compile using the generated compile file -->
-	        <echo message="Calling ${typescript.compiler.path} with -p @{src}" />
-	    	
-	        <exec dir="." executable="${typescript.compiler.path}">
-	            <arg value="-p"/>
-	            <arg value="@{src}"/>
-	        </exec>
-	
-	    </sequential>
-	
-	</macrodef>
-	
+
 	<!-- =================================================================== -->
 	<!-- Initialization target                                               -->
 	<!-- =================================================================== -->
@@ -64,11 +38,9 @@
 		<property name="src.dir"      		value="./src"/>
         <property name="main.dir"        	value="${src.dir}/main"/>
 		<property name="main.java"     		value="${main.dir}/java"/>
-		<property name="main.ts"     		value="${main.dir}/ts"/>
 		<property name="main.resources"  	value="${main.dir}/resources"/>
 		<property name="test.dir"     		value="./src/test"/>
 		<property name="test.java"     		value="${test.dir}/java"/>
-		<property name="test.ts"        	value="${test.dir}/ts"/>
 		<property name="test.resources" 	value="${test.dir}/resources"/>
 		<property name="work.dir"     		value="./work"/>
 		<property name="lib.dir"      		value="./lib"/>
@@ -78,8 +50,6 @@
 		<property name="build.classes"   	value="${build.dir}/classes"/>
 		<property name="build.tests" 		value="${build.dir}/test-classes"/>
 		<property name="build.lib"       	value="${build.dir}/lib"/>
-		<property name="build.tsc"   		value="${main.resources}/org/oddjob/webapp/scripts/oddjob.js"/>
-        <property name="build.test.tsc"     value="${test.dir}/webapp/scripts"/>
 
 		<property name="oddball.dir"		value="${build.dir}/oddball"/>
 		<property name="oddball.lib"    value="${oddball.dir}/lib"/>
@@ -154,11 +124,6 @@
 	<target name="compile" depends="prepare-src-main"
           description="Compiles the source code">
 
-		<!-- Compile a single JavaScript file in the bin dir for release -->
-	    <TypeScriptCompileDir
-	        src="${main.ts}"
-	    />
-		
 		<copy todir="${build.classes}" filtering="off">
 			<fileset dir="${main.resources}">
 				<include name="**/*"/>
@@ -201,10 +166,6 @@
 	<!-- =================================================================== -->
 	
 	<target name="compile-tests" depends="compile" description="Compile jUnit tests">
-
-        <TypeScriptCompileDir
-            src="${test.ts}"
-        />
 
 		<copy todir="${build.tests}" filtering="off">
 			<fileset dir="${test.resources}">
@@ -360,8 +321,6 @@
 	
 	<target name="clean" depends="init" description="Cleans the build directories">
 		<delete dir="${build.dir}"/>
-		<delete file="${build.tsc}"/>
-		<delete dir="${build.test.tsc}"/>					
 	</target>
 
 </project>

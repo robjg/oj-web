@@ -1,13 +1,10 @@
 package org.oddjob.jetty;
 
 import org.eclipse.jetty.server.Handler;
-import org.eclipse.jetty.server.handler.HandlerList;
-import org.eclipse.jetty.server.handler.ResourceHandler;
 import org.eclipse.jetty.servlet.FilterHolder;
 import org.eclipse.jetty.servlet.ServletContextHandler;
 import org.eclipse.jetty.servlet.ServletHolder;
 import org.eclipse.jetty.servlets.CrossOriginFilter;
-import org.eclipse.jetty.util.resource.Resource;
 import org.jboss.resteasy.plugins.server.servlet.HttpServletDispatcher;
 import org.oddjob.arooa.ArooaSession;
 import org.oddjob.arooa.deploy.annotations.ArooaAttribute;
@@ -27,7 +24,7 @@ import java.util.Optional;
 
 /**
  * @author rob
- * @oddjob.description Provide the Oddjob Web Service and Oddjob Web interface.
+ * @oddjob.description Provide the Oddjob REST Service.
  * <p>
  * The actual service API is defined in {@link OddjobApi}.
  * @oddjob.example Provide an Oddjob web client.
@@ -37,12 +34,10 @@ import java.util.Optional;
  * <p>
  * {@oddjob.xml.resource org/oddjob/jetty/OddjobWebService.xml}
  */
-public class OddjobWebHandler
+public class OddjobRestHandler
         implements ValueFactory<Handler>, ArooaSessionAware {
 
     public static final String CONTEXT_PATH = "/";
-
-    public static final String WEBAPP_RESOURCE = "org/oddjob/webapp";
 
     public static final String SERVICE_PATH = "/api/*";
 
@@ -52,14 +47,6 @@ public class OddjobWebHandler
      * @oddjob.required Yes.
      */
     private volatile Object root;
-
-    /**
-     * @oddjob.property
-     * @oddjob.description Only enable the Oddjob Web Service, not the accompanying
-     * html.
-     * @oddjob.required No.
-     */
-    private volatile boolean serviceOnly;
 
     /**
      * @oddjob.property
@@ -74,21 +61,6 @@ public class OddjobWebHandler
      * @oddjob.required No. Defaults to '/'
      */
     private volatile String servicePath;
-
-    /**
-     * @oddjob.property
-     * @oddjob.description The class path to the html files for oddjob web.
-     * @oddjob.required No. Defaults to the webapp in the jar at org/oddjob/webapp.
-     */
-    private volatile String webappResource;
-
-    /**
-     * @oddjob.property
-     * @oddjob.description The directory for the html files for oddjob web. Mainly used for
-     * development to save stopping and starting Jetty.
-     * @oddjob.required No.
-     */
-    private volatile File webappDir;
 
     /**
      * @oddjob.property
@@ -137,11 +109,6 @@ public class OddjobWebHandler
             servicePath = SERVICE_PATH;
         }
 
-        String webappResource = this.webappResource;
-        if (webappResource == null) {
-            webappResource = WEBAPP_RESOURCE;
-        }
-
         ServletContextHandler contextHandler = new ServletContextHandler(
                 ServletContextHandler.SESSIONS);
         contextHandler.setContextPath(contextPath);
@@ -168,19 +135,7 @@ public class OddjobWebHandler
             contextHandler.addFilter(crossOriginFilter(), "/*", EnumSet.of(DispatcherType.REQUEST));
         }
 
-        Handler handler;
-
-        if (serviceOnly) {
-            handler = contextHandler;
-        } else {
-            HandlerList handlers = new HandlerList();
-            handlers.addHandler(resourceHandler(webappResource));
-            handlers.addHandler(contextHandler);
-
-            handler = handlers;
-        }
-
-        return handler;
+        return contextHandler;
     }
 
     public static ServletHolder wsServletHolder(MultipartConfigElement multipartConfigElement) {
@@ -206,17 +161,6 @@ public class OddjobWebHandler
         return holder;
     }
 
-    protected Handler resourceHandler(String webappResource) {
-
-        ResourceHandler resourceHandler = new ResourceHandler();
-        resourceHandler.setBaseResource(webappDir == null ?
-                Resource.newClassPathResource(webappResource) :
-                Resource.newResource(webappDir));
-        resourceHandler.setWelcomeFiles(new String[]{"index.html"});
-
-        return resourceHandler;
-    }
-
     @ArooaAttribute
     public void setRoot(Object root) {
         this.root = root;
@@ -234,30 +178,6 @@ public class OddjobWebHandler
         return contextPath;
     }
 
-    public void setServiceOnly(boolean serviceOnly) {
-        this.serviceOnly = serviceOnly;
-    }
-
-    public String getWebappResource() {
-        return webappResource;
-    }
-
-    public void setWebappResource(String webappResource) {
-        this.webappResource = webappResource;
-    }
-
-    public File getWebappDir() {
-        return webappDir;
-    }
-
-    public void setWebappDir(File webappDir) {
-        this.webappDir = webappDir;
-    }
-
-    public boolean isServiceOnly() {
-        return serviceOnly;
-    }
-
     public String getServicePath() {
         return servicePath;
     }
@@ -273,7 +193,6 @@ public class OddjobWebHandler
     public void setAllowCrossOrigin(boolean allowCrossOrigin) {
         this.allowCrossOrigin = allowCrossOrigin;
     }
-
 
     public MultipartConfigParameters getMultiPartConfig() {
         return multiPartConfig;

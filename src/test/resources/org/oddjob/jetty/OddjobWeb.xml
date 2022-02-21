@@ -3,12 +3,8 @@
   <job>
     <sequential>
       <jobs>
-        <web:server id="server" port="${server.port}"
-          xmlns:web="oddjob:web">
-          <handler>
-            <web:oddjob-web root="${jobs}" />
-          </handler>
-        </web:server>
+        <web:ui-server id="server" port="${server.port}" root="${jobs}"
+          xmlns:web="oddjob:web"/>
         <sequential id="jobs">
           <jobs>
             <echo name="Echo 1"><![CDATA[Hello]]></echo>

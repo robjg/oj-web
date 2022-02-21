@@ -1,17 +1,18 @@
 package org.oddjob.jetty;
 
-import java.io.File;
-
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import com.google.gson.Gson;
 import org.junit.Assert;
+import org.junit.Assume;
 import org.junit.Test;
 import org.oddjob.Oddjob;
 import org.oddjob.OddjobLookup;
+import org.oddjob.WebExists;
 import org.oddjob.rest.model.NodeInfos;
 import org.oddjob.state.ParentState;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
-import com.google.gson.Gson;
+import java.io.File;
 
 public class JettyHttpServerExamplesTest extends Assert {
 
@@ -26,6 +27,8 @@ public class JettyHttpServerExamplesTest extends Assert {
 	 */
 	@Test
 	public void testOddjobWebExample() throws Exception {
+
+		Assume.assumeTrue(WebExists.check());
 
 		File file = new File(getClass().getResource(
 				"OddjobWeb.xml").getFile());
@@ -112,7 +115,7 @@ public class JettyHttpServerExamplesTest extends Assert {
 		
 		oddjob.run();
 		
-		assertEquals(ParentState.STARTED, 
+		assertEquals(ParentState.STARTED,
 				oddjob.lastStateEvent().getState());
 		
 		int port = new OddjobLookup(oddjob).lookup("server.port", 

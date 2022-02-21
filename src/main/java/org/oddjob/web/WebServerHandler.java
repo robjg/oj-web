@@ -10,7 +10,7 @@ import org.oddjob.arooa.life.ArooaSessionAware;
 import org.oddjob.arooa.types.ValueFactory;
 import org.oddjob.http.InvokerServlet;
 import org.oddjob.jetty.MultipartConfigParameters;
-import org.oddjob.jetty.OddjobWebHandler;
+import org.oddjob.jetty.OddjobRestHandler;
 import org.oddjob.jmx.RemoteIdMappings;
 import org.oddjob.remote.RemoteConnection;
 import org.oddjob.rest.OddjobApplication;
@@ -56,6 +56,8 @@ public class WebServerHandler implements ValueFactory<Handler>, ArooaSessionAwar
      */
     private volatile boolean allowCrossOrigin;
 
+    private ClassLoader classLoader;
+
     @ArooaHidden
     @Override
     public void setArooaSession(ArooaSession session) {
@@ -70,6 +72,7 @@ public class WebServerHandler implements ValueFactory<Handler>, ArooaSessionAwar
 
         final ServletContextHandler contextHandler = new ServletContextHandler(ServletContextHandler.SESSIONS);
         contextHandler.setContextPath( "/" );
+        contextHandler.setClassLoader(classLoader);
 
         // Invoker
 
@@ -103,15 +106,15 @@ public class WebServerHandler implements ValueFactory<Handler>, ArooaSessionAwar
                 Optional.ofNullable(uploadDirectory)
                         .orElseGet(() -> new File(System.getProperty("java.io.tmpdir"))));
 
-        contextHandler.addServlet(OddjobWebHandler.wsServletHolder(
+        contextHandler.addServlet(OddjobRestHandler.wsServletHolder(
                 Optional.ofNullable(multiPartConfig)
                         .orElse(new MultipartConfigParameters())
                         .toMultipartConfigElement()
                 ),
-                OddjobWebHandler.SERVICE_PATH);
+                OddjobRestHandler.SERVICE_PATH);
 
         if (allowCrossOrigin) {
-            contextHandler.addFilter(OddjobWebHandler.crossOriginFilter(),
+            contextHandler.addFilter(OddjobRestHandler.crossOriginFilter(),
                     "/*",
                     EnumSet.of(DispatcherType.REQUEST));
         }
@@ -159,4 +162,11 @@ public class WebServerHandler implements ValueFactory<Handler>, ArooaSessionAwar
         this.allowCrossOrigin = allowCrossOrigin;
     }
 
+    public ClassLoader getClassLoader() {
+        return classLoader;
+    }
+
+    public void setClassLoader(ClassLoader classLoader) {
+        this.classLoader = classLoader;
+    }
 }

@@ -1,13 +1,5 @@
 package org.oddjob.jetty;
 
-import java.io.IOException;
-import java.io.PrintWriter;
-import java.net.URL;
-
-import javax.servlet.ServletException;
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
-
 import org.eclipse.jetty.http.HttpHeader;
 import org.eclipse.jetty.http.HttpMethod;
 import org.eclipse.jetty.http.MimeTypes;
@@ -15,6 +7,13 @@ import org.eclipse.jetty.server.Request;
 import org.eclipse.jetty.server.handler.AbstractHandler;
 import org.eclipse.jetty.util.IO;
 import org.eclipse.jetty.util.resource.Resource;
+
+import javax.servlet.ServletException;
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+import java.io.IOException;
+import java.io.PrintWriter;
+import java.net.URL;
 
 /**
  * A very simple handler that just displays a welcome. Based on Jetty's 

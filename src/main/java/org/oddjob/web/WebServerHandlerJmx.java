@@ -21,14 +21,14 @@ import java.util.Objects;
  */
 public class WebServerHandlerJmx implements ValueFactory<Handler>, ArooaSessionAware {
 
+    private volatile ArooaSession session;
+
     /**
      * @oddjob.property
      * @oddjob.description An Oddjob JMX Server.
      * @oddjob.required Yes, for the time being. Will default soon.
      */
-    private JmxServer jmxServer;
-
-    private ArooaSession session;
+    private volatile JmxServer jmxServer;
 
     /**
      * @oddjob.property
@@ -51,6 +51,8 @@ public class WebServerHandlerJmx implements ValueFactory<Handler>, ArooaSessionA
      */
     private volatile boolean allowCrossOrigin;
 
+    private volatile ClassLoader classLoader;
+
     @ArooaHidden
     @Override
     public void setArooaSession(ArooaSession session) {
@@ -68,6 +70,7 @@ public class WebServerHandlerJmx implements ValueFactory<Handler>, ArooaSessionA
                 beanServer);
 
         WebServerHandler webServerHandler = new WebServerHandler();
+        webServerHandler.setClassLoader(classLoader);
         webServerHandler.setRemoteConnection(remoteBridge);
         webServerHandler.setIdMappings(jmxServer.getRemoteIdMappings());
         webServerHandler.setArooaSession(session);
@@ -109,4 +112,11 @@ public class WebServerHandlerJmx implements ValueFactory<Handler>, ArooaSessionA
         this.allowCrossOrigin = allowCrossOrigin;
     }
 
+    public ClassLoader getClassLoader() {
+        return classLoader;
+    }
+
+    public void setClassLoader(ClassLoader classLoader) {
+        this.classLoader = classLoader;
+    }
 }

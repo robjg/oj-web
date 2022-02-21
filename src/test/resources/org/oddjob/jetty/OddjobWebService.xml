@@ -5,7 +5,7 @@
       <jobs>
         <web:server xmlns:web="oddjob:web" id="server">
           <handler>
-            <web:oddjob-web serviceOnly="true" root="${jobs}" />
+            <web:oddjob-rest root="${jobs}" />
           </handler>
         </web:server>
         <sequential id="jobs">
