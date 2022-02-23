@@ -1,7 +1,7 @@
 <ivysettings>
   <include file="../oj-assembly/ivysettings.xml"/>
 
-  <property name="jetty.version" value="9.4.35.v20201120" override="false" />
+  <property name="jetty.version" value="9.4.45.v20220203" override="false" />
   <property name="gson.version" value="2.8.6" override="false" />
   <property name="resteasy.version" value="3.11.2.Final" override="false" />
   <property name="htmlunit.version" value="2.33" override="false" />
