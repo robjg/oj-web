@@ -1,0 +1,61 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<oddjob id="oddjob">
+    <job>
+        <sequential>
+            <jobs>
+                <properties>
+                    <values>
+                        <file file="${oddjob.dir}/stores" key="ssltest.stores.dir"/>
+                    </values>
+                </properties>
+                <sequential name="Setup Keys and Certs">
+                    <jobs>
+                        <delete force="true" name="Delete Any Previous Store Directory">
+                            <files>
+                                <file file="${ssltest.stores.dir}"/>
+                            </files>
+                        </delete>
+                        <mkdir dir="${ssltest.stores.dir}" name="Create Store Directory"/>
+                        <exec dir="${ssltest.stores.dir}" name="Create Server Keystore"><![CDATA[keytool -v -genkey -keyalg RSA -keysize 2048 -validity 360 -alias serverkey -keystore server_keystore.p12 -storetype pkcs12 -storepass srvstorepwd -dname "CN=anything"]]></exec>
+                        <exec dir="${ssltest.stores.dir}" name="Export Server Certificate">
+                            <stdout>
+                                <file file="${ssltest.stores.dir}/server_cert.pem"/>
+                            </stdout><![CDATA[keytool -export -rfc -alias serverkey -keystore server_keystore.p12 -storepass srvstorepwd]]></exec>
+                        <exec dir="${ssltest.stores.dir}" name="Import Server Certificate into Client Trustore">
+                            <stdin>
+                                <file file="${ssltest.stores.dir}/server_cert.pem"/>
+                            </stdin><![CDATA[keytool -v -import -keystore client_trustore.p12 -storepass clitrustpwd -alias serverkey -noprompt]]></exec>
+                    </jobs>
+                </sequential>
+                <web:server xmlns:web="oddjob:web" id="server">
+                    <handler>
+                        <web:resource base="${oddjob.dir}">
+                            <welcomeFiles>
+                                <list>
+                                    <values>
+                                        <value value="index.html"/>
+                                    </values>
+                                </list>
+                            </welcomeFiles>
+                        </web:resource>
+                    </handler>
+                    <modifiers>
+                        <web:ssl keyStorePassword="srvstorepwd" keyStorePath="${ssltest.stores.dir}/server_keystore.p12"/>
+                    </modifiers>
+                </web:server>
+                <web:client xmlns:web="oddjob:web" id="client" url="https://localhost:${server.port}">
+                    <ssl>
+                        <web:ssl trustStorePassword="clitrustpwd" trustStorePath="${ssltest.stores.dir}/client_trustore.p12">
+                            <hostnameVerifier>
+                                <web:hostname-verifier hostname=".*" regex="true"/>
+                            </hostnameVerifier>
+                        </web:ssl>
+                    </ssl>
+                </web:client>
+                <echo id="echo"><![CDATA[${client.content}>]]></echo>
+                <check eq="&lt;h1&gt;Hello World&lt;/h1&gt;" value="#{client.get('content').trim()}"/>
+                <stop job="${server}"/>
+            </jobs>
+        </sequential>
+    </job>
+</oddjob>

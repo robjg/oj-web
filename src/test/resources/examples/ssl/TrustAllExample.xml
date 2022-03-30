@@ -1,0 +1,49 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<oddjob id="oddjob">
+    <job>
+        <sequential>
+            <jobs>
+                <properties>
+                    <values>
+                        <file file="${oddjob.dir}/stores" key="ssltest.stores.dir"/>
+                    </values>
+                </properties>
+                <sequential name="Setup Keys and Certs">
+                    <jobs>
+                        <delete force="true" name="Delete Any Previous Store Directory">
+                            <files>
+                                <file file="${ssltest.stores.dir}"/>
+                            </files>
+                        </delete>
+                        <mkdir dir="${ssltest.stores.dir}" name="Create Store Directory"/>
+                        <exec dir="${ssltest.stores.dir}" name="Create Server Keystore"><![CDATA[keytool -v -genkey -keyalg RSA -keysize 2048 -validity 360 -alias serverkey -keystore server_keystore.p12 -storetype pkcs12 -storepass storepwd -dname "CN=anything"]]></exec>
+                    </jobs>
+                </sequential>
+                <web:server xmlns:web="oddjob:web" id="server">
+                    <handler>
+                        <web:resource base="${oddjob.dir}">
+                            <welcomeFiles>
+                                <list>
+                                    <values>
+                                        <value value="index.html"/>
+                                    </values>
+                                </list>
+                            </welcomeFiles>
+                        </web:resource>
+                    </handler>
+                    <modifiers>
+                        <web:ssl keyStorePassword="OBF:1vny1zlo1x8e1vnw1vn61x8g1zlu1vn4" keyStorePath="${ssltest.stores.dir}/server_keystore.p12"/>
+                    </modifiers>
+                </web:server>
+                <web:client xmlns:web="oddjob:web" id="client" url="https://localhost:${server.port}">
+                    <ssl>
+                        <web:ssl trustAll="true"/>
+                    </ssl>
+                </web:client>
+                <echo id="echo"><![CDATA[${client.content}>]]></echo>
+                <check eq="&lt;h1&gt;Hello World&lt;/h1&gt;" value="#{client.get('content').trim()}"/>
+                <stop job="${server}"/>
+            </jobs>
+        </sequential>
+    </job>
+</oddjob>

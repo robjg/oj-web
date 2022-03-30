@@ -1,6 +1,7 @@
 package org.oddjob.jetty;
 
-import org.junit.Assert;
+import org.hamcrest.MatcherAssert;
+import org.hamcrest.Matchers;
 import org.junit.Test;
 import org.oddjob.Oddjob;
 import org.oddjob.OddjobLookup;
@@ -9,6 +10,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.io.File;
+import java.util.Objects;
 import java.util.Properties;
 
 import static org.hamcrest.MatcherAssert.assertThat;
@@ -24,8 +26,8 @@ public class BasicAuthenticationTest {
     public void testBasicAuthenticationClientServerInOddjob() throws Exception {
 
         Oddjob serverOddjob = new Oddjob();
-        serverOddjob.setFile(new File(
-                getClass().getResource("BasicAuthServer.xml").getFile()));
+        serverOddjob.setFile(new File(Objects.requireNonNull(
+                getClass().getResource("BasicAuthServer.xml")).getFile()));
 
         serverOddjob.run();
 
@@ -41,8 +43,8 @@ public class BasicAuthenticationTest {
         properties.setProperty("server.port", Integer.toString(port));
 
         Oddjob clientOddjob = new Oddjob();
-        clientOddjob.setFile(new File(
-                getClass().getResource("BasicAuthClient.xml").getFile()));
+        clientOddjob.setFile(new File(Objects.requireNonNull(
+                getClass().getResource("BasicAuthClient.xml")).getFile()));
         clientOddjob.setProperties(properties);
         clientOddjob.run();
 
@@ -56,7 +58,7 @@ public class BasicAuthenticationTest {
 
         int status = clientLookup.lookup("client.status", int.class);
 
-        Assert.assertEquals(200, status);
+        MatcherAssert.assertThat(status, Matchers.is(200));
 
         serverOddjob.stop();
     }

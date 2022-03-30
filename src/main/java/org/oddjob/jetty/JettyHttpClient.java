@@ -111,6 +111,13 @@ public class JettyHttpClient implements Callable<Integer> {
 	 */
 	private volatile UsernamePassword basicAuthentication;
 
+	/**
+	 * @oddjob.property
+	 * @oddjob.description Provide SSL Configuration.
+	 * @oddjob.required No.
+	 */
+	private volatile ClientSslProvider ssl;
+
 
 	private interface RequestStrategy {
 		
@@ -206,10 +213,12 @@ public class JettyHttpClient implements Callable<Integer> {
 	
 	@Override
 	public Integer call() throws Exception {
-		
-		HttpClient httpClient = new HttpClient();
-		httpClient.start();
 
+		HttpClient httpClient = Optional.ofNullable(this.ssl)
+				.map(ssl -> new HttpClient(ssl.provideClientSsl()))
+				.orElseGet(() -> new HttpClient());
+
+		httpClient.start();
 
 		try {
 			RequestConfiguration config = new RequestConfiguration();
@@ -319,6 +328,14 @@ public class JettyHttpClient implements Callable<Integer> {
 
 	public void setBasicAuthentication(UsernamePassword basicAuthentication) {
 		this.basicAuthentication = basicAuthentication;
+	}
+
+	public ClientSslProvider getSsl() {
+		return ssl;
+	}
+
+	public void setSsl(ClientSslProvider ssl) {
+		this.ssl = ssl;
 	}
 
 	@Override

@@ -9,6 +9,10 @@
                     className='org.oddjob.web.WebServerHandlerJmx'/>
     <arooa:bean-def element='resource'
       className='org.oddjob.jetty.ResourceHandlerType'/>
+    <arooa:bean-def element='ssl'
+                    className='org.oddjob.jetty.SslConfiguration'/>
+    <arooa:bean-def element='hostname-verifier'
+                    className='org.oddjob.jetty.HostnameVerifierType'/>
   </values>
   <components>
     <arooa:bean-def element='server'

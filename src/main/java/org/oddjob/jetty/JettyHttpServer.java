@@ -74,6 +74,13 @@ public class JettyHttpServer implements Service {
 	 */
 	private final List<Object> beans = new CopyOnWriteArrayList<>();
 
+	/**
+	 * @oddjob.property
+	 * @oddjob.description Things that modify the server.
+	 * @oddjob.required No.
+	 */
+	private final ListSetterHelper<JettyServerModifier> modifiers = new ListSetterHelper<>();
+
 
 	/** The Jetty Server instance. */
 	private volatile Server server;
@@ -85,7 +92,7 @@ public class JettyHttpServer implements Service {
 			throw new IllegalStateException("Server already started.");
 		}
 
-		server = new Server(port);
+		server = new Server();
 
 		beans.forEach(server::addBean);
 
@@ -96,6 +103,16 @@ public class JettyHttpServer implements Service {
 					.orElseGet(WelcomeHandler::new);
 
 			server.setHandler(handler);
+
+			modifiers.getList().forEach(modifier -> modifier.modify(server));
+
+			if (server.getConnectors().length == 0) {
+				new HttpServerModifier().modify(server);
+			}
+
+			if (port > 0) {
+				((ServerConnector) server.getConnectors()[0]).setPort(port);
+			}
 
 			server.start();
 			
@@ -155,6 +172,10 @@ public class JettyHttpServer implements Service {
 	public void setBeans(int index, Object bean) {
 
 		new ListSetterHelper<>(beans).set(index, bean);
+	}
+
+	public void setModifiers(int index, JettyServerModifier modifier) {
+		modifiers.set(index, modifier);
 	}
 
 	@Override
