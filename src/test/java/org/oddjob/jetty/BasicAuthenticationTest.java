@@ -61,6 +61,8 @@ public class BasicAuthenticationTest {
         MatcherAssert.assertThat(status, Matchers.is(200));
 
         serverOddjob.stop();
-    }
 
+        clientOddjob.destroy();
+        serverOddjob.destroy();
+    }
 }
