@@ -5,7 +5,8 @@
             <jobs>
                 <properties>
                     <values>
-                        <file file="${oddjob.dir}/stores" key="ssltest.stores.dir"/>
+                        <value key="work.dir" value="${oddjob.dir}"/>
+                        <file file="${work.dir}/stores" key="ssltest.stores.dir"/>
                     </values>
                 </properties>
                 <sequential name="Setup Keys and Certs">

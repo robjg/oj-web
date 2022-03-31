@@ -5,8 +5,9 @@
             <jobs>
                 <properties>
                     <values>
+                        <value key="work.dir" value="${oddjob.dir}"/>
                         <value key="ssltest.hostname" value="#{java.net.InetAddress.getLocalHost().getHostName()}"/>
-                        <file file="${oddjob.dir}/stores" key="ssltest.stores.dir"/>
+                        <file file="${work.dir}/stores" key="ssltest.stores.dir"/>
                     </values>
                 </properties>
                 <sequential name="Setup Keys and Certs">
@@ -25,7 +26,7 @@
                         <exec dir="${ssltest.stores.dir}" name="Import Server Certificate into Client Trustore">
                             <stdin>
                                 <file file="${ssltest.stores.dir}/server_cert.pem"/>
-                            </stdin><![CDATA[keytool -v -import -keystore client_trustore.p12 -storepass clitrustpwd -alias serverkey -noprompt]]></exec>
+                            </stdin><![CDATA[keytool -v -import -storetype pkcs12 -keystore client_trustore.p12 -storepass clitrustpwd -alias serverkey -noprompt]]></exec>
                     </jobs>
                 </sequential>
                 <web:server xmlns:web="oddjob:web" id="server">
