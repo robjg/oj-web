@@ -11,6 +11,7 @@ import org.eclipse.jetty.util.Fields;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import java.io.OutputStream;
 import java.net.URI;
 import java.net.URISyntaxException;
 import java.util.LinkedHashMap;
@@ -64,7 +65,7 @@ public class JettyHttpClient implements Callable<Integer> {
 	
 	/** 
 	 * @oddjob.property
-	 * @oddjob.description The request method. GET/POST.
+	 * @oddjob.description The request method. GET/POST. PUT and DELETE are not supported yet.
 	 * @oddjob.required No defaults to GET.
 	 */
 	private volatile RequestMethod method;
@@ -78,17 +79,19 @@ public class JettyHttpClient implements Callable<Integer> {
 	
 	/**
 	 * @oddjob.property
-	 * @oddjob.description The content retrieved or to send.
+	 * @oddjob.description The content to send in a POST Request.
 	 * @oddjob.required No.
 	 */
 	private volatile String requestBody;
 
 	/**
 	 * @oddjob.property
-	 * @oddjob.description The content retrieved or to send.
+	 * @oddjob.description The content received if an output is not provided.
 	 * @oddjob.required No.
 	 */
 	private volatile String responseBody;
+
+	private volatile OutputStream outputStream;
 
 	/**
 	 * @oddjob.property
@@ -168,13 +171,13 @@ public class JettyHttpClient implements Callable<Integer> {
 		
 		GET {
 			@Override
-			public ContentResponse doRequest(HttpClient httpClient, RequestConfiguration self) 
+			public ContentResponse doRequest(HttpClient httpClient, RequestConfiguration config)
 			throws ExecutionException, InterruptedException, TimeoutException{
 				
-				Request request = httpClient.newRequest(self.url);
+				Request request = httpClient.newRequest(config.url);
 
-				if (self.parameters != null) {
-					for (Map.Entry<String, String>  entry : self.parameters.entrySet()) {
+				if (config.parameters != null) {
+					for (Map.Entry<String, String>  entry : config.parameters.entrySet()) {
 						request.param(entry.getKey(), entry.getValue());
 					}
 				}
@@ -185,14 +188,14 @@ public class JettyHttpClient implements Callable<Integer> {
 		
 		POST {
 			@Override
-			public ContentResponse doRequest(HttpClient httpClient, RequestConfiguration self) 
+			public ContentResponse doRequest(HttpClient httpClient, RequestConfiguration config)
 			throws InterruptedException, TimeoutException, ExecutionException {
 				
-				if (self.parameters == null) {
+				if (config.parameters == null) {
 					
-					Request request = httpClient.POST(self.url);
-					request.content(new StringContentProvider(self.content),
-							self.contentType);
+					Request request = httpClient.POST(config.url);
+					request.content(new StringContentProvider(config.content),
+							config.contentType);
 					
 					return request.send();
 				}
@@ -200,11 +203,11 @@ public class JettyHttpClient implements Callable<Integer> {
 					
 					Fields fields = new Fields();
 					
-					for (Map.Entry<String, String>  entry : self.parameters.entrySet()) {
+					for (Map.Entry<String, String>  entry : config.parameters.entrySet()) {
 						fields.put(entry.getKey(), entry.getValue());
 					}
 					
-					return httpClient.FORM(self.url, fields);
+					return httpClient.FORM(config.url, fields);
 				}
 			}
 		},
@@ -220,7 +223,12 @@ public class JettyHttpClient implements Callable<Integer> {
 
 		httpClient.start();
 
-		try {
+		try (AutoCloseable closeStream = () -> {
+			if (this.outputStream != null) {
+				this.outputStream.close();
+			}
+		}) {
+
 			RequestConfiguration config = new RequestConfiguration();
 
 			Optional.ofNullable(this.basicAuthentication)
@@ -277,7 +285,14 @@ public class JettyHttpClient implements Callable<Integer> {
 	public int getStatus() {
 		return status;
 	}
-	
+
+	/**
+	 * @oddjob.property content
+	 * @oddjob.description The request body to send or the response body received. This maps to
+	 * <cdoe>requestBody</cdoe> and <code>responseBody</code> as a convenience but is confusing
+	 * so should probably be deprecated.
+	 * @oddjob.required No.
+	 */
 	public String getContent() {
 		return responseBody;
 	}
