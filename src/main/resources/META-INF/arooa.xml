@@ -1,31 +1,67 @@
 <arooa:descriptor xmlns:arooa="http://rgordon.co.uk/oddjob/arooa"
-  prefix="web" namespace="oddjob:web">
-  <values>
-    <arooa:bean-def element='handlers'
-                    className='org.oddjob.jetty.HandlerListType'/>
-    <arooa:bean-def element='oddjob-rest'
-      className='org.oddjob.jetty.OddjobRestHandler'/>
-    <arooa:bean-def element='remote-handler'
-                    className='org.oddjob.web.WebServerHandlerJmx'/>
-    <arooa:bean-def element='resource'
-      className='org.oddjob.jetty.ResourceHandlerType'/>
-    <arooa:bean-def element='ssl'
-                    className='org.oddjob.jetty.SslConfiguration'/>
-    <arooa:bean-def element='hostname-verifier'
-                    className='org.oddjob.jetty.HostnameVerifierType'/>
-  </values>
-  <components>
-    <arooa:bean-def element='server'
-      className='org.oddjob.jetty.JettyHttpServer'>
-    </arooa:bean-def>
-    <arooa:bean-def element='ui-server'
-                    className='org.oddjob.jetty.OddJobWebUiServer'>
-    </arooa:bean-def>
-    <arooa:bean-def element='client'
-      className='org.oddjob.jetty.JettyHttpClient'>
-    </arooa:bean-def>
-    <arooa:bean-def element='remote-client'
-                    className='org.oddjob.web.WebClientJob'>
-    </arooa:bean-def>
-  </components>
+                  prefix="web" namespace="oddjob:web">
+    <values>
+        <arooa:bean-def element='handlers'
+                        className='org.oddjob.jetty.HandlerListType'/>
+        <arooa:bean-def element='oddjob-rest'
+                        className='org.oddjob.jetty.OddjobRestHandler'/>
+        <arooa:bean-def element='remote-handler'
+                        className='org.oddjob.web.WebServerHandlerJmx'/>
+        <arooa:bean-def element='resource'
+                        className='org.oddjob.jetty.ResourceHandlerType'/>
+        <arooa:bean-def element='ssl'
+                        className='org.oddjob.jetty.SslConfiguration'/>
+        <arooa:bean-def element='hostname-verifier'
+                        className='org.oddjob.jetty.HostnameVerifierType'/>
+    </values>
+    <components>
+        <arooa:bean-def element='server'
+                        className='org.oddjob.jetty.JettyHttpServer'>
+        </arooa:bean-def>
+        <arooa:bean-def element='ui-server'
+                        className='org.oddjob.jetty.OddJobWebUiServer'>
+        </arooa:bean-def>
+        <arooa:bean-def element='client'
+                        className='org.oddjob.jetty.JettyHttpClient'>
+            <design>
+                <design:form xmlns:design="arooa:design">
+                    <formItems>
+                        <design:group bordered="true" title="General">
+                            <formItems>
+                                <design:text property="name" title="Name"/>
+                            </formItems>
+                        </design:group>
+                        <design:tabs>
+                            <formItems>
+                                <design:group title="Request">
+                                    <formItems>
+                                        <design:text property="url" title="URL"/>
+                                        <design:text property="method" title="Method"/>
+                                        <design:single property="output" title="Output To"/>
+                                    </formItems>
+                                </design:group>
+                                <design:group title="Content">
+                                    <formItems>
+                                        <design:text property="contentType" title="Content Type"/>
+                                        <design:single property="parameters" title="Parameters"/>
+                                        <design:textarea title="Request Body"/>
+                                        <design:single property="content" title="Content"/>
+                                    </formItems>
+                                </design:group>
+                                <design:group title="Security">
+                                    <formItems>
+                                        <design:single property="basicAuthentication" title="Authentication"/>
+                                        <design:single property="ssl" title="SSL"/>
+                                    </formItems>
+                                </design:group>
+                            </formItems>
+                        </design:tabs>
+                    </formItems>
+                </design:form>
+            </design>
+        </arooa:bean-def>
+        <arooa:bean-def element='remote-client'
+                        className='org.oddjob.web.WebClientJob'>
+        </arooa:bean-def>
+    </components>
 </arooa:descriptor>

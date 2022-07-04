@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<oddjob>
+    <job>
+        <sequential>
+            <jobs>
+                <properties>
+                    <values>
+                        <value key="some.url" value="http://ipv4.download.thinkbroadband.com/1GB.zip"/>
+                        <value key="some.file" value="download.zip"/>
+                    </values>
+                </properties>
+                <web:client xmlns:web="oddjob:web" id="request" name="Download Example" url="${some.url}">
+                    <output>
+                        <file file="${some.file}"/>
+                    </output>
+                </web:client>
+            </jobs>
+        </sequential>
+    </job>
+</oddjob>
