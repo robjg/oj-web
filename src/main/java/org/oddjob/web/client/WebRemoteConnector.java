@@ -89,7 +89,11 @@ public class WebRemoteConnector implements RemoteConnector {
         public <T> void removeNotificationListener(long remoteId, NotificationType<T> notificationType, NotificationListener<T> notificationListener) throws RemoteException {
             notifierClient.removeNotificationListener(remoteId, notificationType, notificationListener);
         }
-    }
 
+        @Override
+        public void destroy(long remoteId) throws RemoteException {
+            // TODO - check all listeners removed for the given remoteId.
+        }
+    }
 
 }
