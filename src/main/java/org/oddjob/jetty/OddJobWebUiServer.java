@@ -11,6 +11,7 @@ import org.oddjob.OddjobException;
 import org.oddjob.Stoppable;
 import org.oddjob.arooa.ArooaSession;
 import org.oddjob.arooa.deploy.annotations.ArooaAttribute;
+import org.oddjob.arooa.deploy.annotations.ArooaHidden;
 import org.oddjob.arooa.life.ArooaSessionAware;
 import org.oddjob.framework.Service;
 import org.oddjob.jmx.RemoteIdMappings;
@@ -22,6 +23,7 @@ import org.oddjob.web.WebServerHandlerJmx;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import javax.inject.Inject;
 import javax.management.JMException;
 import javax.management.MBeanServer;
 import javax.management.MBeanServerConnection;
@@ -29,8 +31,15 @@ import java.io.File;
 import java.util.Optional;
 
 /**
- * @oddjob.description Provide an Oddjob Web UI Server.
+ * @oddjob.description Provide an Oddjob Web UI Server. This provides an incredibly simple Server to get up
+ * and running quickly. For Basic Authentication or SSL then the {@link JettyHttpServer} must be used
+ * with an {@link WebServerHandlerJmx}.
  *
+ * @oddjob.example
+ *
+ * The simplest web server without any handlers.
+ *
+ * {@oddjob.xml.resource org/oddjob/jetty/DefaultServerExample.xml}
  *
  * @author rob
  *
@@ -65,7 +74,7 @@ public class OddJobWebUiServer implements Service, ArooaSessionAware {
 	/**
 	 * @oddjob.property
 	 * @oddjob.description An Oddjob JMX Server.
-	 * @oddjob.required Yes, for the time being. Will default soon.
+	 * @oddjob.required No, creates a default internal one.
 	 */
 	private JmxServer jmxServer;
 
@@ -110,11 +119,17 @@ public class OddJobWebUiServer implements Service, ArooaSessionAware {
 	/** The Jetty Server instance. */
 	private volatile Server server;
 
+	/**
+	 * @oddjob.property
+	 * @oddjob.description Used internally.
+	 * @oddjob.required No. Set by oddjob.
+	 */
 	private volatile ClassLoader classLoader;
 
 	private Stoppable jmxServerStop;
 
 	@Override
+	@ArooaHidden
 	public void setArooaSession(ArooaSession session) {
 		this.session = session;
 	}
@@ -272,6 +287,7 @@ public class OddJobWebUiServer implements Service, ArooaSessionAware {
 		return classLoader;
 	}
 
+	@Inject
 	public void setClassLoader(ClassLoader classLoader) {
 		this.classLoader = classLoader;
 	}

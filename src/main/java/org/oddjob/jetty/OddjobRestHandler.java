@@ -27,9 +27,7 @@ import java.util.Optional;
  * @oddjob.description Provide the Oddjob REST Service.
  * <p>
  * The actual service API is defined in {@link OddjobApi}.
- * @oddjob.example Provide an Oddjob web client.
- * <p>
- * {@oddjob.xml.resource org/oddjob/jetty/OddjobWeb.xml}
+ *
  * @oddjob.example Provide an Oddjob web service only without the client.
  * <p>
  * {@oddjob.xml.resource org/oddjob/jetty/OddjobWebService.xml}

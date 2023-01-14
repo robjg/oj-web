@@ -38,8 +38,7 @@ import java.util.concurrent.TimeoutException;
  * <p>
  * This is a very simple wrapper around Jetty's
  * <a href="http://download.eclipse.org/jetty/stable-9/apidocs/org/eclipse/jetty/client/HttpClient.html">HTTPClient</a>.
- * It was developed to support testing of Oddjob's web service and as such it is quite
- * limited. It only supports PUT and GET requests and has no support for authentication.
+ * Only PUT and GET requests are supported. Basic Authentication is supported, and so are SSL connections.
  *
  * @oddjob.example Get the content of a URL using a parameter.
  * <p>

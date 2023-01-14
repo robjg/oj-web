@@ -9,6 +9,7 @@ import org.oddjob.jetty.MultipartConfigParameters;
 import org.oddjob.jmx.general.RemoteBridge;
 import org.oddjob.jmx.server.JmxServer;
 
+import javax.inject.Inject;
 import javax.management.MBeanServerConnection;
 import java.io.File;
 import java.util.Objects;
@@ -16,7 +17,8 @@ import java.util.Objects;
 /**
  * @oddjob.description Provide a Jetty Server Handler that connects to a local JMX implementation.
  * <p>
- *     This is a Work In Progress for the new React-JS front end.
+ *     This allows greater control over a server. For a quick Oddjob Web UI see
+ *     {@link org.oddjob.jetty.OddJobWebUiServer}.
  * </p>
  */
 public class WebServerHandlerJmx implements ValueFactory<Handler>, ArooaSessionAware {
@@ -51,6 +53,11 @@ public class WebServerHandlerJmx implements ValueFactory<Handler>, ArooaSessionA
      */
     private volatile boolean allowCrossOrigin;
 
+    /**
+     * @oddjob.property
+     * @oddjob.description Internal Classloader.
+     * @oddjob.required No. Set by Oddjob.
+     */
     private volatile ClassLoader classLoader;
 
     @ArooaHidden
@@ -116,6 +123,7 @@ public class WebServerHandlerJmx implements ValueFactory<Handler>, ArooaSessionA
         return classLoader;
     }
 
+    @Inject
     public void setClassLoader(ClassLoader classLoader) {
         this.classLoader = classLoader;
     }

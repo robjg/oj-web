@@ -27,11 +27,6 @@ import java.util.concurrent.CopyOnWriteArrayList;
  * <li>{@link OddjobRestHandler}</li>
  * </ul>
  * 
- * @oddjob.example
- * 
- * The simplest web server without any handlers.
- * 
- * {@oddjob.xml.resource org/oddjob/jetty/DefaultServerExample.xml}
  *
  * @oddjob.example
  *
