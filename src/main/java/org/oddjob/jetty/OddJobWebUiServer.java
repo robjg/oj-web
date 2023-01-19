@@ -23,7 +23,6 @@ import org.oddjob.web.WebServerHandlerJmx;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import javax.inject.Inject;
 import javax.management.JMException;
 import javax.management.MBeanServer;
 import javax.management.MBeanServerConnection;
@@ -121,8 +120,12 @@ public class OddJobWebUiServer implements Service, ArooaSessionAware {
 
 	/**
 	 * @oddjob.property
-	 * @oddjob.description Used internally.
-	 * @oddjob.required No. Set by oddjob.
+	 * @oddjob.description The classloader passed to Jetty. If not set then Jetty and RESTEasy
+	 * use the Thread context classloader. This is set by Oddjob's service adapter to be the
+	 * classloader that loaded this component which will be the
+	 * Oddball classloader. Setting this classloader will be complicated as it may require the
+	 * Oddball classloader as a parent.
+	 * @oddjob.required No.
 	 */
 	private volatile ClassLoader classLoader;
 
@@ -287,7 +290,8 @@ public class OddJobWebUiServer implements Service, ArooaSessionAware {
 		return classLoader;
 	}
 
-	@Inject
+	// Do not inject as this will be Oddjob's classloader, not the Oddball classloader that
+	// loaded this class.
 	public void setClassLoader(ClassLoader classLoader) {
 		this.classLoader = classLoader;
 	}

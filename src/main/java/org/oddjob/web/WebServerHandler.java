@@ -25,7 +25,15 @@ import java.util.Objects;
 import java.util.Optional;
 
 /**
- * Provide Jetty handler for an http and web socket Remote Connection.
+ * Provide Jetty handler for an HTTP and Web Socket Remote Connection. Designed as
+ * an Oddjob Type, but currently not exposed in the Arooa descriptor.
+ * <p>
+ *     This handler also includes the REST API. It probably shouldn't and so will be
+ *     removed at some point. It can be included separately anyway using the
+ *     {@link OddjobRestHandler}.
+ * </p>
+ *
+ * @see WebServerHandlerJmx
  */
 public class WebServerHandler implements ValueFactory<Handler>, ArooaSessionAware {
 
@@ -36,26 +44,30 @@ public class WebServerHandler implements ValueFactory<Handler>, ArooaSessionAwar
     private ArooaSession session;
 
     /**
-     * @oddjob.property
-     * @oddjob.description Set parameters for MultiPartConfig so that file upload from a form works.
-     * @oddjob.required No. Defaults are used.
+     * Set parameters for MultiPartConfig so that file upload from a form works.
+     * If not set then defaults are used.
      */
     private volatile MultipartConfigParameters multiPartConfig;
 
     /**
-     * @oddjob.property
-     * @oddjob.description Upload directory. Required for an action form that specifies a file.
-     * @oddjob.required No. Defaults tmp dir.
+     * Upload directory. Required for an action form that specifies a file.
+     * If not set then defaults to the tmp dir.
      */
     private volatile File uploadDirectory;
 
     /**
-     * @oddjob.property
-     * @oddjob.description Is cross origin content allowed?
-     * @oddjob.required No. Default to false.
+     * Is cross-origin content allowed?
+     * Defaults to false.
      */
     private volatile boolean allowCrossOrigin;
 
+    /**
+     * The classloader passed to Jetty. If not set then Jetty and RESTEasy use the Thread context
+     * classloader. This is set by Oddjob's service adapter to be the classloader that loaded
+     * the component that is using this handler which will be the Oddball classloader. Setting
+     * this classloader will be complicated as it may require the Oddball classloader as a
+     * parent.
+     */
     private ClassLoader classLoader;
 
     @ArooaHidden

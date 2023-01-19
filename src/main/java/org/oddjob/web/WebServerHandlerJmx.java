@@ -9,7 +9,6 @@ import org.oddjob.jetty.MultipartConfigParameters;
 import org.oddjob.jmx.general.RemoteBridge;
 import org.oddjob.jmx.server.JmxServer;
 
-import javax.inject.Inject;
 import javax.management.MBeanServerConnection;
 import java.io.File;
 import java.util.Objects;
@@ -20,6 +19,8 @@ import java.util.Objects;
  *     This allows greater control over a server. For a quick Oddjob Web UI see
  *     {@link org.oddjob.jetty.OddJobWebUiServer}.
  * </p>
+ *
+ * @see WebServerHandler
  */
 public class WebServerHandlerJmx implements ValueFactory<Handler>, ArooaSessionAware {
 
@@ -48,15 +49,19 @@ public class WebServerHandlerJmx implements ValueFactory<Handler>, ArooaSessionA
 
     /**
      * @oddjob.property
-     * @oddjob.description Is cross origin content allowed?
-     * @oddjob.required No. Default to false.
+     * @oddjob.description Is cross-origin content allowed?
+     * @oddjob.required No. Defaults to false.
      */
     private volatile boolean allowCrossOrigin;
 
     /**
      * @oddjob.property
-     * @oddjob.description Internal Classloader.
-     * @oddjob.required No. Set by Oddjob.
+     * @oddjob.description The classloader passed to Jetty. If not set then Jetty and RESTEasy
+     * use the Thread context classloader. This is set by Oddjob's service adapter to be the
+     * classloader that loaded the component that is using this handler which will be the
+     * Oddball classloader. Setting this classloader will be complicated as it may require the
+     * Oddball classloader as a parent.
+     * @oddjob.required No.
      */
     private volatile ClassLoader classLoader;
 
@@ -123,7 +128,8 @@ public class WebServerHandlerJmx implements ValueFactory<Handler>, ArooaSessionA
         return classLoader;
     }
 
-    @Inject
+    // Do not inject as this will be Oddjob's classloader, not the Oddball classloader that
+    // loaded this class.
     public void setClassLoader(ClassLoader classLoader) {
         this.classLoader = classLoader;
     }
