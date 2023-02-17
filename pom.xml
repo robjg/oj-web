@@ -5,7 +5,7 @@
     <parent>
         <groupId>uk.co.rgordon</groupId>
         <artifactId>oj-parent</artifactId>
-        <version>1.6.0</version>
+        <version>1.7.0-SNAPSHOT</version>
     </parent>
 
     <artifactId>oj-web</artifactId>
@@ -41,27 +41,6 @@
         <resteasy.version>3.11.2.Final</resteasy.version>
         <htmlunit.version>2.37.0</htmlunit.version>
     </properties>
-
-    <profiles>
-        <!-- required to test the ui. -->
-        <profile>
-            <id>ui-test</id>
-            <activation>
-                <activeByDefault>false</activeByDefault>
-            </activation>
-            <dependencies>
-                <dependency>
-                    <groupId>uk.co.rgordon</groupId>
-                    <artifactId>oj-reactjs</artifactId>
-                    <version>${project.version}</version>
-                    <scope>system</scope>
-                    <!-- Why doesn't this work!!! -->
-                    <!--systemPath>${project.basedir}/../oj-reactjs/build/oj-reactjs-${project.version}.jar</systemPath -->
-                    <systemPath>C:/Users/Rob/projects/oj-reactjs/build/oj-reactjs-1.6-SNAPSHOT.jar</systemPath>
-                </dependency>
-            </dependencies>
-        </profile>
-    </profiles>
 
     <dependencies>
         <dependency>
@@ -166,11 +145,24 @@
         </dependency>
 
     </dependencies>
+
     <build>
+        <resources>
+            <resource>
+                <directory>${project.basedir}/src/main/resources</directory>
+            </resource>
+            <resource>
+                <directory>${project.basedir}/../oj-reactjs</directory>
+                <includes>
+                    <include>dist/**</include>
+                </includes>
+            </resource>
+        </resources>
+
         <plugins>
             <plugin>
                 <artifactId>maven-assembly-plugin</artifactId>
-                <version>3.2.0</version>
+                <groupId>org.apache.maven.plugins</groupId>
                 <configuration>
                     <descriptors>
                         <descriptor>src/assembly/oddball.xml</descriptor>

@@ -9,10 +9,9 @@ import org.oddjob.remote.NotificationType;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import java.util.Arrays;
+import java.lang.reflect.Type;
 import java.util.EnumSet;
 import java.util.Set;
-import java.util.stream.Collectors;
 
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.is;
@@ -82,25 +81,29 @@ public class NotificationDeserializerTest {
         assertThat(copy1.getType().getName(), is("some.string.event"));
         assertThat(copy1.getData(), is("green"));
 
-        Notification n2 = new Notification(1L,
+        Notification<UserData> n2 = new Notification<>(1L,
                 dataType, 22L,
                 new UserData("red", new long[]{1, 2, 3}));
 
         String json2 = gson.toJson(n2);
 
-        Notification copy2 = gson.fromJson(json2, Notification.class);
+        Type userDataNotificationType = new TypeToken<Notification<UserData>>() {}.getType();
 
-        UserData ud = (UserData) copy2.getData();
+        Notification<UserData> copy2 = gson.fromJson(json2, userDataNotificationType);
+
+        UserData ud = copy2.getData();
         assertThat(ud.getaColour(), is("red"));
         assertThat(ud.getSomeNumbers(), is(new long[]{1L, 2L, 3L}));
 
-        Notification n3 = new Notification(1L,
+        Notification<int[]> n3 = new Notification<>(1L,
                 intsType, 22L,
                 new int[]{1, 2, 3});
 
         String json3 = gson.toJson(n3);
 
-        Notification copy3 = gson.fromJson(json3, Notification.class);
+        Type intArrayNotificationType = new TypeToken<Notification<int[]>>() {}.getType();
+
+        Notification<int[]> copy3 = gson.fromJson(json3, intArrayNotificationType);
 
         assertThat(copy3.getData(), is(new int[]{1, 2, 3}));
     }
@@ -119,7 +122,7 @@ public class NotificationDeserializerTest {
                         new NotificationDeserializer())
                 .create();
 
-        Notification n1 = new Notification(1L,
+        Notification<Void> n1 = new Notification<>(1L,
                 notificationType, 22L,
                 null);
 
@@ -158,7 +161,7 @@ public class NotificationDeserializerTest {
                         new NotificationDeserializer())
                 .create();
 
-        Notification n1 = new Notification(1L,
+        Notification<Set> n1 = new Notification<>(1L,
                 notificationType, 22L,
                 EnumSet.of(Colour.RED, Colour.VIOLET, Colour.YELLOW));
 
@@ -171,9 +174,8 @@ public class NotificationDeserializerTest {
                 }.getType());
 
         // Converted back to a Set of Strings.
-        assertThat(copy1.getData(), is(Arrays.asList(
-                Colour.RED.toString(), Colour.VIOLET.toString(), Colour.YELLOW.toString())
-                .stream().collect(Collectors.toSet())));
+        assertThat(copy1.getData(), is(Set.of(
+                Colour.RED.toString(), Colour.VIOLET.toString(), Colour.YELLOW.toString())));
     }
 
 }
