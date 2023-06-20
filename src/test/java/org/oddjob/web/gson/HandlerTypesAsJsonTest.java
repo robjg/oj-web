@@ -8,8 +8,7 @@ import org.oddjob.jmx.handlers.StructuralHandlerFactory;
 import org.oddjob.state.GenericState;
 import org.oddjob.state.JobState;
 import org.oddjob.state.State;
-
-import java.util.Date;
+import org.oddjob.state.StateInstant;
 
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.is;
@@ -37,12 +36,12 @@ public class HandlerTypesAsJsonTest {
     @Test
     public void testStateful() {
 
-        Date dataNow = new Date();
+        StateInstant dateNow = StateInstant.now();
 
         State state = JobState.EXCEPTION;
 
         StatefulHandlerFactory.StateData data =
-                new StatefulHandlerFactory.StateData(state, dataNow,
+                new StatefulHandlerFactory.StateData(state, dateNow,
                         new RuntimeException("Ahhh!"));
 
         Gson gson = GsonUtil.createGson(getClass().getClassLoader());
@@ -54,9 +53,9 @@ public class HandlerTypesAsJsonTest {
         StatefulHandlerFactory.StateData copy  = gson.fromJson(json,
                 StatefulHandlerFactory.StateData.class);
 
-        assertThat(GenericState.statesEquivalent(state, copy.getJobState()), is(true));
+        assertThat(GenericState.statesEquivalent(state, copy.getState()), is(true));
 
-        Throwable exception = copy.getThrowable();
+        Throwable exception = copy.getException();
 
         assertThat(exception.getClass(), is(Throwable.class));
         assertThat(exception.getMessage(), is("Ahhh!"));
