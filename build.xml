@@ -54,7 +54,7 @@
 				<include name="README.md"/>
 				<include name="pom.xml"/>
 				<include name="server-web.xml"/>
-				<include name="server-job.xml"/>
+				<include name="server-jobs.xml"/>
 			</fileset>
 		</copy>
 
@@ -76,6 +76,7 @@
 		<copy todir="${dist.bin.dir}">
 			<fileset dir=".">
 				<include name="server-web.xml"/>
+				<include name="server-jobs.xml"/>
 			</fileset>
 		</copy>
 	</target>
