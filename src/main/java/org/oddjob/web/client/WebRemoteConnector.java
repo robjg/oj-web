@@ -12,16 +12,9 @@ import java.util.concurrent.ScheduledExecutorService;
 /**
  * Client Connect that connects to a {@link org.oddjob.web.WebServerHandler}.
  */
-public class WebRemoteConnector implements RemoteConnector {
+public class WebRemoteConnector {
 
-    private final WebConnection webConnection;
-
-    public WebRemoteConnector(WebConnection webConnection) {
-        this.webConnection = webConnection;
-    }
-
-
-    public static WebRemoteConnector connect(String host, int port, ScheduledExecutorService executor) throws RemoteException {
+    public static RemoteConnection connect(String host, int port, ScheduledExecutorService executor) throws RemoteException {
 
         Objects.requireNonNull(host);
 
@@ -41,18 +34,8 @@ public class WebRemoteConnector implements RemoteConnector {
         NotifierClient notifierClient = NotifierClient.create(notifierUri, executor);
         InvokerClient invokerClient = InvokerClient.create(invokerUri);
 
-        return new WebRemoteConnector(new WebConnection(notifierClient, invokerClient));
+        return new WebConnection(notifierClient, invokerClient);
 
-    }
-
-    @Override
-    public RemoteConnection getConnection() {
-        return webConnection;
-    }
-
-    @Override
-    public void close() throws RemoteException {
-        webConnection.close();
     }
 
     static class WebConnection implements RemoteConnection {
@@ -65,7 +48,7 @@ public class WebRemoteConnector implements RemoteConnector {
             this.invokerClient = invokerClient;
         }
 
-        void close() throws RemoteException {
+        public void close() throws RemoteException {
 
             try {
                 notifierClient.close();

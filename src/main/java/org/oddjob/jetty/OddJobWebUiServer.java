@@ -19,6 +19,7 @@ import org.oddjob.jmx.ServerStrategy;
 import org.oddjob.jmx.server.JmxServer;
 import org.oddjob.jmx.server.ServerSide;
 import org.oddjob.jmx.server.ServerSideBuilder;
+import org.oddjob.remote.RemoteException;
 import org.oddjob.web.WebServerHandlerJmx;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -213,7 +214,7 @@ public class OddJobWebUiServer implements Service, ArooaSessionAware {
 
 	interface StoppableJmxServer extends JmxServer, Stoppable {}
 
-	protected StoppableJmxServer createDefaultServer() throws JMException {
+	protected StoppableJmxServer createDefaultServer() throws JMException, RemoteException {
 
 		Object root = this.root;
 		if (root == null) {
