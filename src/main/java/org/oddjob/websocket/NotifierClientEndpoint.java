@@ -3,7 +3,6 @@ package org.oddjob.websocket;
 import com.google.gson.Gson;
 import org.oddjob.remote.*;
 import org.oddjob.remote.util.NotificationManager;
-import org.oddjob.web.gson.GsonUtil;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -46,12 +45,13 @@ public class NotifierClientEndpoint implements RemoteNotifier {
 
     private Instant lastMessageTime;
 
-    public NotifierClientEndpoint(ScheduledExecutorService executor) {
-        this(executor, Clock.systemDefaultZone());
+    public NotifierClientEndpoint(ScheduledExecutorService executor, Gson gson) {
+        this(executor, Clock.systemDefaultZone(), gson);
     }
 
     public NotifierClientEndpoint(ScheduledExecutorService executor,
-                                  Clock clock) {
+                                  Clock clock,
+                                  Gson gson) {
         this.executor = executor;
         this.clock = clock;
 
@@ -59,7 +59,7 @@ public class NotifierClientEndpoint implements RemoteNotifier {
                 this::subscribe,
                 this::unsubscribe);
 
-        this.gson = GsonUtil.createGson(getClass().getClassLoader());
+        this.gson = gson;
 
         this.lastMessageTime = Instant.EPOCH;
     }

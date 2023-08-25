@@ -28,10 +28,6 @@ public class GsonRemoteInvoker implements JsonRemoteInvoker {
         this.gson = gson;
     }
 
-    public static JsonRemoteInvoker to(RemoteInvoker remoteInvoker) {
-        return to(remoteInvoker, GsonUtil.createGson(GsonRemoteInvoker.class.getClassLoader()));
-    }
-
     public static JsonRemoteInvoker to(RemoteInvoker remoteInvoker, Gson gson) {
         return new GsonRemoteInvoker(remoteInvoker, gson);
     }

@@ -4,7 +4,6 @@ import com.google.gson.Gson;
 import org.oddjob.remote.*;
 import org.oddjob.remote.util.NotificationListenerTracker;
 import org.oddjob.remote.util.NotificationManager;
-import org.oddjob.web.gson.GsonUtil;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -45,13 +44,12 @@ public class NotifierServerEndpoint {
 
     private final Gson gson;
 
-    public NotifierServerEndpoint(RemoteNotifier remoteNotifier) {
+    public NotifierServerEndpoint(RemoteNotifier remoteNotifier, Gson gson) {
 
         AtomicReference<NotificationManager> manager = new AtomicReference<>();
 
         this.notificationManager = new NotificationListenerTracker<>(remoteNotifier);
-
-        this.gson = GsonUtil.createGson(getClass().getClassLoader());
+        this.gson = gson;
     }
 
     @OnOpen

@@ -4,6 +4,8 @@ import org.junit.Test;
 import org.oddjob.jetty.JettyHttpServer;
 import org.oddjob.remote.OperationType;
 import org.oddjob.remote.RemoteInvoker;
+import org.oddjob.web.gson.GsonRemoteInvoker;
+import org.oddjob.web.gson.GsonUtil;
 
 import java.net.URI;
 import java.util.ArrayList;
@@ -79,11 +81,10 @@ public class ClientServerTest {
             }
         };
 
-
         JettyHttpServer server = new JettyHttpServer();
 
         JettyInvokerHandler handler = new JettyInvokerHandler();
-        handler.setRemoteInvoker(invoker);
+        handler.setRemoteInvoker(GsonRemoteInvoker.to(invoker, GsonUtil.defaultGson()));
 
         server.setHandler(handler.toValue());
 
@@ -99,7 +100,8 @@ public class ClientServerTest {
                 .withSignature(String.class).returningVoid();
 
         try (InvokerClient client = InvokerClient.create(
-                new URI("http://localhost:" + server.getPort() + "/invoke")))
+                new URI("http://localhost:" + server.getPort() + "/invoke"),
+                GsonUtil.defaultGson()))
         {
             assertThat(client.invoke(2L, op1),
                     is("Hello"));

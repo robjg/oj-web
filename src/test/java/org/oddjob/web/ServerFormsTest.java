@@ -59,7 +59,7 @@ public class ServerFormsTest {
                         .returning(String.class))
                 .andArgs(new ComponentTransportable(2L));
 
-        Gson gson = GsonUtil.createGson(getClass().getClassLoader());
+        Gson gson = GsonUtil.createGson(session);
 
         String jsonRequest = gson.toJson(request);
 

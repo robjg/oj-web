@@ -4,13 +4,14 @@ import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import com.google.gson.reflect.TypeToken;
 import org.junit.Test;
+import org.oddjob.arooa.ClassResolver;
 import org.oddjob.remote.Notification;
 import org.oddjob.remote.NotificationType;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.is;
-import static org.junit.Assert.assertThat;
 
 public class SubscriptionRequestTest {
 
@@ -24,7 +25,7 @@ public class SubscriptionRequestTest {
 
         Gson gson = new GsonBuilder()
                 .registerTypeAdapter(NotificationType.class,
-                        new NotificationTypeDesSer(getClass().getClassLoader()))
+                        new NotificationTypeDesSer(ClassResolver.getDefaultClassResolver()))
                 .create();
 
         SubscriptionRequest test = new SubscriptionRequest(
@@ -50,7 +51,7 @@ public class SubscriptionRequestTest {
 
         Gson gson = new GsonBuilder()
                 .registerTypeAdapter(NotificationType.class,
-                        new NotificationTypeDesSer(getClass().getClassLoader()))
+                        new NotificationTypeDesSer(ClassResolver.getDefaultClassResolver()))
                 .registerTypeAdapter(Notification.class,
                         new NotificationDeserializer())
                 .create();

@@ -13,7 +13,7 @@ public class ClassAdapterTest {
 
         Class<?> data = String.class;
 
-        Gson gson = GsonUtil.createGson(getClass().getClassLoader());
+        Gson gson = GsonUtil.defaultGson();
 
         String json = gson.toJson(data);
 

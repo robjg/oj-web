@@ -11,7 +11,6 @@ import org.oddjob.remote.OperationType;
 import org.oddjob.remote.RemoteException;
 import org.oddjob.remote.RemoteIdException;
 import org.oddjob.remote.RemoteInvoker;
-import org.oddjob.web.gson.GsonUtil;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -33,11 +32,9 @@ public class InvokerClient implements RemoteInvoker, AutoCloseable {
 
     private final HttpClient httpClient;
 
-    private InvokerClient(URI uri) throws RemoteException {
+    private InvokerClient(URI uri, Gson gson) throws RemoteException {
         this.uri = uri;
-
-        this.gson = GsonUtil.createGson(getClass().getClassLoader());
-
+        this.gson = gson;
         this.httpClient = new HttpClient();
 
         try {
@@ -47,8 +44,8 @@ public class InvokerClient implements RemoteInvoker, AutoCloseable {
         }
     }
 
-    public static InvokerClient create(URI uri) throws RemoteException {
-        return new InvokerClient(uri);
+    public static InvokerClient create(URI uri, Gson gson) throws RemoteException {
+        return new InvokerClient(uri, gson);
     }
 
 

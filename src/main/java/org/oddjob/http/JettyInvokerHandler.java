@@ -4,14 +4,14 @@ import org.eclipse.jetty.server.Handler;
 import org.eclipse.jetty.servlet.ServletContextHandler;
 import org.eclipse.jetty.servlet.ServletHolder;
 import org.oddjob.arooa.types.ValueFactory;
-import org.oddjob.remote.RemoteInvoker;
+import org.oddjob.web.JsonRemoteInvoker;
 
 /**
  * Jetty Handler for handling invoke requests via an {@link InvokerServlet}.
  */
 public class JettyInvokerHandler implements ValueFactory<Handler> {
 
-    private RemoteInvoker remoteInvoker;
+    private JsonRemoteInvoker remoteInvoker;
 
     @Override
     public Handler toValue() {
@@ -30,11 +30,11 @@ public class JettyInvokerHandler implements ValueFactory<Handler> {
         return context;
     }
 
-    public RemoteInvoker getRemoteInvoker() {
+    public JsonRemoteInvoker getRemoteInvoker() {
         return remoteInvoker;
     }
 
-    public void setRemoteInvoker(RemoteInvoker remoteInvoker) {
+    public void setRemoteInvoker(JsonRemoteInvoker remoteInvoker) {
         this.remoteInvoker = remoteInvoker;
     }
 }

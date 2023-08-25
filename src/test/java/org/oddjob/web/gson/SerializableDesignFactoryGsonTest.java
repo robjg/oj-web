@@ -5,6 +5,7 @@ import com.google.gson.GsonBuilder;
 import org.junit.Test;
 import org.mockito.Mockito;
 import org.oddjob.arooa.parsing.SerializableDesignFactory;
+import org.oddjob.web.gson.plugin.SerializableDesignFactoryGson;
 
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.nullValue;

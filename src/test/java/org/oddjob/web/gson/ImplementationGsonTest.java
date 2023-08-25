@@ -8,8 +8,8 @@ import org.oddjob.remote.Initialisation;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.is;
-import static org.junit.Assert.assertThat;
 
 public class ImplementationGsonTest {
 
@@ -21,7 +21,7 @@ public class ImplementationGsonTest {
         Implementation<?> test = Implementation.create(Object.class.getName(), "2.0",
                 Initialisation.from(String.class, "Some Thing"));
 
-        Gson gson = GsonUtil.createGson(getClass().getClassLoader());
+        Gson gson = GsonUtil.defaultGson();
 
         String json = gson.toJson(test);
 
@@ -40,7 +40,7 @@ public class ImplementationGsonTest {
 
         Implementation<?> test = Implementation.create(Object.class.getName(), "2.0");
 
-        Gson gson = GsonUtil.createGson(getClass().getClassLoader());
+        Gson gson = GsonUtil.defaultGson();
 
         String json = gson.toJson(test);
 

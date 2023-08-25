@@ -1,7 +1,7 @@
 package org.oddjob.web.gson;
 
 import com.google.gson.*;
-import org.oddjob.arooa.utils.ClassUtils;
+import org.oddjob.arooa.ClassResolver;
 import org.oddjob.remote.Initialisation;
 
 import java.io.Serializable;
@@ -15,10 +15,10 @@ public class InitialisationGson implements JsonSerializer<Initialisation<?>>, Js
     public static final String TYPE = "type";
     public static final String DATA = "data";
 
-    private final ClassLoader classLoader;
+    private final ClassResolver classResolver;
 
-    public InitialisationGson(ClassLoader classLoader) {
-        this.classLoader = classLoader;
+    public InitialisationGson(ClassResolver classResolver) {
+        this.classResolver = classResolver;
     }
 
     @Override
@@ -39,12 +39,11 @@ public class InitialisationGson implements JsonSerializer<Initialisation<?>>, Js
 
         JsonObject jsonObject = (JsonObject) json;
 
-        Class<? extends Serializable> type;
-        try {
-            type = (Class<? extends Serializable>) ClassUtils.classFor(
-                    jsonObject.getAsJsonPrimitive(TYPE).getAsString(), classLoader);
-        } catch (ClassNotFoundException e) {
-            throw new JsonParseException(e);
+        String className = jsonObject.getAsJsonPrimitive(TYPE).getAsString();
+        //noinspection unchecked
+        Class<? extends Serializable> type = (Class<? extends Serializable>) classResolver.findClass(className);
+        if (type == null) {
+            throw new JsonParseException("Class not found " + className);
         }
 
         JsonElement valueJson = jsonObject.get(DATA);

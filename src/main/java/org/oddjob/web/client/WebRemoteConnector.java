@@ -1,5 +1,6 @@
 package org.oddjob.web.client;
 
+import com.google.gson.Gson;
 import org.oddjob.http.InvokerClient;
 import org.oddjob.remote.*;
 import org.oddjob.websocket.NotifierClient;
@@ -14,7 +15,9 @@ import java.util.concurrent.ScheduledExecutorService;
  */
 public class WebRemoteConnector {
 
-    public static RemoteConnection connect(String host, int port, ScheduledExecutorService executor) throws RemoteException {
+    public static RemoteConnection connect(String host, int port,
+                                           ScheduledExecutorService executor,
+                                           Gson gson) throws RemoteException {
 
         Objects.requireNonNull(host);
 
@@ -31,8 +34,8 @@ public class WebRemoteConnector {
             throw new RemoteException(e);
         }
 
-        NotifierClient notifierClient = NotifierClient.create(notifierUri, executor);
-        InvokerClient invokerClient = InvokerClient.create(invokerUri);
+        NotifierClient notifierClient = NotifierClient.create(notifierUri, executor, gson);
+        InvokerClient invokerClient = InvokerClient.create(invokerUri, gson);
 
         return new WebConnection(notifierClient, invokerClient);
 

@@ -2,47 +2,75 @@ package org.oddjob.web.gson;
 
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
+import org.oddjob.arooa.ArooaSession;
+import org.oddjob.arooa.ClassResolver;
 import org.oddjob.http.*;
-import org.oddjob.images.ImageData;
 import org.oddjob.remote.*;
 import org.oddjob.websocket.NotificationDeserializer;
 import org.oddjob.websocket.NotificationTypeDesSer;
 
 /**
  * Group all Gson Adapters.
- *
- * TODO Think how to make this pluggable.
  */
 public class GsonUtil {
 
-    public static Gson createGson(ClassLoader classLoader) {
+    public static Gson createGson(ArooaSession arooaSession) {
 
-        return new GsonBuilder()
-                .registerTypeAdapter(Class.class, new ClassTypeAdapter(classLoader))
+        ClassResolver classResolver = arooaSession.getArooaDescriptor().getClassResolver();
 
-                .registerTypeAdapter(OperationType.class,
-                        new OperationTypeDeSer(classLoader))
+        return createGson(new ResourceGsonConfigurator(arooaSession),
+                classResolver);
+    }
 
-                .registerTypeAdapter(InvokeRequest.class,
-                        new InvokeRequestGson())
-                .registerTypeAdapter(InvokeResponse.class,
-                        new InvokeResponseDesSer(classLoader))
+    public static Gson createGson(GsonConfigurator gsonConfigurator,
+                                  ClassResolver classResolver) {
 
-                .registerTypeAdapter(NotificationType.class,
-                        new NotificationTypeDesSer(classLoader))
-                .registerTypeAdapter(Notification.class,
-                        new NotificationDeserializer())
-
-                .registerTypeAdapter(Initialisation.class,
-                        new InitialisationGson(classLoader))
-                .registerTypeAdapter(Implementation.class,
-                        new ImplementationGson())
-
-                .registerTypeAdapter(ImageData.class, new ImageDataGson())
-
-                .registerTypeAdapterFactory(
-                        new SerializableDesignFactoryGson())
-
+        return gsonConfigurator.configure(
+                new DefaultConfigurator(classResolver)
+                .configure(new GsonBuilder()))
                 .create();
+    }
+
+    public static Gson defaultGson() {
+        return defaultGson(new GsonBuilder(), ClassResolver.getDefaultClassResolver());
+    }
+
+    public static Gson defaultGson(GsonBuilder gsonBuilder, ClassResolver classLoader) {
+        return new DefaultConfigurator(classLoader).configure(gsonBuilder)
+                .create();
+    }
+
+    public static class DefaultConfigurator implements GsonConfigurator {
+
+        private final ClassResolver classResolver;
+
+        public DefaultConfigurator(ClassResolver classResolver) {
+            this.classResolver = classResolver;
+        }
+
+
+        @Override
+        public GsonBuilder configure(GsonBuilder gsonBuilder) {
+
+                return gsonBuilder.registerTypeAdapter(Class.class, new ClassTypeAdapter(classResolver))
+
+                    .registerTypeAdapter(OperationType.class,
+                            new OperationTypeDeSer(classResolver))
+
+                    .registerTypeAdapter(InvokeRequest.class,
+                            new InvokeRequestGson())
+                    .registerTypeAdapter(InvokeResponse.class,
+                            new InvokeResponseDesSer(classResolver))
+
+                    .registerTypeAdapter(NotificationType.class,
+                            new NotificationTypeDesSer(classResolver))
+                    .registerTypeAdapter(Notification.class,
+                            new NotificationDeserializer())
+
+                    .registerTypeAdapter(Initialisation.class,
+                            new InitialisationGson(classResolver))
+                    .registerTypeAdapter(Implementation.class,
+                            new ImplementationGson());
+        }
     }
 }

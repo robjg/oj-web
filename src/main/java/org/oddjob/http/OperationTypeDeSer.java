@@ -1,9 +1,10 @@
 package org.oddjob.http;
 
 import com.google.gson.*;
-import org.oddjob.arooa.utils.ClassUtils;
+import org.oddjob.arooa.ClassResolver;
 import org.oddjob.remote.OperationType;
 
+import java.io.Serializable;
 import java.lang.reflect.Type;
 import java.util.Arrays;
 import java.util.Optional;
@@ -17,10 +18,10 @@ public class OperationTypeDeSer implements JsonSerializer<OperationType<?>>, Jso
     public static final String SIGNATURE = "signature";
     public static final String TYPE = "type";
 
-    private final ClassLoader classLoader;
+    private final ClassResolver classResolver;
 
-    public OperationTypeDeSer(ClassLoader classLoader) {
-        this.classLoader = classLoader;
+    public OperationTypeDeSer(ClassResolver classResolver) {
+        this.classResolver = classResolver;
     }
 
     @Override
@@ -47,26 +48,26 @@ public class OperationTypeDeSer implements JsonSerializer<OperationType<?>>, Jso
                 .map(JsonPrimitive::getAsString)
                 .orElseThrow(() -> new JsonParseException("No required field " + NAME));
 
-        Class<?> type;
-        try {
-            type = ClassUtils.classFor(
-                    Optional.ofNullable(jsonObject.getAsJsonPrimitive(TYPE))
-                            .map(JsonPrimitive::getAsString)
-                            .orElseThrow(() -> new JsonParseException("No required field " + TYPE)),
-                    classLoader);
-        } catch (ClassNotFoundException e) {
-            throw new JsonParseException(e);
+        String className = Optional.ofNullable(jsonObject.getAsJsonPrimitive(TYPE))
+                .map(JsonPrimitive::getAsString)
+                .orElseThrow(() -> new JsonParseException("No required field " + TYPE));
+
+        //noinspection unchecked
+        Class<? extends Serializable> type = (Class<? extends Serializable>) classResolver.findClass(className);
+        if (type == null) {
+            throw new JsonParseException("Class not found " + className);
         }
 
         JsonArray sigArray = jsonObject.getAsJsonArray(SIGNATURE);
 
         Class<?>[] signature = new Class<?>[sigArray.size()];
-        for (int i = 0; i <signature.length; i++) {
-            try {
-                signature[i] = ClassUtils.classFor(sigArray.get(i).getAsString(), classLoader);
-            } catch (ClassNotFoundException e) {
-                throw new JsonParseException(e);
+        for (int i = 0; i < signature.length; i++) {
+            String sigClassName = sigArray.get(i).getAsString();
+            Class<?> sigClass = classResolver.findClass(sigClassName);
+            if (sigClass == null) {
+                throw new JsonParseException("Class not found: " + sigClassName);
             }
+            signature[i] = sigClass;
         }
 
         return new OperationType<>(name, signature, type);

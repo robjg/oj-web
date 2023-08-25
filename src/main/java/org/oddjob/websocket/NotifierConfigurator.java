@@ -1,5 +1,6 @@
 package org.oddjob.websocket;
 
+import com.google.gson.Gson;
 import org.oddjob.remote.RemoteNotifier;
 
 import javax.websocket.server.ServerEndpointConfig;
@@ -11,8 +12,12 @@ public class NotifierConfigurator extends ServerEndpointConfig.Configurator {
 
     private final RemoteNotifier remoteNotifier;
 
-    public NotifierConfigurator(RemoteNotifier remoteNotifier) {
+    private final Gson gson;
+
+    public NotifierConfigurator(RemoteNotifier remoteNotifier,
+                                Gson gson) {
         this.remoteNotifier = remoteNotifier;
+        this.gson = gson;
     }
 
     @Override
@@ -20,6 +25,6 @@ public class NotifierConfigurator extends ServerEndpointConfig.Configurator {
         if (remoteNotifier == null) {
             throw new InstantiationException("No Remote Notifier");
         }
-        return endpointClass.cast(new NotifierServerEndpoint(remoteNotifier));
+        return endpointClass.cast(new NotifierServerEndpoint(remoteNotifier, gson));
     }
 }

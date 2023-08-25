@@ -3,10 +3,11 @@ package org.oddjob.http;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import org.junit.Test;
+import org.oddjob.arooa.ClassResolver;
 import org.oddjob.remote.OperationType;
 
+import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.is;
-import static org.junit.Assert.assertThat;
 
 public class OperationTypeDeSerTest {
 
@@ -19,7 +20,7 @@ public class OperationTypeDeSerTest {
                 .returning(void.class);
 
         Gson gson = new GsonBuilder()
-                .registerTypeAdapter(OperationType.class, new OperationTypeDeSer(getClass().getClassLoader()))
+                .registerTypeAdapter(OperationType.class, new OperationTypeDeSer(ClassResolver.getDefaultClassResolver()))
                 .create();
 
         String json = gson.toJson(ot);

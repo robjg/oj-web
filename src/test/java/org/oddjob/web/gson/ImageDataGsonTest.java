@@ -5,13 +5,15 @@ import com.google.gson.GsonBuilder;
 import org.junit.Test;
 import org.oddjob.images.IconHelper;
 import org.oddjob.images.ImageData;
+import org.oddjob.web.gson.plugin.ImageDataGson;
 
 import java.io.IOException;
 import java.net.URL;
 import java.util.Base64;
+import java.util.Objects;
 
+import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.is;
-import static org.junit.Assert.assertThat;
 
 public class ImageDataGsonTest {
 
@@ -38,8 +40,8 @@ public class ImageDataGsonTest {
     // Gets base64 for web.
     public static void main(String[] args) throws IOException {
 
-        URL url = ImageDataGsonTest.class.getResource(
-                "/org/oddjob/webapp/gfx/plus.png");
+        URL url = Objects.requireNonNull(ImageDataGsonTest.class.getResource(
+                "/org/oddjob/webapp/gfx/plus.png"));
 
         ImageData imageData = ImageData.fromUrl(url, null);
 

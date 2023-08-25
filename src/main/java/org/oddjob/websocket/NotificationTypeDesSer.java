@@ -1,9 +1,10 @@
 package org.oddjob.websocket;
 
 import com.google.gson.*;
-import org.oddjob.arooa.utils.ClassUtils;
+import org.oddjob.arooa.ClassResolver;
 import org.oddjob.remote.NotificationType;
 
+import java.io.Serializable;
 import java.lang.reflect.Type;
 
 /**
@@ -14,10 +15,10 @@ public class NotificationTypeDesSer implements JsonSerializer<NotificationType<?
     public static final String NAME = "name";
     public static final String TYPE = "type";
 
-    private final ClassLoader classLoader;
+    private final ClassResolver classResolver;
 
-    public NotificationTypeDesSer(ClassLoader classLoader) {
-        this.classLoader = classLoader;
+    public NotificationTypeDesSer(ClassResolver classResolver) {
+        this.classResolver = classResolver;
     }
 
     @Override
@@ -36,11 +37,12 @@ public class NotificationTypeDesSer implements JsonSerializer<NotificationType<?
         JsonObject jsonObject = (JsonObject) json;
 
         String name = jsonObject.getAsJsonPrimitive(NAME).getAsString();
-        Class<?> type;
-        try {
-            type = ClassUtils.classFor(jsonObject.getAsJsonPrimitive(TYPE).getAsString(), classLoader);
-        } catch (ClassNotFoundException e) {
-            throw new JsonParseException(e);
+
+        String className = jsonObject.getAsJsonPrimitive(TYPE).getAsString();
+        //noinspection unchecked
+        Class<? extends Serializable> type = (Class<? extends Serializable>) classResolver.findClass(className);
+        if (type == null) {
+            throw new JsonParseException("Class not found " + className);
         }
 
         return new NotificationType<>(name, type);

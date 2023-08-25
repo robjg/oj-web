@@ -1,7 +1,8 @@
-package org.oddjob.web.gson;
+package org.oddjob.web.gson.plugin;
 
 import com.google.gson.*;
 import org.oddjob.images.ImageData;
+import org.oddjob.web.gson.GsonConfigurator;
 
 import java.lang.reflect.Type;
 import java.util.Base64;
@@ -10,11 +11,16 @@ import java.util.Optional;
 /**
  * Json Adapter for {@link ImageData}.
  */
-public class ImageDataGson implements JsonSerializer<ImageData>, JsonDeserializer<ImageData> {
+public class ImageDataGson implements JsonSerializer<ImageData>, JsonDeserializer<ImageData>, GsonConfigurator {
 
     public static final String BYTES = "bytes";
     public static final String MIME_TYPE = "mimeType";
     public static final String DESCRIPTION = "description";
+
+    @Override
+    public GsonBuilder configure(GsonBuilder gsonBuilder) {
+        return gsonBuilder.registerTypeAdapter(ImageData.class, this);
+    }
 
     @Override
     public JsonElement serialize(ImageData src, Type typeOfSrc, JsonSerializationContext context) {

@@ -1,5 +1,6 @@
 package org.oddjob.web;
 
+import com.google.gson.Gson;
 import org.oddjob.Structural;
 import org.oddjob.arooa.logging.LogLevel;
 import org.oddjob.framework.extend.SimpleService;
@@ -18,6 +19,7 @@ import org.oddjob.structural.ChildHelper;
 import org.oddjob.structural.StructuralListener;
 import org.oddjob.web.client.ClientSessionImpl;
 import org.oddjob.web.client.WebRemoteConnector;
+import org.oddjob.web.gson.GsonUtil;
 
 import java.util.Optional;
 import java.util.concurrent.ExecutorService;
@@ -196,7 +198,10 @@ public class WebClientJob extends SimpleService
 
         this.notificationProcessor = Executors.newSingleThreadScheduledExecutor();
 
-        this.remoteConnection = WebRemoteConnector.connect(host, port, notificationProcessor);
+
+        Gson gson = GsonUtil.createGson(getArooaSession());
+
+        this.remoteConnection = WebRemoteConnector.connect(host, port, notificationProcessor, gson);
 
         ClientInterfaceManagerFactory managerFactory =
                 new ClientInterfaceManagerFactoryBuilder()

@@ -1,11 +1,14 @@
 package org.oddjob.websocket;
 
 import org.junit.Test;
+import org.oddjob.arooa.ArooaSession;
+import org.oddjob.arooa.standard.StandardArooaSession;
 import org.oddjob.jetty.JettyHttpServer;
 import org.oddjob.remote.Notification;
 import org.oddjob.remote.NotificationListener;
 import org.oddjob.remote.NotificationType;
 import org.oddjob.remote.util.NotificationManager;
+import org.oddjob.web.gson.GsonUtil;
 
 import java.net.URI;
 import java.util.concurrent.BlockingQueue;
@@ -35,8 +38,11 @@ public class ClientServerTest {
 
         JettyHttpServer server = new JettyHttpServer();
 
+        ArooaSession arooaSession = new StandardArooaSession();
+
         JettyNotifierEndpointHandler handler = new JettyNotifierEndpointHandler();
         handler.setRemoteNotifier(notificationManager);
+        handler.setArooaSession(arooaSession);
 
         server.setHandler(handler.toValue());
 
@@ -50,7 +56,7 @@ public class ClientServerTest {
 
         try (NotifierClient client = NotifierClient.create(
                 new URI("ws://localhost:" + server.getPort() + "/notifier"),
-                ses)) {
+                ses, GsonUtil.defaultGson())) {
 
             NotificationListener<String> listener = results::add;
 

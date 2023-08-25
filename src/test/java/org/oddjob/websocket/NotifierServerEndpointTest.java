@@ -4,10 +4,12 @@ import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import org.junit.Test;
 import org.mockito.ArgumentCaptor;
+import org.oddjob.arooa.ClassResolver;
 import org.oddjob.remote.Notification;
 import org.oddjob.remote.NotificationType;
 import org.oddjob.remote.RemoteException;
 import org.oddjob.remote.util.NotificationManager;
+import org.oddjob.web.gson.GsonUtil;
 
 import javax.websocket.RemoteEndpoint;
 import javax.websocket.Session;
@@ -32,7 +34,7 @@ public class NotifierServerEndpointTest {
 
         Gson gson = new GsonBuilder()
                 .registerTypeAdapter(NotificationType.class,
-                        new NotificationTypeDesSer(getClass().getClassLoader()))
+                        new NotificationTypeDesSer(ClassResolver.getDefaultClassResolver()))
                 .registerTypeAdapter(Notification.class,
                         new NotificationDeserializer())
                 .create();
@@ -55,7 +57,8 @@ public class NotifierServerEndpointTest {
         when(session.getId()).thenReturn("1234");
 
         // Subject Under Test
-        NotifierServerEndpoint test = new NotifierServerEndpoint(notificationManager);
+        NotifierServerEndpoint test = new NotifierServerEndpoint(notificationManager,
+                GsonUtil.defaultGson());
 
         // Subscribe
 
@@ -116,7 +119,7 @@ public class NotifierServerEndpointTest {
 
         Gson gson = new GsonBuilder()
                 .registerTypeAdapter(NotificationType.class,
-                        new NotificationTypeDesSer(getClass().getClassLoader()))
+                        new NotificationTypeDesSer(ClassResolver.getDefaultClassResolver()))
                 .registerTypeAdapter(Notification.class,
                         new NotificationDeserializer())
                 .create();
@@ -137,7 +140,7 @@ public class NotifierServerEndpointTest {
         when(session.getId()).thenReturn("1234");
 
         // Subject Under Test
-        NotifierServerEndpoint test = new NotifierServerEndpoint(notificationManager);
+        NotifierServerEndpoint test = new NotifierServerEndpoint(notificationManager, GsonUtil.defaultGson());
 
         // Heartbeat request
 

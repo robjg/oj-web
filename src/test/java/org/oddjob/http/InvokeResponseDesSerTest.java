@@ -2,13 +2,15 @@ package org.oddjob.http;
 
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
+import com.google.gson.reflect.TypeToken;
 import org.junit.Test;
+import org.oddjob.arooa.ClassResolver;
 
 import java.util.Objects;
 
+import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.is;
 import static org.hamcrest.Matchers.nullValue;
-import static org.junit.Assert.assertThat;
 
 public class InvokeResponseDesSerTest {
 
@@ -61,14 +63,14 @@ public class InvokeResponseDesSerTest {
 
         Gson gson = new GsonBuilder()
                 .registerTypeAdapter(InvokeResponse.class,
-                        new InvokeResponseDesSer(getClass().getClassLoader()))
+                        new InvokeResponseDesSer(ClassResolver.getDefaultClassResolver()))
                 .create();
 
         String json = gson.toJson(invokeResponse);
 
         System.out.println(json);
 
-        InvokeResponse copy = gson.fromJson(json, InvokeResponse.class);
+        InvokeResponse<Fruit> copy = gson.fromJson(json, new TypeToken<InvokeResponse<Fruit>>() {}.getType());
 
         assertThat(copy.getType(), is(Fruit.class));
         assertThat(copy.getValue(), is(fruit));
@@ -83,14 +85,14 @@ public class InvokeResponseDesSerTest {
 
         Gson gson = new GsonBuilder()
                 .registerTypeAdapter(InvokeResponse.class,
-                        new InvokeResponseDesSer(getClass().getClassLoader()))
+                        new InvokeResponseDesSer(ClassResolver.getDefaultClassResolver()))
                 .create();
 
         String json = gson.toJson(invokeResponse);
 
         System.out.println(json);
 
-        InvokeResponse copy = gson.fromJson(json, InvokeResponse.class);
+        InvokeResponse<Fruit> copy = gson.fromJson(json, new TypeToken<InvokeResponse<Fruit>>() {}.getType());
 
         assertThat(copy.getType(), is(Fruit.class));
         assertThat(copy.getValue(), nullValue());
@@ -105,14 +107,14 @@ public class InvokeResponseDesSerTest {
 
         Gson gson = new GsonBuilder()
                 .registerTypeAdapter(InvokeResponse.class,
-                        new InvokeResponseDesSer(getClass().getClassLoader()))
+                        new InvokeResponseDesSer(ClassResolver.getDefaultClassResolver()))
                 .create();
 
         String json = gson.toJson(invokeResponse);
 
         System.out.println(json);
 
-        InvokeResponse copy = gson.fromJson(json, InvokeResponse.class);
+        InvokeResponse<Integer> copy = gson.fromJson(json, new TypeToken<InvokeResponse<Integer>>() {}.getType());
 
         assertThat(copy.getType(), is(int.class));
         assertThat(copy.getValue(), is(42));
@@ -126,14 +128,14 @@ public class InvokeResponseDesSerTest {
 
         Gson gson = new GsonBuilder()
                 .registerTypeAdapter(InvokeResponse.class,
-                        new InvokeResponseDesSer(getClass().getClassLoader()))
+                        new InvokeResponseDesSer(ClassResolver.getDefaultClassResolver()))
                 .create();
 
         String json = gson.toJson(invokeResponse);
 
         System.out.println(json);
 
-        InvokeResponse copy = gson.fromJson(json, InvokeResponse.class);
+        InvokeResponse<Void> copy = gson.fromJson(json, new TypeToken<InvokeResponse<Void>>() {}.getType());
 
         assertThat(copy.getType(), is(void.class));
         assertThat(copy.getValue(), nullValue());

@@ -1,5 +1,6 @@
 package org.oddjob.websocket;
 
+import com.google.gson.Gson;
 import org.oddjob.remote.NotificationListener;
 import org.oddjob.remote.NotificationType;
 import org.oddjob.remote.RemoteException;
@@ -27,14 +28,16 @@ public class NotifierClient implements RemoteNotifier, AutoCloseable {
         this.endpoint = endpoint;
     }
 
-    public static NotifierClient create(URI uri, ScheduledExecutorService executor) throws RemoteException {
+    public static NotifierClient create(URI uri,
+                                        ScheduledExecutorService executor,
+                                        Gson gson) throws RemoteException {
 
         Objects.requireNonNull(uri);
 
         javax.websocket.WebSocketContainer container =
                 javax.websocket.ContainerProvider.getWebSocketContainer();
 
-        NotifierClientEndpoint endpoint = new NotifierClientEndpoint(executor);
+        NotifierClientEndpoint endpoint = new NotifierClientEndpoint(executor, gson);
 
         try {
             return new NotifierClient(container.connectToServer(endpoint, uri), endpoint);

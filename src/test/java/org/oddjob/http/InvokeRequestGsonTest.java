@@ -3,15 +3,16 @@ package org.oddjob.http;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import org.junit.Test;
+import org.oddjob.arooa.ClassResolver;
 import org.oddjob.jmx.client.ComponentTransportable;
 import org.oddjob.remote.OperationType;
 import org.oddjob.web.gson.GsonUtil;
 
 import java.util.Objects;
 
+import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.is;
 import static org.hamcrest.Matchers.nullValue;
-import static org.junit.Assert.assertThat;
 
 public class InvokeRequestGsonTest {
 
@@ -69,7 +70,8 @@ public class InvokeRequestGsonTest {
                 .andArgs("Hello", 42, fruit);
 
         Gson gson = new GsonBuilder()
-                .registerTypeAdapter(OperationType.class, new OperationTypeDeSer(getClass().getClassLoader()))
+                .registerTypeAdapter(OperationType.class,
+                        new OperationTypeDeSer(ClassResolver.getDefaultClassResolver()))
                 .registerTypeAdapter(InvokeRequest.class, new InvokeRequestGson())
                 .create();
 
@@ -101,7 +103,8 @@ public class InvokeRequestGsonTest {
                 .andArgs(new Object[] { arg0 });
 
         Gson gson = new GsonBuilder()
-                .registerTypeAdapter(OperationType.class, new OperationTypeDeSer(getClass().getClassLoader()))
+                .registerTypeAdapter(OperationType.class,
+                        new OperationTypeDeSer(ClassResolver.getDefaultClassResolver()))
                 .registerTypeAdapter(InvokeRequest.class, new InvokeRequestGson())
                 .create();
 
@@ -132,7 +135,8 @@ public class InvokeRequestGsonTest {
                 .andArgs("Foo", null );
 
         Gson gson = new GsonBuilder()
-                .registerTypeAdapter(OperationType.class, new OperationTypeDeSer(getClass().getClassLoader()))
+                .registerTypeAdapter(OperationType.class,
+                        new OperationTypeDeSer(ClassResolver.getDefaultClassResolver()))
                 .registerTypeAdapter(InvokeRequest.class, new InvokeRequestGson())
                 .create();
 
@@ -160,7 +164,8 @@ public class InvokeRequestGsonTest {
                 .andNoArgs();
 
         Gson gson = new GsonBuilder()
-                .registerTypeAdapter(OperationType.class, new OperationTypeDeSer(getClass().getClassLoader()))
+                .registerTypeAdapter(OperationType.class,
+                        new OperationTypeDeSer(ClassResolver.getDefaultClassResolver()))
                 .registerTypeAdapter(InvokeRequest.class, new InvokeRequestGson())
                 .create();
 
@@ -190,7 +195,7 @@ public class InvokeRequestGsonTest {
                 .withOperation(ot)
                 .andArgs(transportable);
 
-        Gson gson = GsonUtil.createGson(getClass().getClassLoader());
+        Gson gson = GsonUtil.defaultGson();
 
         String json = gson.toJson(invokeRequest);
 

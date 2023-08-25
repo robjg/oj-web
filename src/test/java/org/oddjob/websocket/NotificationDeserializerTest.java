@@ -4,6 +4,7 @@ import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import com.google.gson.reflect.TypeToken;
 import org.junit.Test;
+import org.oddjob.arooa.ClassResolver;
 import org.oddjob.remote.Notification;
 import org.oddjob.remote.NotificationType;
 import org.slf4j.Logger;
@@ -60,7 +61,7 @@ public class NotificationDeserializerTest {
 
         Gson gson = new GsonBuilder()
                 .registerTypeAdapter(NotificationType.class,
-                        new NotificationTypeDesSer(getClass().getClassLoader()))
+                        new NotificationTypeDesSer(ClassResolver.getDefaultClassResolver()))
                 .registerTypeAdapter(Notification.class,
                         new NotificationDeserializer())
                 .create();
@@ -117,7 +118,7 @@ public class NotificationDeserializerTest {
 
         Gson gson = new GsonBuilder()
                 .registerTypeAdapter(NotificationType.class,
-                        new NotificationTypeDesSer(getClass().getClassLoader()))
+                        new NotificationTypeDesSer(ClassResolver.getDefaultClassResolver()))
                 .registerTypeAdapter(Notification.class,
                         new NotificationDeserializer())
                 .create();
@@ -156,7 +157,7 @@ public class NotificationDeserializerTest {
 
         Gson gson = new GsonBuilder()
                 .registerTypeAdapter(NotificationType.class,
-                        new NotificationTypeDesSer(getClass().getClassLoader()))
+                        new NotificationTypeDesSer(ClassResolver.getDefaultClassResolver()))
                 .registerTypeAdapter(Notification.class,
                         new NotificationDeserializer())
                 .create();

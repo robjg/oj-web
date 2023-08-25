@@ -5,11 +5,13 @@ import com.google.gson.GsonBuilder;
 import org.junit.Test;
 import org.mockito.ArgumentCaptor;
 import org.mockito.stubbing.Answer;
+import org.oddjob.arooa.ClassResolver;
 import org.oddjob.remote.Notification;
 import org.oddjob.remote.NotificationListener;
 import org.oddjob.remote.NotificationType;
 import org.oddjob.remote.RemoteException;
 import org.oddjob.tools.ManualClock;
+import org.oddjob.web.gson.GsonUtil;
 
 import javax.websocket.EndpointConfig;
 import javax.websocket.RemoteEndpoint;
@@ -38,7 +40,7 @@ public class NotifierClientEndpointTest {
 
         Gson gson = new GsonBuilder()
                 .registerTypeAdapter(NotificationType.class,
-                        new NotificationTypeDesSer(getClass().getClassLoader()))
+                        new NotificationTypeDesSer(ClassResolver.getDefaultClassResolver()))
                 .registerTypeAdapter(Notification.class,
                         new NotificationDeserializer())
                 .create();
@@ -52,7 +54,7 @@ public class NotifierClientEndpointTest {
             return null;
         }).when(ses).execute(any(Runnable.class));
 
-        NotifierClientEndpoint test = new NotifierClientEndpoint(ses);
+        NotifierClientEndpoint test = new NotifierClientEndpoint(ses, GsonUtil.defaultGson());
 
         Session session = mock(Session.class);
         RemoteEndpoint.Basic basic = mock(RemoteEndpoint.Basic.class);
@@ -120,7 +122,7 @@ public class NotifierClientEndpointTest {
 
         Gson gson = new GsonBuilder()
                 .registerTypeAdapter(NotificationType.class,
-                        new NotificationTypeDesSer(getClass().getClassLoader()))
+                        new NotificationTypeDesSer(ClassResolver.getDefaultClassResolver()))
                 .registerTypeAdapter(Notification.class,
                         new NotificationDeserializer())
                 .create();
@@ -131,7 +133,8 @@ public class NotifierClientEndpointTest {
                 .fromInstant(Instant.parse("2020-11-20T07:10:00Z"))
                 .andSystemZone();
 
-        NotifierClientEndpoint test = new NotifierClientEndpoint(ses, clock);
+        NotifierClientEndpoint test = new NotifierClientEndpoint(ses, clock,
+                GsonUtil.defaultGson());
 
         Session session = mock(Session.class);
         RemoteEndpoint.Basic basic = mock(RemoteEndpoint.Basic.class);

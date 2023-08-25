@@ -18,9 +18,7 @@ public class GsonRemoteConnection implements JsonRemoteConnection {
         this.jsonRemoteInvoker = jsonRemoteInvoker;
     }
 
-    public static JsonRemoteConnection to(RemoteConnection remoteConnection) {
-
-        Gson gson = GsonUtil.createGson(RemoteConnectionGson.class.getClassLoader());
+    public static JsonRemoteConnection to(RemoteConnection remoteConnection, Gson gson) {
 
         JsonRemoteInvoker jsonRemoteInvoker = GsonRemoteInvoker.to(remoteConnection, gson);
 

@@ -1,5 +1,6 @@
 package org.oddjob.web;
 
+import com.google.gson.Gson;
 import org.eclipse.jetty.server.Handler;
 import org.eclipse.jetty.servlet.ServletContextHandler;
 import org.eclipse.jetty.servlet.ServletHolder;
@@ -14,6 +15,8 @@ import org.oddjob.jetty.OddjobRestHandler;
 import org.oddjob.jmx.RemoteIdMappings;
 import org.oddjob.remote.RemoteConnection;
 import org.oddjob.rest.OddjobApplication;
+import org.oddjob.web.gson.GsonRemoteConnection;
+import org.oddjob.web.gson.GsonUtil;
 import org.oddjob.websocket.NotifierConfigurator;
 import org.oddjob.websocket.NotifierServerEndpoint;
 
@@ -86,10 +89,12 @@ public class WebServerHandler implements ValueFactory<Handler>, ArooaSessionAwar
         contextHandler.setContextPath( "/" );
         contextHandler.setClassLoader(classLoader);
 
+        Gson gson = GsonUtil.createGson(session);
+
         // Invoker
 
         contextHandler.setAttribute(InvokerServlet.REMOTE_INVOKER,
-                remoteConnection);
+                GsonRemoteConnection.to(remoteConnection, gson));
 
         ServletHolder servletHolder = new ServletHolder(
                 new InvokerServlet());
@@ -100,7 +105,7 @@ public class WebServerHandler implements ValueFactory<Handler>, ArooaSessionAwar
 
         ServerEndpointConfig config = ServerEndpointConfig.Builder
                 .create(NotifierServerEndpoint.class, "/notifier")
-                .configurator(new NotifierConfigurator(remoteConnection))
+                .configurator(new NotifierConfigurator(remoteConnection, gson))
                 .build();
 
         WebSocketServerContainerInitializer

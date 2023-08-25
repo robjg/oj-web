@@ -4,7 +4,7 @@ import com.google.gson.JsonParseException;
 import com.google.gson.TypeAdapter;
 import com.google.gson.stream.JsonReader;
 import com.google.gson.stream.JsonWriter;
-import org.oddjob.arooa.utils.ClassUtils;
+import org.oddjob.arooa.ClassResolver;
 
 import java.io.IOException;
 
@@ -13,10 +13,10 @@ import java.io.IOException;
  */
 public class ClassTypeAdapter extends TypeAdapter<Class<?>> {
 
-    private final ClassLoader classLoader;
+    private final ClassResolver classResolver;
 
-    public ClassTypeAdapter(ClassLoader classLoader) {
-        this.classLoader = classLoader;
+    public ClassTypeAdapter(ClassResolver classResolver) {
+        this.classResolver = classResolver;
     }
 
     @Override
@@ -26,10 +26,11 @@ public class ClassTypeAdapter extends TypeAdapter<Class<?>> {
 
     @Override
     public Class<?> read(JsonReader in) throws IOException {
-        try {
-            return ClassUtils.classFor(in.nextString(), classLoader);
-        } catch (ClassNotFoundException e) {
-            throw new JsonParseException(e);
+        String className = in.nextString();
+        Class<?> cl = classResolver.findClass(className);
+        if (cl == null) {
+            throw new JsonParseException("Class not found: " + className);
         }
+        return cl;
     }
 }

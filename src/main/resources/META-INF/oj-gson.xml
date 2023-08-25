@@ -1,0 +1,10 @@
+<bean class="org.oddjob.web.gson.GsonConfiguratorBean">
+    <configurators>
+        <list>
+            <values>
+                <bean class="org.oddjob.web.gson.plugin.ImageDataGson"/>
+                <bean class="org.oddjob.web.gson.plugin.SerializableDesignFactoryGson"/>
+            </values>
+        </list>
+    </configurators>
+</bean>

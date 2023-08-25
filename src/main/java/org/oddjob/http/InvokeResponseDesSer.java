@@ -1,7 +1,7 @@
 package org.oddjob.http;
 
 import com.google.gson.*;
-import org.oddjob.arooa.utils.ClassUtils;
+import org.oddjob.arooa.ClassResolver;
 
 import java.lang.reflect.Type;
 
@@ -13,10 +13,10 @@ public class InvokeResponseDesSer implements JsonSerializer<InvokeResponse<?>>, 
     public static final String TYPE = "type";
     public static final String VALUE = "value";
 
-    private final ClassLoader classLoader;
+    private final ClassResolver classResolver;
 
-    public InvokeResponseDesSer(ClassLoader classLoader) {
-        this.classLoader = classLoader;
+    public InvokeResponseDesSer(ClassResolver classResolver) {
+        this.classResolver = classResolver;
     }
 
     @Override
@@ -36,11 +36,11 @@ public class InvokeResponseDesSer implements JsonSerializer<InvokeResponse<?>>, 
     public InvokeResponse<?> deserialize(JsonElement json, Type typeOfT, JsonDeserializationContext context) throws JsonParseException {
         JsonObject jsonObject = (JsonObject) json;
 
-        Class<?> type;
-        try {
-            type = ClassUtils.classFor(jsonObject.getAsJsonPrimitive(TYPE).getAsString(), classLoader);
-        } catch (ClassNotFoundException e) {
-            throw new JsonParseException(e);
+        String className = jsonObject.getAsJsonPrimitive(TYPE).getAsString();
+        //noinspection unchecked
+        Class<?> type = classResolver.findClass(className);
+        if (type == null) {
+            throw new JsonParseException("Class not found: " + className);
         }
 
         JsonElement valueJson = jsonObject.get(VALUE);

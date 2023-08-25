@@ -2,6 +2,7 @@ package org.oddjob.web.gson;
 
 import com.google.gson.Gson;
 import org.junit.Test;
+import org.oddjob.arooa.standard.StandardArooaSession;
 import org.oddjob.jmx.handlers.IconicHandlerFactory;
 import org.oddjob.jmx.handlers.StatefulHandlerFactory;
 import org.oddjob.jmx.handlers.StructuralHandlerFactory;
@@ -21,7 +22,7 @@ public class HandlerTypesAsJsonTest {
         StructuralHandlerFactory.ChildData data = new StructuralHandlerFactory.ChildData(
                 new long[] { 1, 2, 3, 4 });
 
-        Gson gson = GsonUtil.createGson(getClass().getClassLoader());
+        Gson gson = GsonUtil.defaultGson();
 
         String json = gson.toJson(data);
 
@@ -44,7 +45,7 @@ public class HandlerTypesAsJsonTest {
                 new StatefulHandlerFactory.StateData(state, dateNow,
                         new RuntimeException("Ahhh!"));
 
-        Gson gson = GsonUtil.createGson(getClass().getClassLoader());
+        Gson gson = GsonUtil.createGson(new StandardArooaSession());
 
         String json = gson.toJson(data);
 
@@ -66,7 +67,7 @@ public class HandlerTypesAsJsonTest {
 
         IconicHandlerFactory.IconData data = new IconicHandlerFactory.IconData("running");
 
-        Gson gson = GsonUtil.createGson(getClass().getClassLoader());
+        Gson gson = GsonUtil.createGson(new StandardArooaSession());
 
         String json = gson.toJson(data);
 
