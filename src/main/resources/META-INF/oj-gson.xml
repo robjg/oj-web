@@ -4,6 +4,8 @@
             <values>
                 <bean class="org.oddjob.web.gson.plugin.ImageDataGson"/>
                 <bean class="org.oddjob.web.gson.plugin.SerializableDesignFactoryGson"/>
+                <bean class="org.oddjob.web.gson.plugin.HierarchicalArrayFactoryBean"
+                        componentClassName="org.oddjob.input.InputRequest"/>
             </values>
         </list>
     </configurators>
