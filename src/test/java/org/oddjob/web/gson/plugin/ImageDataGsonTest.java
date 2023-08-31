@@ -1,11 +1,10 @@
-package org.oddjob.web.gson;
+package org.oddjob.web.gson.plugin;
 
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import org.junit.Test;
 import org.oddjob.images.IconHelper;
 import org.oddjob.images.ImageData;
-import org.oddjob.web.gson.plugin.ImageDataGson;
 
 import java.io.IOException;
 import java.net.URL;

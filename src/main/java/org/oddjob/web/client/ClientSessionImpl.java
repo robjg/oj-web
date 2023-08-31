@@ -34,7 +34,7 @@ public class ClientSessionImpl implements ClientSession {
 	 * Constructor.
 	 * 
 	 * @param remoteConnection The server connection.
-	 * @param notificationProcessor The notification processor.
+	 * @param interfaceManagerFactory A factory for Interface Managers.
 	 * @param arooaSession The local session.
 	 * @param logger The logger.
 	 */

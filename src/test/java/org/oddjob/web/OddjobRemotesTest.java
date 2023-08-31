@@ -42,7 +42,8 @@ class OddjobRemotesTest {
         input2.setProperty("your.password");
 
         InputFile input3 = new InputFile();
-        input3.setDefault("Foo.txt");
+        // Not supported for remote.
+        //        input3.setDefault("Foo.txt");
         input3.setPrompt("Your File");
         input3.setProperty("your.file");
 
