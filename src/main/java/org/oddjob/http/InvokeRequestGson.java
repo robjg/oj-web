@@ -23,21 +23,29 @@ public class InvokeRequestGson implements JsonSerializer<InvokeRequest>, JsonDes
         jsonObject.add(OPERATION_TYPE, context.serialize(src.getOperationType()));
 
         Object[] args = src.getArgs();
-        if (args == null) {
+        int argsLength = args == null ? 0 : args.length;
+        Class<?>[] signature = src.getOperationType().getSignature();
+        if (argsLength != signature.length) {
+            throw new IllegalArgumentException("Args length differ from signature length: "
+                    + argsLength + "!=" + signature.length);
+        }
+        if (argsLength == 0) {
             return jsonObject;
         }
 
-        Class<?>[] signature = src.getOperationType().getSignature();
+        // When args type differ from signature because they are
+        // subclasses we also pass the actual types.
         Class<?>[] actualArgTypes = new Class[signature.length];
         boolean different = false;
         for (int i = 0; i < actualArgTypes.length; ++i) {
-            if (signature[i].isPrimitive() ||
-                    args[i] == null ||
-                    args[i].getClass() == signature[i]) {
+            Class<?> signatureClass = signature[i];
+            Class<?> argClass = args[i] == null ? null : args[i].getClass();
+            if (signatureClass.isPrimitive() ||
+                    argClass == null ||
+                    argClass == signatureClass) {
                 actualArgTypes[i] = signature[i];
-            }
-            else {
-                actualArgTypes[i] = args[i].getClass();
+            } else {
+                actualArgTypes[i] = argClass;
                 different = true;
             }
         }
@@ -67,8 +75,7 @@ public class InvokeRequestGson implements JsonSerializer<InvokeRequest>, JsonDes
             Class<?>[] argTypes;
             if (actualArray == null) {
                 argTypes = operationType.getSignature();
-            }
-            else {
+            } else {
                 argTypes = context.deserialize(actualArray, Class[].class);
             }
 

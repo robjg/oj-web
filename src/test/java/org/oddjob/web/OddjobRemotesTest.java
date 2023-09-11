@@ -10,8 +10,9 @@ import org.oddjob.input.requests.*;
 import org.oddjob.jmx.general.LocalRemoteConnection;
 import org.oddjob.jmx.handlers.TaskExecutorHandlerFactory;
 import org.oddjob.jmx.server.ServerInterfaceHandlerFactory;
+import org.oddjob.jmx.server.ServerLoopBackException;
 import org.oddjob.jmx.server.ServerSideToolkit;
-import org.oddjob.jobs.tasks.TaskExecutor;
+import org.oddjob.jobs.tasks.*;
 import org.oddjob.remote.OperationType;
 import org.oddjob.remote.RemoteConnection;
 import org.oddjob.remote.RemoteException;
@@ -20,15 +21,18 @@ import org.oddjob.web.gson.GsonRemoteConnection;
 import org.oddjob.web.gson.GsonUtil;
 import org.oddjob.web.gson.RemoteConnectionGson;
 
+import java.util.Properties;
+
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.is;
+import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 
 class OddjobRemotesTest {
 
     @Test
-    void executionService() throws RemoteException {
+    void executionService() throws RemoteException, ServerLoopBackException, TaskException {
 
         InputMessage input0 = new InputMessage();
         input0.setMessage("Enter Some Stuff");
@@ -55,8 +59,13 @@ class OddjobRemotesTest {
         InputRequest[] inputRequests = new InputRequest[]
                 { input0, input1, input2, input3, input4 };
 
+        TaskView taskView = mock(TaskView.class);
+
         TaskExecutor taskExecutor = mock(TaskExecutor.class);
         when(taskExecutor.getParameterInfo()).thenReturn(inputRequests);
+        when(taskExecutor.execute(any(Task.class)))
+                .thenReturn(taskView);
+
         ServerSideToolkit toolkit = mock(ServerSideToolkit.class);
 
         ServerInterfaceHandlerFactory<TaskExecutor, TaskExecutor> handlerFactory = new TaskExecutorHandlerFactory();
@@ -66,13 +75,20 @@ class OddjobRemotesTest {
             OperationType<InputRequest[]> operationType = OperationType.ofName("Tasks.getParameterInfo")
                     .returning(InputRequest[].class);
 
-            InputRequest[] results = remoteConnection.invoke(0L, operationType);
+            InputRequest[] results = remoteConnection.invoke(1L, operationType);
 
             assertThat(results, is(inputRequests));
+
+            Properties properties = new Properties();
+            Task task = new BasicTask(properties);
+
+            TaskExecutorHandlerFactory.TaskViewData taskViewLocal =
+                    remoteConnection.invoke(1L, TaskExecutorHandlerFactory.EXECUTE.getOperationType(),
+                            task);
         }
     }
 
-    RemoteConnection remoteConnection(Object target, ServerInterfaceHandlerFactory<?, ?>... handlerFactories ) {
+    RemoteConnection remoteConnection(Object target, ServerInterfaceHandlerFactory<?, ?>... handlerFactories ) throws ServerLoopBackException, RemoteException {
 
         NotificationControl notificationControl = mock(NotificationControl.class);
 

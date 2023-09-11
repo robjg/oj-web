@@ -49,9 +49,19 @@ public class GsonRemoteInvoker implements JsonRemoteInvoker {
 
         OperationType<?> operationType = invokeRequest.getOperationType();
 
-        Object result = this.remoteInvoker.invoke(invokeRequest.getRemoteId(),
+        Object[] args = invokeRequest.getArgs();
+
+        Object result;
+
+        if (args == null) {
+            result = this.remoteInvoker.invoke(invokeRequest.getRemoteId(),
+                    operationType);
+        }
+        else {
+            result = this.remoteInvoker.invoke(invokeRequest.getRemoteId(),
                     operationType,
-                    invokeRequest.getArgs());
+                    args);
+        }
 
         Class<?> returnType = operationType.getReturnType();
         if (result != null && result.getClass() != returnType) {
