@@ -19,9 +19,11 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.io.File;
+import java.util.Objects;
 import java.util.Properties;
 
-import static org.junit.Assert.assertEquals;
+import static org.hamcrest.MatcherAssert.assertThat;
+import static org.hamcrest.Matchers.is;
 
 public class WebExamplesTest {
 
@@ -53,15 +55,15 @@ public class WebExamplesTest {
     @Test
     public void testSimpleClientServerExample() throws FailedToStopException, ArooaConversionException {
 
-        File serverConfig = new File(getClass().getResource("ServerExample.xml").getFile());
+        File serverConfig = new File(Objects.requireNonNull(
+                getClass().getResource("ServerExample.xml")).getFile());
 
         serverOddjob = new Oddjob();
         serverOddjob.setFile(serverConfig);
 
         serverOddjob.run();
 
-        assertEquals(ParentState.STARTED,
-                serverOddjob.lastStateEvent().getState());
+        assertThat(serverOddjob.lastStateEvent().getState(), is(ParentState.STARTED));
 
         int port = new OddjobLookup(serverOddjob).lookup("webServer.port", int.class);
 
@@ -72,7 +74,8 @@ public class WebExamplesTest {
 
         Oddjob clientOddjob = new Oddjob();
         clientOddjob.setFile(new File(
-                getClass().getResource("ClientExample.xml").getFile()));
+                Objects.requireNonNull(
+                        getClass().getResource("ClientExample.xml")).getFile()));
         clientOddjob.setProperties(props);
         clientOddjob.load();
 
@@ -95,17 +98,17 @@ public class WebExamplesTest {
     }
 
     @Test
-    public void testClientRunsServerJobExample() throws InterruptedException, ArooaPropertyException, ArooaConversionException, FailedToStopException {
+    public void testClientRunsServerJobExample() throws InterruptedException, ArooaPropertyException, ArooaConversionException {
 
-        File serverConfig = new File(getClass().getResource("ServerExample.xml").getFile());
+        File serverConfig = new File(Objects.requireNonNull(
+                getClass().getResource("ServerExample.xml")).getFile());
 
         serverOddjob = new Oddjob();
         serverOddjob.setFile(serverConfig);
 
         serverOddjob.run();
 
-        assertEquals(ParentState.STARTED,
-                serverOddjob.lastStateEvent().getState());
+        assertThat(serverOddjob.lastStateEvent().getState(), is(ParentState.STARTED));
 
         OddjobLookup serverLookup = new OddjobLookup(serverOddjob);
 
@@ -114,7 +117,8 @@ public class WebExamplesTest {
 
         int port = serverLookup.lookup("webServer.port", int.class);
 
-        File clientConfig = new File(getClass().getResource("ClientRunsServerJob.xml").getFile());
+        File clientConfig = new File(Objects.requireNonNull(
+                getClass().getResource("ClientRunsServerJob.xml")).getFile());
 
         Properties props = new Properties();
         props.setProperty("hosts.freds.pc", "localhost");
@@ -146,15 +150,15 @@ public class WebExamplesTest {
     @Test
     public void testClientTriggersOnServerJobExample() throws InterruptedException, ArooaPropertyException, ArooaConversionException {
 
-        File serverConfig = new File(getClass().getResource("ServerExample.xml").getFile());
+        File serverConfig = new File(Objects.requireNonNull(
+                getClass().getResource("ServerExample.xml")).getFile());
 
         serverOddjob = new Oddjob();
         serverOddjob.setFile(serverConfig);
 
         serverOddjob.run();
 
-        assertEquals(ParentState.STARTED,
-                serverOddjob.lastStateEvent().getState());
+        assertThat(serverOddjob.lastStateEvent().getState(), is(ParentState.STARTED));
 
         OddjobLookup serverLookup = new OddjobLookup(serverOddjob);
 
@@ -167,9 +171,10 @@ public class WebExamplesTest {
         props.setProperty("hosts.freds.pc", "localhost");
         props.setProperty("server.port", "" + port);
 
-        File clientConfig = new File(getClass().getResource("ClientTrigger.xml").getFile());
+        File clientConfig = new File(Objects.requireNonNull(
+                getClass().getResource("ClientTrigger.xml")).getFile());
 
-        Oddjob clientOddjob = new Oddjob();
+        clientOddjob = new Oddjob();
         clientOddjob.setProperties(props);
         clientOddjob.setFile(clientConfig);
 
@@ -184,11 +189,9 @@ public class WebExamplesTest {
         Stateful localJob = clientLookup.lookup("local-job",
                 Stateful.class);
 
-        assertEquals(ParentState.STARTED,
-                clientOddjob.lastStateEvent().getState());
+        assertThat(clientOddjob.lastStateEvent().getState(), is(ParentState.STARTED));
 
-        assertEquals(JobState.READY,
-                localJob.lastStateEvent().getState());
+        assertThat(localJob.lastStateEvent().getState(), is(JobState.READY));
 
         StateSteps clientState = new StateSteps(clientOddjob);
 
@@ -203,7 +206,43 @@ public class WebExamplesTest {
 
         clientState.checkWait();
 
-        clientOddjob.destroy();
     }
 
+    @Test
+    public void clientExecutesServerTaskExample() throws InterruptedException, ArooaPropertyException, ArooaConversionException {
+
+        File serverConfig = new File(Objects.requireNonNull(
+                getClass().getResource("TaskServer.xml")).getFile());
+
+        serverOddjob = new Oddjob();
+        serverOddjob.setFile(serverConfig);
+
+        serverOddjob.run();
+
+        assertThat(serverOddjob.lastStateEvent().getState(), is(ParentState.STARTED));
+
+        OddjobLookup serverLookup = new OddjobLookup(serverOddjob);
+
+        int port = serverLookup.lookup("server.port", int.class);
+
+        Properties props = new Properties();
+        props.setProperty("server.port", "" + port);
+
+        File clientConfig = new File(Objects.requireNonNull(
+                getClass().getResource("TaskClient.xml")).getFile());
+
+        clientOddjob = new Oddjob();
+        clientOddjob.setProperties(props);
+        clientOddjob.setFile(clientConfig);
+
+        logger.info("** Running Oddjob Client **");
+
+        clientOddjob.run();
+
+        logger.info("** Oddjob Client Complete **");
+
+        assertThat(ParentState.COMPLETE, is(clientOddjob.lastStateEvent().getState()));
+
+        assertThat(serverLookup.lookup("echo.text"), is("Some Text and A File"));
+    }
 }

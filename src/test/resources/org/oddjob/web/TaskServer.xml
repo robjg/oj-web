@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<oddjob id="oddjob">
+    <job>
+        <sequential>
+            <jobs>
+                <properties>
+                    <values>
+                        <value key="server.port" value="8080"/>
+                    </values>
+                </properties>
+                <web:ui-server xmlns:web="oddjob:web" id="server" port="${server.port}" root="${task}"/>
+                <task-service id="task">
+                    <requests>
+                        <input-text default="Hello" prompt="Some Text" property="input.text"/>
+                        <input-file prompt="A File" property="input.file"/>
+                    </requests>
+                    <job>
+                        <echo id="echo"><![CDATA[${input.text} and ${input.file}]]></echo>
+                    </job>
+                </task-service>
+            </jobs>
+        </sequential>
+    </job>
+</oddjob>

@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<oddjob>
+    <job>
+        <sequential>
+            <jobs>
+                <properties>
+                    <values>
+                        <value key="server.host" value="localhost"/>
+                        <value key="server.port" value="8080"/>
+                    </values>
+                </properties>
+                <web:remote-client xmlns:web="oddjob:web" host="${server.host}" id="remote" name="Web Client" port="${server.port}"/>
+                <task-request taskExecutor="${remote/task}">
+                    <properties>
+                        <properties>
+                            <values>
+                                <value key="input.text" value="Some Text"/>
+                                <value key="input.file" value="A File"/>
+                            </values>
+                        </properties>
+                    </properties>
+                </task-request>
+                <stop job="${remote}"/>
+            </jobs>
+        </sequential>
+    </job>
+</oddjob>
