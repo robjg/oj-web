@@ -9,6 +9,7 @@ import org.oddjob.remote.*;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import java.io.NotSerializableException;
 import java.util.Objects;
 import java.util.Set;
 import java.util.concurrent.ConcurrentHashMap;
@@ -22,11 +23,12 @@ import java.util.concurrent.ConcurrentHashMap;
 class ClientSideToolkitImpl implements ClientSideToolkit {
 	private static final Logger logger = LoggerFactory.getLogger(ClientSideToolkitImpl.class);
 
-	private final static int ACTIVE = 0;
+	private enum Phase {
+		ACTIVE,
+		DESTROYED,
+	}
 
-	private final static int DESTROYED = 3;
-	
-	private volatile int phase = ACTIVE;
+	private volatile Phase phase = Phase.ACTIVE;
 
 	private final ClientSessionImpl clientSession;
 
@@ -43,7 +45,10 @@ class ClientSideToolkitImpl implements ClientSideToolkit {
 	
 	@Override
 	@SuppressWarnings("unchecked")
-	public <T> T invoke(RemoteOperation<T> remote, Object... args) throws Throwable {
+	public <T> T invoke(RemoteOperation<T> remote, Object... args) throws RemoteException {
+		if (phase == Phase.DESTROYED) {
+			throw new IllegalStateException("Node destroyed: " + remoteId);
+		}
 
 		OperationType<T> operationType;
 		if (remote instanceof HasOperationType) {
@@ -55,7 +60,12 @@ class ClientSideToolkitImpl implements ClientSideToolkit {
 
 		Objects.requireNonNull(remote);
 
-		Object[] exported = Utils.export(args);
+		Object[] exported;
+		try {
+			exported = Utils.export(args);
+		} catch (NotSerializableException e) {
+			throw new RemoteException("Failed exporting args for " + operationType, e);
+		}
 
 		Object result = clientSession.getRemoteConnection().invoke(
 					remoteId,
@@ -68,23 +78,27 @@ class ClientSideToolkitImpl implements ClientSideToolkit {
 
 	@Override
 	public <T> void registerNotificationListener(NotificationType<T> eventType,
-												 NotificationListener<T> notificationListener) {
-		try {
-			clientSession.getRemoteConnection().addNotificationListener(remoteId, eventType, notificationListener);
-		} catch (RemoteException e) {
-			throw new RuntimeException(e);
+												 NotificationListener<T> notificationListener)
+	throws RemoteException {
+		if (phase == Phase.DESTROYED) {
+			throw new IllegalStateException("Node destroyed: " + remoteId);
 		}
+
+		clientSession.getRemoteConnection()
+				.addNotificationListener(remoteId, eventType, notificationListener);
 		listeners.add(Pair.of(eventType, notificationListener));
 	}
 
 	@Override
 	public <T> void removeNotificationListener(NotificationType<T> eventType,
-			NotificationListener<T> notificationListener) {
-		try {
-			clientSession.getRemoteConnection().removeNotificationListener(remoteId, eventType, notificationListener);
-		} catch (RemoteException e) {
-			throw new RuntimeException(e);
+			NotificationListener<T> notificationListener)
+	throws RemoteException {
+		if (phase == Phase.DESTROYED) {
+			throw new IllegalStateException("Node destroyed: " + remoteId);
 		}
+
+		clientSession.getRemoteConnection()
+				.removeNotificationListener(remoteId, eventType, notificationListener);
 		listeners.remove(Pair.of(eventType, notificationListener));
 	}
 	
@@ -96,7 +110,7 @@ class ClientSideToolkitImpl implements ClientSideToolkit {
 	 * Destroy this node. Clean up resources, remove remote connections.
 	 */
 	void destroy() {
-		phase = DESTROYED;
+		phase = Phase.DESTROYED;
 		// beware the order here. 
 		// notifications removed first
 		for (Pair<NotificationType<?>, NotificationListener<?>> listener : listeners) {
@@ -107,7 +121,7 @@ class ClientSideToolkitImpl implements ClientSideToolkit {
 				logger.debug("Client destroy.", e);
 			}
 		}
-		logger.debug("Destroyed client for [" + toString() + "]");
+		logger.debug("Destroyed client for [" + this + "]");
 	}
 
 	@SuppressWarnings("unchecked")

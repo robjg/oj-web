@@ -316,11 +316,14 @@ public class WebClientJob extends SimpleService
             clientSession.destroy(serverView.getProxy());
         }
 
-        childHelper.removeAllChildren();
+        try {
+            childHelper.removeAllChildren();
+        }
+        finally {
+            clientSession.destroyAll();
 
-        clientSession.destroyAll();
-
-        logPoller = null;
+            logPoller = null;
+        }
     }
 
     @Override

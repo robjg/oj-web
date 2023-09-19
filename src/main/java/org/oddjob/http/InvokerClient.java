@@ -8,8 +8,8 @@ import org.eclipse.jetty.client.api.Request;
 import org.eclipse.jetty.client.util.StringContentProvider;
 import org.eclipse.jetty.http.HttpStatus;
 import org.oddjob.remote.OperationType;
+import org.oddjob.remote.RemoteComponentException;
 import org.oddjob.remote.RemoteException;
-import org.oddjob.remote.RemoteIdException;
 import org.oddjob.remote.RemoteInvoker;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -73,7 +73,7 @@ public class InvokerClient implements RemoteInvoker, AutoCloseable {
             Thread.currentThread().interrupt();
             return null;
         } catch (TimeoutException | ExecutionException e) {
-            throw new RemoteIdException(remoteId, e);
+            throw new RemoteComponentException(remoteId, e);
         }
 
         int status = response.getStatus();
@@ -85,7 +85,7 @@ public class InvokerClient implements RemoteInvoker, AutoCloseable {
         else {
             String message = "Response " + HttpStatus.getCode(status);
             logger.info(message);
-            throw new RemoteIdException(remoteId, "Request failed: " + message);
+            throw new RemoteComponentException(remoteId, "Request failed: " + message);
         }
 
         Type collectionType = new TypeToken<InvokeResponse<T>>(){}.getType();

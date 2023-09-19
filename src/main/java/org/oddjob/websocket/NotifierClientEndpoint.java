@@ -163,12 +163,12 @@ public class NotifierClientEndpoint implements RemoteNotifier {
         try {
             session.getBasicRemote().sendText(gson.toJson(request));
         } catch (IOException e) {
-            throw new RemoteIdException(remoteId, e);
+            throw new RemoteComponentException(remoteId, e);
         }
 
         try {
             if (!latch.await(TIMEOUT_SECONDS, TimeUnit.SECONDS)) {
-                throw new RemoteIdException(remoteId, "Time out waiting for " + request);
+                throw new RemoteComponentException(remoteId, "Time out waiting for " + request);
             }
         } catch (InterruptedException e) {
             Thread.currentThread().interrupt();
@@ -208,7 +208,7 @@ public class NotifierClientEndpoint implements RemoteNotifier {
 
             try {
                 if (!latch.await(TIMEOUT_SECONDS, TimeUnit.SECONDS)) {
-                    throw new RemoteIdException(remoteId, "Time out waiting for " + request);
+                    throw new RemoteComponentException(remoteId, "Time out waiting for " + request);
                 }
             } catch (InterruptedException e) {
                 Thread.currentThread().interrupt();
