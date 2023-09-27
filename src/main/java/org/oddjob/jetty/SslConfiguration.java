@@ -1,7 +1,6 @@
 package org.oddjob.jetty;
 
-import org.eclipse.jetty.server.Server;
-import org.eclipse.jetty.server.ServerConnector;
+import org.eclipse.jetty.server.*;
 import org.eclipse.jetty.util.ssl.SslContextFactory;
 import org.oddjob.arooa.deploy.annotations.ArooaAttribute;
 import org.slf4j.Logger;
@@ -43,31 +42,21 @@ import java.util.Optional;
  *     <dd>This one is obvious.</dd>
  * </dl>
  *
- *
- * @oddjob.example
- *
- * Client Accepts any certificate.
- *
+ * @oddjob.example Client Accepts any certificate.
+ * <p>
  * {@oddjob.xml.resource examples/ssl/TrustAllExample.xml}
  *
- * @oddjob.example
- *
- * Host Name Verification. The client accepts the host even if it doesn't match the certificate.
- *
+ * @oddjob.example Host Name Verification. The client accepts the host even if it doesn't match the certificate.
+ * <p>
  * {@oddjob.xml.resource examples/ssl/TrustAnyExample.xml}
  *
- * @oddjob.example
- *
- * One Way Trust. The client verifies who the server is but the server doesn't care who the client is.
- *
+ * @oddjob.example One Way Trust. The client verifies who the server is but the server doesn't care who the client is.
+ * <p>
  * {@oddjob.xml.resource examples/ssl/OneWayTrustExample.xml}
  *
- * @oddjob.example
- *
- * Two Way Trust. The client verifies who the server is and the server verifies who the client is.
- *
+ * @oddjob.example Two Way Trust. The client verifies who the server is and the server verifies who the client is.
+ * <p>
  * {@oddjob.xml.resource examples/ssl/MutualTrustExample.xml}
- *
  */
 public class SslConfiguration implements JettyServerModifier, ClientSslProvider {
 
@@ -157,6 +146,18 @@ public class SslConfiguration implements JettyServerModifier, ClientSslProvider 
      */
     private volatile boolean trustAll;
 
+    /**
+     * @oddjob.property
+     * @oddjob.description Ignore SNI checks on the server. This allows us to use localhost without getting
+     * an {@code org.eclipse.jetty.http.BadMessageException: 400: Invalid SNI} which is happening since upgrading
+     * Jetty version.
+     * @oddjob.required No, defaults to false, and only applicable to the server.
+     *
+     * @since 1.7
+     */
+    private volatile boolean ignoreSni;
+
+
     public enum ClientAuth {
         NONE,
         WANT,
@@ -169,6 +170,7 @@ public class SslConfiguration implements JettyServerModifier, ClientSslProvider 
         SslContextFactory.Server sslContextFactory = new SslContextFactory.Server();
 
         configureFactory(sslContextFactory);
+
         if (this.clientAuth == ClientAuth.WANT) {
             sslContextFactory.setWantClientAuth(true);
         }
@@ -176,7 +178,22 @@ public class SslConfiguration implements JettyServerModifier, ClientSslProvider 
             sslContextFactory.setNeedClientAuth(true);
         }
 
-        ServerConnector connector = new ServerConnector(server, sslContextFactory);
+        ServerConnector connector;
+
+        if (this.ignoreSni) {
+            HttpConfiguration httpConfig = new HttpConfiguration();
+            SecureRequestCustomizer customizer = new SecureRequestCustomizer();
+            customizer.setSniHostCheck(false);
+            customizer.setSniRequired(false);
+            httpConfig.addCustomizer(customizer);
+            HttpConnectionFactory http = new HttpConnectionFactory(httpConfig);
+            SslConnectionFactory ssl = new SslConnectionFactory(sslContextFactory, http.getProtocol());
+            connector = new ServerConnector(server, ssl, http);
+        }
+        else {
+            connector = new ServerConnector(server, sslContextFactory);
+        }
+
         connector.setPort(port);
 
         logger.info("Adding SSl Connector.");
@@ -184,9 +201,9 @@ public class SslConfiguration implements JettyServerModifier, ClientSslProvider 
     }
 
     @Override
-    public SslContextFactory provideClientSsl() {
+    public SslContextFactory.Client provideClientSsl() {
 
-        SslContextFactory sslContextFactory = new SslContextFactory.Client(this.trustAll);
+        SslContextFactory.Client sslContextFactory = new SslContextFactory.Client(this.trustAll);
 
         logger.info("Providing Client SSL.");
 
@@ -306,6 +323,14 @@ public class SslConfiguration implements JettyServerModifier, ClientSslProvider 
 
     public void setHostnameVerifier(HostnameVerifier hostnameVerifier) {
         this.hostnameVerifier = hostnameVerifier;
+    }
+
+    public boolean isIgnoreSni() {
+        return ignoreSni;
+    }
+
+    public void setIgnoreSni(boolean ignoreSni) {
+        this.ignoreSni = ignoreSni;
     }
 
     @Override

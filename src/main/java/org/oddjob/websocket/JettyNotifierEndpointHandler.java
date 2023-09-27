@@ -3,7 +3,7 @@ package org.oddjob.websocket;
 import com.google.gson.Gson;
 import org.eclipse.jetty.server.Handler;
 import org.eclipse.jetty.servlet.ServletContextHandler;
-import org.eclipse.jetty.websocket.jsr356.server.deploy.WebSocketServerContainerInitializer;
+import org.eclipse.jetty.websocket.javax.server.config.JavaxWebSocketServletContainerInitializer;
 import org.oddjob.arooa.ArooaSession;
 import org.oddjob.arooa.life.ArooaSessionAware;
 import org.oddjob.arooa.types.ValueFactory;
@@ -48,7 +48,7 @@ public class JettyNotifierEndpointHandler implements ValueFactory<Handler>, Aroo
                 .configurator(new NotifierConfigurator(remoteNotifier, gson))
                 .build();
 
-        WebSocketServerContainerInitializer
+        JavaxWebSocketServletContainerInitializer
                 .configure(context, (ctxt, container) -> container.addEndpoint(config));
 
         return context;

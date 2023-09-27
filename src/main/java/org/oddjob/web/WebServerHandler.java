@@ -4,7 +4,7 @@ import com.google.gson.Gson;
 import org.eclipse.jetty.server.Handler;
 import org.eclipse.jetty.servlet.ServletContextHandler;
 import org.eclipse.jetty.servlet.ServletHolder;
-import org.eclipse.jetty.websocket.jsr356.server.deploy.WebSocketServerContainerInitializer;
+import org.eclipse.jetty.websocket.javax.server.config.JavaxWebSocketServletContainerInitializer;
 import org.oddjob.arooa.ArooaSession;
 import org.oddjob.arooa.deploy.annotations.ArooaHidden;
 import org.oddjob.arooa.life.ArooaSessionAware;
@@ -108,7 +108,7 @@ public class WebServerHandler implements ValueFactory<Handler>, ArooaSessionAwar
                 .configurator(new NotifierConfigurator(remoteConnection, gson))
                 .build();
 
-        WebSocketServerContainerInitializer
+        JavaxWebSocketServletContainerInitializer
                 .configure(contextHandler, (ctxt, container) -> container.addEndpoint(config));
 
         // Api

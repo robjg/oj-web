@@ -5,13 +5,16 @@ import org.eclipse.jetty.client.api.Authentication;
 import org.eclipse.jetty.client.api.ContentResponse;
 import org.eclipse.jetty.client.api.Request;
 import org.eclipse.jetty.client.api.Response;
+import org.eclipse.jetty.client.dynamic.HttpClientTransportDynamic;
 import org.eclipse.jetty.client.util.BasicAuthentication;
-import org.eclipse.jetty.client.util.FormContentProvider;
+import org.eclipse.jetty.client.util.FormRequestContent;
 import org.eclipse.jetty.client.util.InputStreamResponseListener;
-import org.eclipse.jetty.client.util.StringContentProvider;
+import org.eclipse.jetty.client.util.StringRequestContent;
 import org.eclipse.jetty.http.HttpFields;
 import org.eclipse.jetty.http.HttpStatus;
+import org.eclipse.jetty.io.ClientConnector;
 import org.eclipse.jetty.util.Fields;
+import org.eclipse.jetty.util.ssl.SslContextFactory;
 import org.oddjob.arooa.deploy.annotations.ArooaText;
 import org.oddjob.arooa.utils.IoUtils;
 import org.oddjob.util.Progress;
@@ -26,6 +29,7 @@ import java.net.URI;
 import java.net.URISyntaxException;
 import java.util.LinkedHashMap;
 import java.util.Map;
+import java.util.Objects;
 import java.util.Optional;
 import java.util.concurrent.Callable;
 import java.util.concurrent.ExecutionException;
@@ -321,8 +325,8 @@ public class JettyHttpClient implements Callable<Integer> {
                 if (config.parameters == null) {
 
                     Request request = httpClient.POST(config.url);
-                    request.content(new StringContentProvider(config.content),
-                            config.contentType);
+
+                    request.body(new StringRequestContent(config.contentType, config.content));
 
                     return config.responseStrategy.doSend(request);
                 } else {
@@ -334,7 +338,7 @@ public class JettyHttpClient implements Callable<Integer> {
                     }
 
                     return config.responseStrategy.doSend(
-                            httpClient.POST(config.url).content(new FormContentProvider(fields)));
+                            httpClient.POST(config.url).body(new FormRequestContent(fields)));
                 }
             }
         },
@@ -347,7 +351,13 @@ public class JettyHttpClient implements Callable<Integer> {
         responseBody = null;
 
         HttpClient httpClient = Optional.ofNullable(this.ssl)
-                .map(ssl -> new HttpClient(ssl.provideClientSsl()))
+                .map(ssl -> {
+                    SslContextFactory.Client sslContextFactory = ssl.provideClientSsl();
+                    ClientConnector clientConnector = new ClientConnector();
+                    clientConnector.setSslContextFactory(sslContextFactory);
+
+                    return new HttpClient(new HttpClientTransportDynamic(clientConnector));
+                })
                 .orElseGet(HttpClient::new);
         try (RequestConfiguration config = new RequestConfiguration()) {
 
@@ -500,11 +510,7 @@ public class JettyHttpClient implements Callable<Integer> {
 
     @Override
     public String toString() {
-        if (name == null) {
-            return getClass().getSimpleName();
-        } else {
-            return name;
-        }
+        return Objects.requireNonNullElseGet(name, () -> getClass().getSimpleName());
     }
 
     public static class UsernamePassword {

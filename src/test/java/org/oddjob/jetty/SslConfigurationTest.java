@@ -3,8 +3,11 @@ package org.oddjob.jetty;
 import org.eclipse.jetty.client.HttpClient;
 import org.eclipse.jetty.client.api.ContentResponse;
 import org.eclipse.jetty.client.api.Request;
+import org.eclipse.jetty.client.dynamic.HttpClientTransportDynamic;
+import org.eclipse.jetty.io.ClientConnector;
 import org.eclipse.jetty.server.Server;
 import org.eclipse.jetty.server.ServerConnector;
+import org.eclipse.jetty.util.ssl.SslContextFactory;
 import org.junit.Test;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -48,7 +51,12 @@ public class SslConfigurationTest {
         SslConfiguration clientSsl = new SslConfiguration();
         clientSsl.setTrustAll(true);
 
-        HttpClient httpClient = new HttpClient(clientSsl.provideClientSsl());
+        SslContextFactory.Client sslContextFactory = clientSsl.provideClientSsl();
+
+        ClientConnector clientConnector = new ClientConnector();
+        clientConnector.setSslContextFactory(sslContextFactory);
+
+        HttpClient httpClient = new HttpClient(new HttpClientTransportDynamic(clientConnector));
 
         logger.info("Starting Client");
 
@@ -112,7 +120,12 @@ public class SslConfigurationTest {
         clientSsl.setTrustStorePassword("trustpwd");
         clientSsl.setTrustStoreType("PKCS12");
 
-        HttpClient httpClient = new HttpClient(clientSsl.provideClientSsl());
+        SslContextFactory.Client sslContextFactory = clientSsl.provideClientSsl();
+
+        ClientConnector clientConnector = new ClientConnector();
+        clientConnector.setSslContextFactory(sslContextFactory);
+
+        HttpClient httpClient = new HttpClient(new HttpClientTransportDynamic(clientConnector));
 
         logger.info("Starting Client");
 

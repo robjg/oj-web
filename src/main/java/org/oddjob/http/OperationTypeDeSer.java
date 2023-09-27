@@ -4,7 +4,6 @@ import com.google.gson.*;
 import org.oddjob.arooa.ClassResolver;
 import org.oddjob.remote.OperationType;
 
-import java.io.Serializable;
 import java.lang.reflect.Type;
 import java.util.Arrays;
 import java.util.Optional;
@@ -52,8 +51,7 @@ public class OperationTypeDeSer implements JsonSerializer<OperationType<?>>, Jso
                 .map(JsonPrimitive::getAsString)
                 .orElseThrow(() -> new JsonParseException("No required field " + TYPE));
 
-        //noinspection unchecked
-        Class<? extends Serializable> type = (Class<? extends Serializable>) classResolver.findClass(className);
+        Class<?> type = classResolver.findClass(className);
         if (type == null) {
             throw new JsonParseException("Class not found " + className);
         }

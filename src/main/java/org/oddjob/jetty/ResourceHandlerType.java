@@ -59,15 +59,7 @@ public class ResourceHandlerType implements ValueFactory<Handler>{
 	 * @oddjob.required No.
 	 */
 	private String[] welcomeFiles;
-	
-	/** 
-	 * @oddjob.property
-	 * @oddjob.description Control memory mapped size. Set to -1 on windows because of
-	 * <a href="https://wiki.eclipse.org/Jetty/Howto/Deal_with_Locked_Windows_Files">This issue</a>
-	 * @oddjob.required No.
-	 */
-	private Integer minMemoryMappedContentLength;
-	
+
 	public interface JettyResourceType {
 		
 		Resource resourceFromString(String resource) throws IOException;
@@ -117,11 +109,7 @@ public class ResourceHandlerType implements ValueFactory<Handler>{
 			 
 			 logger.debug("Setting base to " + base);
 		 }
-		 
-		 if (minMemoryMappedContentLength != null) {
-			 resourceHandler.setMinMemoryMappedContentLength(minMemoryMappedContentLength);
-		 }
-		 
+
 		return resourceHandler;
 	}
 
@@ -151,11 +139,24 @@ public class ResourceHandlerType implements ValueFactory<Handler>{
 	}
 	
 	public Integer getMinMemoryMappedContentLength() {
-		return minMemoryMappedContentLength;
+		return 0;
 	}
 
+	/**
+	 * @oddjob.property
+	 * @oddjob.description Control memory mapped size. Set to -1 on windows because of
+	 * <a href="https://wiki.eclipse.org/Jetty/Howto/Deal_with_Locked_Windows_Files">This issue</a>
+	 * <p>
+	 *     This property was deprecated, and then removed in version 10. The link above no
+	 *     longer exists so we assume this has been fixed. This property now does nothing and
+	 *     will be removed in Oddjob 1.8.
+	 * </p>
+	 *
+	 * @oddjob.required No.
+	 */
+	@Deprecated
 	public void setMinMemoryMappedContentLength(Integer minMemoryMappedFileSize) {
-		this.minMemoryMappedContentLength = minMemoryMappedFileSize;
+		logger.warn("minMemoryMappedContentLength no longer required. This property will be removed in future.");
 	}
 	
 	public ResourceType getResourceType() {

@@ -5,7 +5,7 @@ import com.google.gson.reflect.TypeToken;
 import org.eclipse.jetty.client.HttpClient;
 import org.eclipse.jetty.client.api.ContentResponse;
 import org.eclipse.jetty.client.api.Request;
-import org.eclipse.jetty.client.util.StringContentProvider;
+import org.eclipse.jetty.client.util.StringRequestContent;
 import org.eclipse.jetty.http.HttpStatus;
 import org.oddjob.remote.OperationType;
 import org.oddjob.remote.RemoteComponentException;
@@ -63,8 +63,7 @@ public class InvokerClient implements RemoteInvoker, AutoCloseable {
 
         Request request = httpClient.POST(uri);
 
-        request.content(new StringContentProvider(jsonRequest),
-                "application/json");
+        request.body(new StringRequestContent("application/json", jsonRequest));
 
         ContentResponse response;
         try {

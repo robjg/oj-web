@@ -17,15 +17,22 @@
                             </files>
                         </delete>
                         <mkdir dir="${ssltest.stores.dir}" name="Create Store Directory"/>
-                        <exec dir="${ssltest.stores.dir}" name="Create Server Keystore"><![CDATA[keytool -v -genkey -keyalg RSA -keysize 2048 -validity 360 -alias serverkey -keystore server_keystore.p12 -storetype pkcs12 -storepass srvstorepwd -dname "CN=anything"]]></exec>
+                        <exec dir="${ssltest.stores.dir}" name="Create Server Keystore">
+                            <![CDATA[keytool -v -genkey -keyalg RSA -keysize 2048 -validity 360 -alias serverkey -keystore server_keystore.p12 -storetype pkcs12 -storepass srvstorepwd -dname "CN=anything"]]></exec>
                         <exec dir="${ssltest.stores.dir}" name="Export Server Certificate">
                             <stdout>
                                 <file file="${ssltest.stores.dir}/server_cert.pem"/>
-                            </stdout><![CDATA[keytool -export -rfc -alias serverkey -keystore server_keystore.p12 -storepass srvstorepwd]]></exec>
+                            </stdout>
+                            <![CDATA[keytool -export -rfc -alias serverkey -keystore server_keystore.p12 -storepass srvstorepwd]]>
+                        </exec>
                         <exec dir="${ssltest.stores.dir}" name="Import Server Certificate into Client Trustore">
                             <stdin>
                                 <file file="${ssltest.stores.dir}/server_cert.pem"/>
-                            </stdin><![CDATA[keytool -v -import -keystore client_trustore.p12 -storepass clitrustpwd -alias serverkey -noprompt]]></exec>
+                            </stdin>
+                            <![CDATA[keytool -v -import -keystore client_trustore.p12 -storepass clitrustpwd -alias serverkey -noprompt]]>
+                        </exec>
+                        <exec dir="${ssltest.stores.dir}" name="List Server Keystore">
+                            <![CDATA[keytool -list -v -keystore server_keystore.p12 -storetype pkcs12 -storepass srvstorepwd]]></exec>
                     </jobs>
                 </sequential>
                 <web:server xmlns:web="oddjob:web" id="server">
@@ -41,12 +48,14 @@
                         </web:resource>
                     </handler>
                     <modifiers>
-                        <web:ssl keyStorePassword="srvstorepwd" keyStorePath="${ssltest.stores.dir}/server_keystore.p12"/>
+                        <web:ssl keyStorePassword="srvstorepwd" keyStorePath="${ssltest.stores.dir}/server_keystore.p12"
+                                 ignoreSni="true"/>
                     </modifiers>
                 </web:server>
                 <web:client xmlns:web="oddjob:web" id="client" url="https://localhost:${server.port}">
                     <ssl>
-                        <web:ssl trustStorePassword="clitrustpwd" trustStorePath="${ssltest.stores.dir}/client_trustore.p12">
+                        <web:ssl trustStorePassword="clitrustpwd"
+                                 trustStorePath="${ssltest.stores.dir}/client_trustore.p12">
                             <hostnameVerifier>
                                 <web:hostname-verifier hostname=".*" regex="true"/>
                             </hostnameVerifier>

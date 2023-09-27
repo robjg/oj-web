@@ -1,9 +1,9 @@
 package org.oddjob.rest.model;
 
+import org.oddjob.state.StateEvent;
+
 import java.io.PrintWriter;
 import java.io.StringWriter;
-
-import org.oddjob.state.StateEvent;
 
 public class StateDTO {
 
@@ -18,7 +18,7 @@ public class StateDTO {
 	public StateDTO(int nodeId, StateEvent stateEvent) {
 		this.nodeId = nodeId;
 		this.state = stateEvent.getState().toString();
-		this.time = stateEvent.getTime().getTime();
+		this.time = stateEvent.getInstant().toEpochMilli();
 		Throwable t = stateEvent.getException();
 		if (t == null) {
 			this.exception = null;
@@ -26,7 +26,7 @@ public class StateDTO {
 		else {
 			StringWriter writer = new StringWriter();
 			t.printStackTrace(new PrintWriter(writer));
-			this.exception = writer.toString();;
+			this.exception = writer.toString();
 		}
 	}
 	

@@ -7,5 +7,5 @@ import org.eclipse.jetty.util.ssl.SslContextFactory;
  */
 public interface ClientSslProvider {
 
-    SslContextFactory provideClientSsl();
+    SslContextFactory.Client provideClientSsl();
 }
