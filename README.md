@@ -8,4 +8,6 @@ OJ Web provides:
 - An HTTP client that can be used from within Oddjob.
 - A Web Service that provides an API onto an Oddjob job tree.
 
+For information on configuring please see the
+[Reference](docs/reference/README.md)
 
