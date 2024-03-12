@@ -251,7 +251,6 @@ Client Accepts any certificate.
         </sequential>
     </job>
 </oddjob>
-
 ```
 
 
@@ -332,7 +331,6 @@ Host Name Verification. The client accepts the host even if it doesn't match the
         </sequential>
     </job>
 </oddjob>
-
 ```
 
 
@@ -401,7 +399,6 @@ One Way Trust. The client verifies who the server is but the server doesn't care
         </sequential>
     </job>
 </oddjob>
-
 ```
 
 
@@ -479,7 +476,6 @@ Two Way Trust. The client verifies who the server is and the server verifies who
         </sequential>
     </job>
 </oddjob>
-
 ```
 
 

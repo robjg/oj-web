@@ -230,7 +230,6 @@ Get the content of a URL using a parameter.
         </sequential>
     </job>
 </oddjob>
-
 ```
 
 
@@ -278,7 +277,6 @@ Download to a file.
         </sequential>
     </job>
 </oddjob>
-
 ```
 
 
