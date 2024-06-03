@@ -3,6 +3,8 @@
         <list>
             <values>
                 <bean class="org.oddjob.web.gson.plugin.ImageDataGson"/>
+                <bean class="org.oddjob.web.gson.plugin.OddjobTransportableExceptionGson"/>
+                <bean class="org.oddjob.web.gson.plugin.StateInstantGson"/>
                 <bean class="org.oddjob.web.gson.plugin.SerializableDesignFactoryGson"/>
                 <bean class="org.oddjob.web.gson.plugin.InputRequestGson"/>
             </values>

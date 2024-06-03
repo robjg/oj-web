@@ -50,7 +50,7 @@ public class InvokerServlet extends HttpServlet {
         try {
             reply = remoteInvoker.invoke(json);
         } catch (RemoteException e) {
-            throw new ServletException(e);
+            throw new ServletException("Failed Invoking request: " + json, e);
         }
 
         response.getWriter().print(reply);

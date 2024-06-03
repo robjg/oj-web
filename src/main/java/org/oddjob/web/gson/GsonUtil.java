@@ -10,10 +10,21 @@ import org.oddjob.websocket.NotificationDeserializer;
 import org.oddjob.websocket.NotificationTypeDesSer;
 
 /**
- * Group all Gson Adapters.
+ * Provides a {@code Gson} by loading adapters as plugins and/or by providing
+ * defaults.  which are those adapters required for the Web implementation of
+ * an {@link RemoteConnection}.
+ *
+ * @see ResourceGsonConfigurator
  */
 public class GsonUtil {
 
+    /**
+     * Create a {@code Gson} from Plugins and Defaults.
+     *
+     * @param arooaSession The Arooa Session for finding and parsing the plugin file.
+     *
+     * @return A configured Gson.
+     */
     public static Gson createGson(ArooaSession arooaSession) {
 
         ClassResolver classResolver = arooaSession.getArooaDescriptor().getClassResolver();
@@ -22,6 +33,14 @@ public class GsonUtil {
                 classResolver);
     }
 
+    /**
+     * Create a {@code Gson} from a {@code GsonConfigurator} and Defaults.
+     *
+     * @param gsonConfigurator The GsonConfigurator.
+     * @param classResolver The ClassResolver.
+     *
+     * @return A configured Gson.
+     */
     public static Gson createGson(GsonConfigurator gsonConfigurator,
                                   ClassResolver classResolver) {
 
@@ -31,12 +50,26 @@ public class GsonUtil {
                 .create();
     }
 
+    /**
+     * Create a {@code Gson} just from defaults.
+     *
+     * @return A configured Gson.
+     */
     public static Gson defaultGson() {
         return defaultGson(new GsonBuilder(), ClassResolver.getDefaultClassResolver());
     }
 
-    public static Gson defaultGson(GsonBuilder gsonBuilder, ClassResolver classLoader) {
-        return new DefaultConfigurator(classLoader).configure(gsonBuilder)
+    /**
+     * Create a {@code Gson} just from defaults using the given Gson Builder and
+     * Class Resolver.
+     *
+     * @param gsonBuilder The Gson Builder.
+     * @param classResolver The Class Resolver
+     *
+     * @return A configured Gson.
+     */
+    public static Gson defaultGson(GsonBuilder gsonBuilder, ClassResolver classResolver) {
+        return new DefaultConfigurator(classResolver).configure(gsonBuilder)
                 .create();
     }
 

@@ -27,7 +27,7 @@ public class ResourceGsonConfigurator implements GsonConfigurator {
 	/**
 	 * Constructor.
 	 *
-	 * @param session
+	 * @param session The Arooa Session.
 	 */
 	public ResourceGsonConfigurator(ArooaSession session) {
 		this(session, DEFAULT_RESOURCE_NAME);

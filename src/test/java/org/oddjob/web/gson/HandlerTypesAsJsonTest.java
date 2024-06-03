@@ -12,6 +12,7 @@ import org.oddjob.state.State;
 import org.oddjob.state.StateInstant;
 
 import static org.hamcrest.MatcherAssert.assertThat;
+import static org.hamcrest.Matchers.instanceOf;
 import static org.hamcrest.Matchers.is;
 
 public class HandlerTypesAsJsonTest {
@@ -58,7 +59,7 @@ public class HandlerTypesAsJsonTest {
 
         Throwable exception = copy.getException();
 
-        assertThat(exception.getClass(), is(Throwable.class));
+        assertThat(exception, instanceOf(Throwable.class));
         assertThat(exception.getMessage(), is("Ahhh!"));
     }
 

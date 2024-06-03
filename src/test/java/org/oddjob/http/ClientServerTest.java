@@ -93,7 +93,7 @@ public class ClientServerTest {
         OperationType<String> op1 = OperationType.ofName("greeting")
                 .returning(String.class);
         OperationType<Boolean> op2 = OperationType.ofName("maybe")
-                .withSignature(int.class, String.class).returning(boolean.class);
+                .withSignature(int.class, String.class).returning(Boolean.class);
         OperationType<Fruit> op3 = OperationType.ofName("fruit")
                 .withSignature(Fruit.class).returning(Fruit.class);
         OperationType<Void> op4 = OperationType.ofName("foo")

@@ -49,7 +49,8 @@ public class RemoteInvokerGson implements RemoteInvoker {
 
         String jsonResponse = jsonRemoteInvoker.invoke(jsonRequest);
 
-        Type collectionType = new TypeToken<InvokeResponse<T>>(){}.getType();
+        Type collectionType = TypeToken.getParameterized(InvokeResponse.class,
+                operationType.getReturnType()).getType();
 
         InvokeResponse<T> invokeResponse = gson.fromJson(jsonResponse, collectionType);
 

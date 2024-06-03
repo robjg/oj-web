@@ -87,7 +87,8 @@ public class InvokerClient implements RemoteInvoker, AutoCloseable {
             throw new RemoteComponentException(remoteId, "Request failed: " + message);
         }
 
-        Type collectionType = new TypeToken<InvokeResponse<T>>(){}.getType();
+        Type collectionType = TypeToken.getParameterized(InvokeResponse.class,
+                operationType.getReturnType()).getType();
 
         InvokeResponse<T> invokeResponse = gson.fromJson(content, collectionType);
 
