@@ -1,10 +1,10 @@
 package org.oddjob.js;
 
-import com.gargoylesoftware.htmlunit.BrowserVersion;
-import com.gargoylesoftware.htmlunit.WebClient;
-import com.gargoylesoftware.htmlunit.html.DomElement;
-import com.gargoylesoftware.htmlunit.html.HtmlElement;
-import com.gargoylesoftware.htmlunit.html.HtmlPage;
+import org.htmlunit.BrowserVersion;
+import org.htmlunit.WebClient;
+import org.htmlunit.html.DomElement;
+import org.htmlunit.html.HtmlElement;
+import org.htmlunit.html.HtmlPage;
 import org.junit.Assert;
 import org.junit.Ignore;
 import org.junit.Test;
@@ -55,7 +55,7 @@ public class OjJobActionsScriptTest extends Assert {
 	    
 	    String result2 = ((HtmlElement) page.getElementById(
 	    		"result2").getFirstByXPath(
-	    				"div[@class='actionExecuted']")).asText();
+	    				"div[@class='actionExecuted']")).asNormalizedText();
 	    
 	    assertEquals("actionExecuted: start/3", 
 	    		result2);

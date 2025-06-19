@@ -1,8 +1,8 @@
 package org.oddjob.js;
 
-import com.gargoylesoftware.htmlunit.BrowserVersion;
-import com.gargoylesoftware.htmlunit.WebClient;
-import com.gargoylesoftware.htmlunit.html.*;
+import org.htmlunit.BrowserVersion;
+import org.htmlunit.WebClient;
+import org.htmlunit.html.*;
 import org.junit.Assert;
 import org.junit.Ignore;
 import org.junit.Test;
@@ -17,7 +17,7 @@ import java.util.List;
 @Ignore("Old JQuery htmlunit test - needs updating or replacing.")
 public class OjTreeUIScriptTest extends Assert {
 
-	private static Logger logger = LoggerFactory.getLogger(OjTreeUIScriptTest.class);
+	private static final Logger logger = LoggerFactory.getLogger(OjTreeUIScriptTest.class);
 	
 	@Test
 	public void testRootNode() throws Exception {

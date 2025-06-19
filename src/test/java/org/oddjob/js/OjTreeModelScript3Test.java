@@ -1,9 +1,9 @@
 package org.oddjob.js;
 
-import com.gargoylesoftware.htmlunit.BrowserVersion;
-import com.gargoylesoftware.htmlunit.WebClient;
-import com.gargoylesoftware.htmlunit.html.HtmlElement;
-import com.gargoylesoftware.htmlunit.html.HtmlPage;
+import org.htmlunit.BrowserVersion;
+import org.htmlunit.WebClient;
+import org.htmlunit.html.HtmlElement;
+import org.htmlunit.html.HtmlPage;
 import org.junit.Assert;
 import org.junit.Ignore;
 import org.junit.Test;
@@ -17,7 +17,7 @@ import java.net.URL;
 @Ignore("Old JQuery htmlunit test - needs updating or replacing.")
 public class OjTreeModelScript3Test extends Assert {
 
-	private static Logger logger = LoggerFactory.getLogger(OjTreeModelScript3Test.class);
+	private static final Logger logger = LoggerFactory.getLogger(OjTreeModelScript3Test.class);
 	
 	@Test
 	public void testAll() throws Exception {
@@ -41,14 +41,14 @@ public class OjTreeModelScript3Test extends Assert {
 	    
 	    String result1Request = ((HtmlElement) page.getElementById(
 	    		"result1").getFirstByXPath(
-	    				"div[@class='makeNodeInfoRequest_argCapture']")).asText();
+	    				"div[@class='makeNodeInfoRequest_argCapture']")).asNormalizedText();
 	    
 	    assertEquals("makeNodeInfoRequest_argCapture: 0 -1", 
 	    		result1Request);
 	    
 	    String result1TreeCapture = ((HtmlElement) page.getElementById(
 	    		"result1").getFirstByXPath(
-	    				"div[@class='ojTreeUI_capture']")).asText();
+	    				"div[@class='ojTreeUI_capture']")).asNormalizedText();
 	    
 	    assertEquals("nodeInitialised: 0 Some Jobs", 
 	    		result1TreeCapture);
@@ -61,14 +61,14 @@ public class OjTreeModelScript3Test extends Assert {
 	    
 	    String result2Request = ((HtmlElement) page.getElementById(
 	    		"result2").getFirstByXPath(
-	    				"div[@class='makeNodeInfoRequest_argCapture']")).asText();
+	    				"div[@class='makeNodeInfoRequest_argCapture']")).asNormalizedText();
 	    
 	    assertEquals("makeNodeInfoRequest_argCapture: 0 457",
 	    		result2Request);
 	    
 	    String result2TreeCapture = ((HtmlElement) page.getElementById(
 	    		"result2").getFirstByXPath(
-	    				"div[@class='ojTreeUI_capture']")).asText();
+	    				"div[@class='ojTreeUI_capture']")).asNormalizedText();
 	    
 	    assertEquals("nodeUpdated: 0", 
 	    		result2TreeCapture);
@@ -81,14 +81,14 @@ public class OjTreeModelScript3Test extends Assert {
 	    
 	    String result3Request = ((HtmlElement) page.getElementById(
 	    		"result3").getFirstByXPath(
-	    				"div[@class='makeNodeInfoRequest_argCapture']")).asText();
+	    				"div[@class='makeNodeInfoRequest_argCapture']")).asNormalizedText();
 	    
 	    assertEquals("makeNodeInfoRequest_argCapture: 12,13 -1",
 	    		result3Request);
 	    
 	    String result3TreeCapture = ((HtmlElement) page.getElementById(
 	    		"result3").getFirstByXPath(
-	    				"div[@class='ojTreeUI_capture']")).asText();
+	    				"div[@class='ojTreeUI_capture']")).asNormalizedText();
 	    
 	    assertEquals("nodeExpanded: 0 12 13", 
 	    		result3TreeCapture);
@@ -101,14 +101,14 @@ public class OjTreeModelScript3Test extends Assert {
 	    
 	    String result4TreeCapture1 = ((HtmlElement) page.getElementById(
 	    		"result4").getFirstByXPath(
-	    				"div[@class='ojTreeUI_capture1']")).asText();
+	    				"div[@class='ojTreeUI_capture1']")).asNormalizedText();
 	    
 	    assertEquals("nodeUpdated: 0", 
 	    		result4TreeCapture1);
 	    
 	    String result4TreeCapture2 = ((HtmlElement) page.getElementById(
 	    		"result4").getFirstByXPath(
-	    				"div[@class='ojTreeUI_capture2']")).asText();
+	    				"div[@class='ojTreeUI_capture2']")).asNormalizedText();
 	    
 	    assertEquals("nodeUpdated: 12", 
 	    		result4TreeCapture2);
@@ -121,14 +121,14 @@ public class OjTreeModelScript3Test extends Assert {
 	    
 	    String result5Request = ((HtmlElement) page.getElementById(
 	    		"result5").getFirstByXPath(
-	    				"div[@class='makeNodeInfoRequest_argCapture']")).asText();
+	    				"div[@class='makeNodeInfoRequest_argCapture']")).asNormalizedText();
 	    
 	    assertEquals("makeNodeInfoRequest_argCapture: 0 572",
 	    		result5Request);
 	    
 	    String result5TreeCapture = ((HtmlElement) page.getElementById(
 	    		"result5").getFirstByXPath(
-	    				"div[@class='ojTreeUI_capture']")).asText();
+	    				"div[@class='ojTreeUI_capture']")).asNormalizedText();
 	    
 	    assertEquals("nodeUpdated: 0", 
 	    		result5TreeCapture);

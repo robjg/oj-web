@@ -1,9 +1,9 @@
 package org.oddjob.js;
 
-import com.gargoylesoftware.htmlunit.BrowserVersion;
-import com.gargoylesoftware.htmlunit.WebClient;
-import com.gargoylesoftware.htmlunit.html.HtmlElement;
-import com.gargoylesoftware.htmlunit.html.HtmlPage;
+import org.htmlunit.BrowserVersion;
+import org.htmlunit.WebClient;
+import org.htmlunit.html.HtmlElement;
+import org.htmlunit.html.HtmlPage;
 import org.junit.Assert;
 import org.junit.Ignore;
 import org.junit.Test;
@@ -19,7 +19,7 @@ import static org.hamcrest.CoreMatchers.is;
 @Ignore("Old JQuery htmlunit test - needs updating or replacing.")
 public class OjTreeModelScript1Test extends Assert {
 
-	private static Logger logger = LoggerFactory.getLogger(OjTreeModelScript1Test.class);
+	private static final Logger logger = LoggerFactory.getLogger(OjTreeModelScript1Test.class);
 	
 	@Test
 	public void testAll() throws Exception {
@@ -45,14 +45,14 @@ public class OjTreeModelScript1Test extends Assert {
 	    
 	    String result1Request = ((HtmlElement) page.getElementById(
 	    		"result1").getFirstByXPath(
-	    				"div[@class='makeNodeInfoRequest_argCapture']")).asText();
+	    				"div[@class='makeNodeInfoRequest_argCapture']")).asNormalizedText();
 	    
 	    assertEquals("makeNodeInfoRequest_argCapture: 0 -1", 
 	    		result1Request);
 	    
 	    String result1TreeCapture = ((HtmlElement) page.getElementById(
 	    		"result1").getFirstByXPath(
-	    				"div[@class='ojTreeUI_capture']")).asText();
+	    				"div[@class='ojTreeUI_capture']")).asNormalizedText();
 	    
 	    assertEquals("treeInitialised: 0 Some Jobs", 
 	    		result1TreeCapture);
@@ -65,7 +65,7 @@ public class OjTreeModelScript1Test extends Assert {
 	    
 	    String result2Request = ((HtmlElement) page.getElementById(
 	    		"result2").getFirstByXPath(
-	    				"div[@class='makeNodeInfoRequest_argCapture']")).asText();
+	    				"div[@class='makeNodeInfoRequest_argCapture']")).asNormalizedText();
 	    
 	    assertEquals("makeNodeInfoRequest_argCapture: 0 457", 
 	    		result2Request);
@@ -73,7 +73,7 @@ public class OjTreeModelScript1Test extends Assert {
 	    
 	    String result2TreeCaptureLength = ((HtmlElement) page.getElementById(
 	    		"result2").getFirstByXPath(
-	    				"div[@class='ojTreeUI_captureLength']")).asText();
+	    				"div[@class='ojTreeUI_captureLength']")).asNormalizedText();
 	    
 	    assertEquals("ojTreeUI_captureLength: 1", 
 	    		result2TreeCaptureLength );
@@ -86,14 +86,14 @@ public class OjTreeModelScript1Test extends Assert {
 	    
 	    String result3Request = ((HtmlElement) page.getElementById(
 	    		"result3").getFirstByXPath(
-	    				"div[@class='makeNodeInfoRequest_argCapture']")).asText();
+	    				"div[@class='makeNodeInfoRequest_argCapture']")).asNormalizedText();
 	    
 	    assertEquals("makeNodeInfoRequest_argCapture: 12,13 -1", 
 	    		result3Request);
 	    
 	    String result3TreeCapture = ((HtmlElement) page.getElementById(
 	    		"result3").getFirstByXPath(
-	    				"div[@class='ojTreeUI_capture']")).asText();
+	    				"div[@class='ojTreeUI_capture']")).asNormalizedText();
 	    
 	    assertEquals("nodeExpanded: 0 12 13", 
 	    		result3TreeCapture);
@@ -106,14 +106,14 @@ public class OjTreeModelScript1Test extends Assert {
 	    
 	    String result4Request = ((HtmlElement) page.getElementById(
 	    		"result4").getFirstByXPath(
-	    				"div[@class='makeNodeInfoRequest_argCapture']")).asText();
+	    				"div[@class='makeNodeInfoRequest_argCapture']")).asNormalizedText();
 	    
 	    assertEquals("makeNodeInfoRequest_argCapture: 0 457", 
 	    		result4Request);
 	    	    
 	    String result4TreeCaptureLength = ((HtmlElement) page.getElementById(
 	    		"result4").getFirstByXPath(
-	    				"div[@class='ojTreeUI_captureLength']")).asText();
+	    				"div[@class='ojTreeUI_captureLength']")).asNormalizedText();
 	    
 	    assertEquals("ojTreeUI_captureLength: 2", 
 	    		result4TreeCaptureLength );
@@ -126,28 +126,28 @@ public class OjTreeModelScript1Test extends Assert {
 	    
 	    String result5Request = ((HtmlElement) page.getElementById(
 	    		"result5").getFirstByXPath(
-	    				"div[@class='makeNodeInfoRequest_argCapture']")).asText();
+	    				"div[@class='makeNodeInfoRequest_argCapture']")).asNormalizedText();
 	    
 	    assertEquals("makeNodeInfoRequest_argCapture: 0,12,13 572", 
 	    		result5Request);
 	    	    
 	    String result5TreeCapture1 = ((HtmlElement) page.getElementById(
 	    		"result5").getFirstByXPath(
-	    				"div[@class='ojTreeUI_capture1']")).asText();
+	    				"div[@class='ojTreeUI_capture1']")).asNormalizedText();
 	    
 	    assertEquals("nodeUpdated: 12", 
 	    		result5TreeCapture1);
 	    
 	    String result5TreeCapture2 = ((HtmlElement) page.getElementById(
 	    		"result5").getFirstByXPath(
-	    				"div[@class='ojTreeUI_capture2']")).asText();
+	    				"div[@class='ojTreeUI_capture2']")).asNormalizedText();
 	    
 	    assertEquals("nodeUpdated: 13 81,82", 
 	    		result5TreeCapture2);
 	    
 	    String result5TreeCaptureLength = ((HtmlElement) page.getElementById(
 	    		"result5").getFirstByXPath(
-	    				"div[@class='ojTreeUI_captureLength']")).asText();
+	    				"div[@class='ojTreeUI_captureLength']")).asNormalizedText();
 	    
 	    assertEquals("ojTreeUI_captureLength: 4", 
 	    		result5TreeCaptureLength );
@@ -160,49 +160,49 @@ public class OjTreeModelScript1Test extends Assert {
 	    
 	    String result6Request1 = ((HtmlElement) page.getElementById(
 	    		"result6").getFirstByXPath(
-	    				"div[@class='makeNodeInfoRequest_argCapture1']")).asText();
+	    				"div[@class='makeNodeInfoRequest_argCapture1']")).asNormalizedText();
 	    
 	    assertEquals("makeNodeInfoRequest_argCapture: 0,12,13 612", 
 	    		result6Request1);
 	    	    
 	    String result6Request2 = ((HtmlElement) page.getElementById(
 	    		"result6").getFirstByXPath(
-	    				"div[@class='makeNodeInfoRequest_argCapture2']")).asText();
+	    				"div[@class='makeNodeInfoRequest_argCapture2']")).asNormalizedText();
 	    
 	    assertEquals("makeNodeInfoRequest_argCapture: 20,21,22 -1", 
 	    		result6Request2);
 
 	    String result6TreeCapture1 = ((HtmlElement) page.getElementById(
 	    		"result6").getFirstByXPath(
-	    				"div[@class='ojTreeUI_capture1']")).asText();
+	    				"div[@class='ojTreeUI_capture1']")).asNormalizedText();
 	    
 	    assertEquals("nodeUpdated: 0 20,12,21,22", 
 	    		result6TreeCapture1);
 	    
 	    String result6TreeCapture2 = ((HtmlElement) page.getElementById(
 	    		"result6").getFirstByXPath(
-	    				"div[@class='ojTreeUI_capture2']")).asText();
+	    				"div[@class='ojTreeUI_capture2']")).asNormalizedText();
 	    
 	    assertEquals("nodeInserted: 0 0 20", 
 	    		result6TreeCapture2);
 	    
 	    String result6TreeCapture3 = ((HtmlElement) page.getElementById(
 	    		"result6").getFirstByXPath(
-	    				"div[@class='ojTreeUI_capture3']")).asText();
+	    				"div[@class='ojTreeUI_capture3']")).asNormalizedText();
 	    
 	    assertEquals("nodeInserted: 0 2 21", 
 	    		result6TreeCapture3);
 	    
 	    String result6TreeCapture4 = ((HtmlElement) page.getElementById(
 	    		"result6").getFirstByXPath(
-	    				"div[@class='ojTreeUI_capture4']")).asText();
+	    				"div[@class='ojTreeUI_capture4']")).asNormalizedText();
 	    
 	    assertEquals("nodeInserted: 0 3 22", 
 	    		result6TreeCapture4);
 	    
 	    String result6TreeCapture5 = ((HtmlElement) page.getElementById(
 	    		"result6").getFirstByXPath(
-	    				"div[@class='ojTreeUI_capture5']")).asText();
+	    				"div[@class='ojTreeUI_capture5']")).asNormalizedText();
 	    
 	    assertEquals("nodeRemoved: 13", 
 	    		result6TreeCapture5);
@@ -210,7 +210,7 @@ public class OjTreeModelScript1Test extends Assert {
 	    
 	    String result6TreeCaptureLength = ((HtmlElement) page.getElementById(
 	    		"result6").getFirstByXPath(
-	    				"div[@class='ojTreeUI_captureLength']")).asText();
+	    				"div[@class='ojTreeUI_captureLength']")).asNormalizedText();
 	    
 	    assertEquals("ojTreeUI_captureLength: 9", 
 	    		result6TreeCaptureLength );
