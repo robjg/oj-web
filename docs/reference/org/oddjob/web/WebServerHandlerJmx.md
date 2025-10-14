@@ -13,15 +13,15 @@ This allows greater control over a server. For a quick Oddjob Web UI see
 
 | Property | Description |
 | -------- | ----------- |
-| [allowCrossOrigin](#propertyallowCrossOrigin) | Is cross-origin content allowed? | 
-| [classLoader](#propertyclassLoader) | The classloader passed to Jetty. | 
-| [jmxServer](#propertyjmxServer) | An Oddjob JMX Server. | 
-| [multiPartConfig](#propertymultiPartConfig) | Set parameters for MultiPartConfig so that file upload from a form works. | 
-| [uploadDirectory](#propertyuploadDirectory) | Upload directory. | 
+| [allowCrossOrigin](#propertyallowcrossorigin) | Is cross-origin content allowed? | 
+| [classLoader](#propertyclassloader) | The classloader passed to Jetty. | 
+| [jmxServer](#propertyjmxserver) | An Oddjob JMX Server. | 
+| [multiPartConfig](#propertymultipartconfig) | Set parameters for MultiPartConfig so that file upload from a form works. | 
+| [uploadDirectory](#propertyuploaddirectory) | Upload directory. | 
 
 
 ### Property Detail
-#### allowCrossOrigin <a name="propertyallowCrossOrigin"></a>
+#### allowCrossOrigin <a name="propertyallowcrossorigin"></a>
 
 <table style='font-size:smaller'>
       <tr><td><i>Configured By</i></td><td>ATTRIBUTE</td></tr>
@@ -31,7 +31,7 @@ This allows greater control over a server. For a quick Oddjob Web UI see
 
 Is cross-origin content allowed?
 
-#### classLoader <a name="propertyclassLoader"></a>
+#### classLoader <a name="propertyclassloader"></a>
 
 <table style='font-size:smaller'>
       <tr><td><i>Configured By</i></td><td>ELEMENT</td></tr>
@@ -45,7 +45,7 @@ classloader that loaded the component that is using this handler which will be t
 Oddball classloader. Setting this classloader will be complicated as it may require the
 Oddball classloader as a parent.
 
-#### jmxServer <a name="propertyjmxServer"></a>
+#### jmxServer <a name="propertyjmxserver"></a>
 
 <table style='font-size:smaller'>
       <tr><td><i>Configured By</i></td><td>ELEMENT</td></tr>
@@ -55,7 +55,7 @@ Oddball classloader as a parent.
 
 An Oddjob JMX Server.
 
-#### multiPartConfig <a name="propertymultiPartConfig"></a>
+#### multiPartConfig <a name="propertymultipartconfig"></a>
 
 <table style='font-size:smaller'>
       <tr><td><i>Configured By</i></td><td>ELEMENT</td></tr>
@@ -65,7 +65,7 @@ An Oddjob JMX Server.
 
 Set parameters for MultiPartConfig so that file upload from a form works.
 
-#### uploadDirectory <a name="propertyuploadDirectory"></a>
+#### uploadDirectory <a name="propertyuploaddirectory"></a>
 
 <table style='font-size:smaller'>
       <tr><td><i>Configured By</i></td><td>ELEMENT</td></tr>

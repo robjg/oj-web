@@ -10,12 +10,12 @@ The actual service API is defined in [org.oddjob.rest.OddjobApi](http://rgordon.
 
 | Property | Description |
 | -------- | ----------- |
-| [allowCrossOrigin](#propertyallowCrossOrigin) | Is cross origin content allowed? | 
-| [contextPath](#propertycontextPath) | The context path. | 
-| [multiPartConfig](#propertymultiPartConfig) | Set parameters for MultiPartConfig so that file upload from a form works. | 
+| [allowCrossOrigin](#propertyallowcrossorigin) | Is cross origin content allowed? | 
+| [contextPath](#propertycontextpath) | The context path. | 
+| [multiPartConfig](#propertymultipartconfig) | Set parameters for MultiPartConfig so that file upload from a form works. | 
 | [root](#propertyroot) | The root Oddjob component to expose via the web service. | 
-| [servicePath](#propertyservicePath) | The context path for the Oddjob web service. | 
-| [uploadDirectory](#propertyuploadDirectory) | Upload directory. | 
+| [servicePath](#propertyservicepath) | The context path for the Oddjob web service. | 
+| [uploadDirectory](#propertyuploaddirectory) | Upload directory. | 
 
 
 ### Example Summary
@@ -26,7 +26,7 @@ The actual service API is defined in [org.oddjob.rest.OddjobApi](http://rgordon.
 
 
 ### Property Detail
-#### allowCrossOrigin <a name="propertyallowCrossOrigin"></a>
+#### allowCrossOrigin <a name="propertyallowcrossorigin"></a>
 
 <table style='font-size:smaller'>
       <tr><td><i>Configured By</i></td><td>ATTRIBUTE</td></tr>
@@ -36,7 +36,7 @@ The actual service API is defined in [org.oddjob.rest.OddjobApi](http://rgordon.
 
 Is cross origin content allowed?
 
-#### contextPath <a name="propertycontextPath"></a>
+#### contextPath <a name="propertycontextpath"></a>
 
 <table style='font-size:smaller'>
       <tr><td><i>Configured By</i></td><td>ATTRIBUTE</td></tr>
@@ -46,7 +46,7 @@ Is cross origin content allowed?
 
 The context path.
 
-#### multiPartConfig <a name="propertymultiPartConfig"></a>
+#### multiPartConfig <a name="propertymultipartconfig"></a>
 
 <table style='font-size:smaller'>
       <tr><td><i>Configured By</i></td><td>ELEMENT</td></tr>
@@ -66,7 +66,7 @@ Set parameters for MultiPartConfig so that file upload from a form works.
 
 The root Oddjob component to expose via the web service.
 
-#### servicePath <a name="propertyservicePath"></a>
+#### servicePath <a name="propertyservicepath"></a>
 
 <table style='font-size:smaller'>
       <tr><td><i>Configured By</i></td><td>ATTRIBUTE</td></tr>
@@ -76,7 +76,7 @@ The root Oddjob component to expose via the web service.
 
 The context path for the Oddjob web service.
 
-#### uploadDirectory <a name="propertyuploadDirectory"></a>
+#### uploadDirectory <a name="propertyuploaddirectory"></a>
 
 <table style='font-size:smaller'>
       <tr><td><i>Configured By</i></td><td>ELEMENT</td></tr>

@@ -12,18 +12,18 @@ Only PUT and GET requests are supported. Basic Authentication is supported, and 
 
 | Property | Description |
 | -------- | ----------- |
-| [basicAuthentication](#propertybasicAuthentication) | Provide Username/Password for Basic Authentication. | 
+| [basicAuthentication](#propertybasicauthentication) | Provide Username/Password for Basic Authentication. | 
 | [content](#propertycontent) | The request body to send or the response body received. | 
-| [contentLength](#propertycontentLength) | Content length of a response. | 
-| [contentType](#propertycontentType) | The content-type of a POST request. | 
-| [downloadCount](#propertydownloadCount) | The bytes downloaded so far. | 
+| [contentLength](#propertycontentlength) | Content length of a response. | 
+| [contentType](#propertycontenttype) | The content-type of a POST request. | 
+| [downloadCount](#propertydownloadcount) | The bytes downloaded so far. | 
 | [method](#propertymethod) | The request method. | 
 | [name](#propertyname) | The name of the job. | 
 | [output](#propertyoutput) | The output (such as a file) to download to. | 
 | [parameters](#propertyparameters) | Parameters. | 
 | [progress](#propertyprogress) | Progress of a download in a human-readable format. | 
-| [requestBody](#propertyrequestBody) | The content to send in a POST Request. | 
-| [responseBody](#propertyresponseBody) | The content received if an output is not provided. | 
+| [requestBody](#propertyrequestbody) | The content to send in a POST Request. | 
+| [responseBody](#propertyresponsebody) | The content received if an output is not provided. | 
 | [ssl](#propertyssl) | Provide SSL Configuration. | 
 | [status](#propertystatus) | The return status. | 
 | [timeout](#propertytimeout) | Timeout of requests in seconds. | 
@@ -40,7 +40,7 @@ Only PUT and GET requests are supported. Basic Authentication is supported, and 
 
 
 ### Property Detail
-#### basicAuthentication <a name="propertybasicAuthentication"></a>
+#### basicAuthentication <a name="propertybasicauthentication"></a>
 
 <table style='font-size:smaller'>
       <tr><td><i>Configured By</i></td><td>ELEMENT</td></tr>
@@ -62,7 +62,7 @@ The request body to send or the response body received. This maps to
 <cdoe>requestBody</cdoe> and <code>responseBody</code> as a convenience but is confusing
 so should probably be deprecated.
 
-#### contentLength <a name="propertycontentLength"></a>
+#### contentLength <a name="propertycontentlength"></a>
 
 <table style='font-size:smaller'>
       <tr><td><i>Access</i></td><td>READ_ONLY</td></tr>
@@ -71,7 +71,7 @@ so should probably be deprecated.
 
 Content length of a response.
 
-#### contentType <a name="propertycontentType"></a>
+#### contentType <a name="propertycontenttype"></a>
 
 <table style='font-size:smaller'>
       <tr><td><i>Configured By</i></td><td>ATTRIBUTE</td></tr>
@@ -81,7 +81,7 @@ Content length of a response.
 
 The content-type of a POST request. Useful for sending forms.
 
-#### downloadCount <a name="propertydownloadCount"></a>
+#### downloadCount <a name="propertydownloadcount"></a>
 
 <table style='font-size:smaller'>
       <tr><td><i>Access</i></td><td>READ_ONLY</td></tr>
@@ -140,7 +140,7 @@ Parameters.
 Progress of a download in a human-readable format. Only set
 for a stream download.
 
-#### requestBody <a name="propertyrequestBody"></a>
+#### requestBody <a name="propertyrequestbody"></a>
 
 <table style='font-size:smaller'>
       <tr><td><i>Configured By</i></td><td>TEXT</td></tr>
@@ -150,7 +150,7 @@ for a stream download.
 
 The content to send in a POST Request.
 
-#### responseBody <a name="propertyresponseBody"></a>
+#### responseBody <a name="propertyresponsebody"></a>
 
 <table style='font-size:smaller'>
       <tr><td><i>Access</i></td><td>READ_ONLY</td></tr>

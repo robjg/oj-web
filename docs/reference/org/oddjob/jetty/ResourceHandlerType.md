@@ -9,10 +9,10 @@ class path.
 | Property | Description |
 | -------- | ----------- |
 | [base](#propertybase) | The base directory or resource from where to serve content. | 
-| [directoriesListed](#propertydirectoriesListed) | List directories or not. | 
-| [minMemoryMappedContentLength](#propertyminMemoryMappedContentLength) | Control memory mapped size. | 
-| [resourceType](#propertyresourceType) | The type of resource, FILE or CLASSPATH. | 
-| [welcomeFiles](#propertywelcomeFiles) | List of welcome files to serve. | 
+| [directoriesListed](#propertydirectorieslisted) | List directories or not. | 
+| [minMemoryMappedContentLength](#propertyminmemorymappedcontentlength) | Control memory mapped size. | 
+| [resourceType](#propertyresourcetype) | The type of resource, FILE or CLASSPATH. | 
+| [welcomeFiles](#propertywelcomefiles) | List of welcome files to serve. | 
 
 
 ### Example Summary
@@ -34,7 +34,7 @@ class path.
 
 The base directory or resource from where to serve content.
 
-#### directoriesListed <a name="propertydirectoriesListed"></a>
+#### directoriesListed <a name="propertydirectorieslisted"></a>
 
 <table style='font-size:smaller'>
       <tr><td><i>Configured By</i></td><td>ATTRIBUTE</td></tr>
@@ -44,7 +44,7 @@ The base directory or resource from where to serve content.
 
 List directories or not.
 
-#### minMemoryMappedContentLength <a name="propertyminMemoryMappedContentLength"></a>
+#### minMemoryMappedContentLength <a name="propertyminmemorymappedcontentlength"></a>
 
 <table style='font-size:smaller'>
       <tr><td><i>Configured By</i></td><td>ATTRIBUTE</td></tr>
@@ -62,7 +62,7 @@ will be removed in Oddjob 1.8.
 
 
 
-#### resourceType <a name="propertyresourceType"></a>
+#### resourceType <a name="propertyresourcetype"></a>
 
 <table style='font-size:smaller'>
       <tr><td><i>Configured By</i></td><td>ATTRIBUTE</td></tr>
@@ -72,7 +72,7 @@ will be removed in Oddjob 1.8.
 
 The type of resource, FILE or CLASSPATH.
 
-#### welcomeFiles <a name="propertywelcomeFiles"></a>
+#### welcomeFiles <a name="propertywelcomefiles"></a>
 
 <table style='font-size:smaller'>
       <tr><td><i>Configured By</i></td><td>ELEMENT</td></tr>

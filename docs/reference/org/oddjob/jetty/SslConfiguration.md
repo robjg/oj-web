@@ -35,18 +35,18 @@ explain what's going on.
 
 | Property | Description |
 | -------- | ----------- |
-| [clientAuth](#propertyclientAuth) | Should the server perform client authentication. | 
-| [hostnameVerifier](#propertyhostnameVerifier) | Something that can verify if a hostname is acceptable when the host doesn't match the certificate CN. | 
-| [ignoreSni](#propertyignoreSni) | Ignore SNI checks on the server. | 
-| [keyManagerPassword](#propertykeyManagerPassword) | The key password. | 
-| [keyStorePassword](#propertykeyStorePassword) | The key store password. | 
-| [keyStorePath](#propertykeyStorePath) | The path of the store that contains the private key and signed cert. | 
-| [keyStoreType](#propertykeyStoreType) | The key store type. | 
+| [clientAuth](#propertyclientauth) | Should the server perform client authentication. | 
+| [hostnameVerifier](#propertyhostnameverifier) | Something that can verify if a hostname is acceptable when the host doesn't match the certificate CN. | 
+| [ignoreSni](#propertyignoresni) | Ignore SNI checks on the server. | 
+| [keyManagerPassword](#propertykeymanagerpassword) | The key password. | 
+| [keyStorePassword](#propertykeystorepassword) | The key store password. | 
+| [keyStorePath](#propertykeystorepath) | The path of the store that contains the private key and signed cert. | 
+| [keyStoreType](#propertykeystoretype) | The key store type. | 
 | [port](#propertyport) | The port of the server ssl connector. | 
-| [trustAll](#propertytrustAll) | Should the client trust all certificates. | 
-| [trustStorePassword](#propertytrustStorePassword) | The trust store password. | 
-| [trustStorePath](#propertytrustStorePath) | The path of the store that contains trusted public certs. | 
-| [trustStoreType](#propertytrustStoreType) | The trust store type. | 
+| [trustAll](#propertytrustall) | Should the client trust all certificates. | 
+| [trustStorePassword](#propertytruststorepassword) | The trust store password. | 
+| [trustStorePath](#propertytruststorepath) | The path of the store that contains trusted public certs. | 
+| [trustStoreType](#propertytruststoretype) | The trust store type. | 
 
 
 ### Example Summary
@@ -60,7 +60,7 @@ explain what's going on.
 
 
 ### Property Detail
-#### clientAuth <a name="propertyclientAuth"></a>
+#### clientAuth <a name="propertyclientauth"></a>
 
 <table style='font-size:smaller'>
       <tr><td><i>Configured By</i></td><td>ATTRIBUTE</td></tr>
@@ -70,7 +70,7 @@ explain what's going on.
 
 Should the server perform client authentication. NONE/WANT/NEED.
 
-#### hostnameVerifier <a name="propertyhostnameVerifier"></a>
+#### hostnameVerifier <a name="propertyhostnameverifier"></a>
 
 <table style='font-size:smaller'>
       <tr><td><i>Configured By</i></td><td>ELEMENT</td></tr>
@@ -82,7 +82,7 @@ Something that can verify if a hostname is acceptable when the host doesn't matc
 the certificate CN. In Jetty, to get this work, Client Endpoint Identification Algorithm is set to null. This
 generates this warning: <em>No Client EndPointIdentificationAlgorithm configured for Client</em>
 
-#### ignoreSni <a name="propertyignoreSni"></a>
+#### ignoreSni <a name="propertyignoresni"></a>
 
 <table style='font-size:smaller'>
       <tr><td><i>Configured By</i></td><td>ATTRIBUTE</td></tr>
@@ -94,7 +94,7 @@ Ignore SNI checks on the server. This allows us to use localhost without getting
 an `org.eclipse.jetty.http.BadMessageException: 400: Invalid SNI` which is happening since upgrading
 Jetty version.
 
-#### keyManagerPassword <a name="propertykeyManagerPassword"></a>
+#### keyManagerPassword <a name="propertykeymanagerpassword"></a>
 
 <table style='font-size:smaller'>
       <tr><td><i>Configured By</i></td><td>ATTRIBUTE</td></tr>
@@ -104,7 +104,7 @@ Jetty version.
 
 The key password. Only applicable to JKS stores.
 
-#### keyStorePassword <a name="propertykeyStorePassword"></a>
+#### keyStorePassword <a name="propertykeystorepassword"></a>
 
 <table style='font-size:smaller'>
       <tr><td><i>Configured By</i></td><td>ATTRIBUTE</td></tr>
@@ -114,7 +114,7 @@ The key password. Only applicable to JKS stores.
 
 The key store password.
 
-#### keyStorePath <a name="propertykeyStorePath"></a>
+#### keyStorePath <a name="propertykeystorepath"></a>
 
 <table style='font-size:smaller'>
       <tr><td><i>Configured By</i></td><td>ATTRIBUTE</td></tr>
@@ -124,7 +124,7 @@ The key store password.
 
 The path of the store that contains the private key and signed cert.
 
-#### keyStoreType <a name="propertykeyStoreType"></a>
+#### keyStoreType <a name="propertykeystoretype"></a>
 
 <table style='font-size:smaller'>
       <tr><td><i>Configured By</i></td><td>ATTRIBUTE</td></tr>
@@ -144,7 +144,7 @@ The key store type. Either JKS or PKCS12.
 
 The port of the server ssl connector.
 
-#### trustAll <a name="propertytrustAll"></a>
+#### trustAll <a name="propertytrustall"></a>
 
 <table style='font-size:smaller'>
       <tr><td><i>Configured By</i></td><td>ATTRIBUTE</td></tr>
@@ -154,7 +154,7 @@ The port of the server ssl connector.
 
 Should the client trust all certificates.
 
-#### trustStorePassword <a name="propertytrustStorePassword"></a>
+#### trustStorePassword <a name="propertytruststorepassword"></a>
 
 <table style='font-size:smaller'>
       <tr><td><i>Configured By</i></td><td>ATTRIBUTE</td></tr>
@@ -164,7 +164,7 @@ Should the client trust all certificates.
 
 The trust store password.
 
-#### trustStorePath <a name="propertytrustStorePath"></a>
+#### trustStorePath <a name="propertytruststorepath"></a>
 
 <table style='font-size:smaller'>
       <tr><td><i>Configured By</i></td><td>ATTRIBUTE</td></tr>
@@ -174,7 +174,7 @@ The trust store password.
 
 The path of the store that contains trusted public certs.
 
-#### trustStoreType <a name="propertytrustStoreType"></a>
+#### trustStoreType <a name="propertytruststoretype"></a>
 
 <table style='font-size:smaller'>
       <tr><td><i>Configured By</i></td><td>ATTRIBUTE</td></tr>

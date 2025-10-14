@@ -9,16 +9,16 @@ with an [web:remote-handler](../../../org/oddjob/web/WebServerHandlerJmx.md).
 
 | Property | Description |
 | -------- | ----------- |
-| [allowCrossOrigin](#propertyallowCrossOrigin) | Is cross-origin content allowed? | 
-| [classLoader](#propertyclassLoader) | The classloader passed to Jetty. | 
-| [jmxServer](#propertyjmxServer) | An Oddjob JMX Server. | 
-| [multiPartConfig](#propertymultiPartConfig) | Set parameters for MultiPartConfig so that file upload from a form works. | 
+| [allowCrossOrigin](#propertyallowcrossorigin) | Is cross-origin content allowed? | 
+| [classLoader](#propertyclassloader) | The classloader passed to Jetty. | 
+| [jmxServer](#propertyjmxserver) | An Oddjob JMX Server. | 
+| [multiPartConfig](#propertymultipartconfig) | Set parameters for MultiPartConfig so that file upload from a form works. | 
 | [name](#propertyname) | The name of service. | 
 | [port](#propertyport) | The port number the server listens on. | 
 | [root](#propertyroot) | The root component to expose. | 
-| [uploadDirectory](#propertyuploadDirectory) | Upload directory. | 
-| [webappDir](#propertywebappDir) | The directory for the html files for oddjob web. | 
-| [webappResource](#propertywebappResource) | The class path to the html files for oddjob web. | 
+| [uploadDirectory](#propertyuploaddirectory) | Upload directory. | 
+| [webappDir](#propertywebappdir) | The directory for the html files for oddjob web. | 
+| [webappResource](#propertywebappresource) | The class path to the html files for oddjob web. | 
 
 
 ### Example Summary
@@ -29,7 +29,7 @@ with an [web:remote-handler](../../../org/oddjob/web/WebServerHandlerJmx.md).
 
 
 ### Property Detail
-#### allowCrossOrigin <a name="propertyallowCrossOrigin"></a>
+#### allowCrossOrigin <a name="propertyallowcrossorigin"></a>
 
 <table style='font-size:smaller'>
       <tr><td><i>Configured By</i></td><td>ATTRIBUTE</td></tr>
@@ -39,7 +39,7 @@ with an [web:remote-handler](../../../org/oddjob/web/WebServerHandlerJmx.md).
 
 Is cross-origin content allowed?
 
-#### classLoader <a name="propertyclassLoader"></a>
+#### classLoader <a name="propertyclassloader"></a>
 
 <table style='font-size:smaller'>
       <tr><td><i>Configured By</i></td><td>ELEMENT</td></tr>
@@ -53,7 +53,7 @@ classloader that loaded this component which will be the
 Oddball classloader. Setting this classloader will be complicated as it may require the
 Oddball classloader as a parent.
 
-#### jmxServer <a name="propertyjmxServer"></a>
+#### jmxServer <a name="propertyjmxserver"></a>
 
 <table style='font-size:smaller'>
       <tr><td><i>Configured By</i></td><td>ATTRIBUTE</td></tr>
@@ -63,7 +63,7 @@ Oddball classloader as a parent.
 
 An Oddjob JMX Server.
 
-#### multiPartConfig <a name="propertymultiPartConfig"></a>
+#### multiPartConfig <a name="propertymultipartconfig"></a>
 
 <table style='font-size:smaller'>
       <tr><td><i>Configured By</i></td><td>ELEMENT</td></tr>
@@ -103,7 +103,7 @@ The port number the server listens on.
 
 The root component to expose.
 
-#### uploadDirectory <a name="propertyuploadDirectory"></a>
+#### uploadDirectory <a name="propertyuploaddirectory"></a>
 
 <table style='font-size:smaller'>
       <tr><td><i>Configured By</i></td><td>ELEMENT</td></tr>
@@ -113,7 +113,7 @@ The root component to expose.
 
 Upload directory. Required for an action form that specifies a file.
 
-#### webappDir <a name="propertywebappDir"></a>
+#### webappDir <a name="propertywebappdir"></a>
 
 <table style='font-size:smaller'>
       <tr><td><i>Configured By</i></td><td>ELEMENT</td></tr>
@@ -124,7 +124,7 @@ Upload directory. Required for an action form that specifies a file.
 The directory for the html files for oddjob web. Mainly used for
 development to save stopping and starting Jetty.
 
-#### webappResource <a name="propertywebappResource"></a>
+#### webappResource <a name="propertywebappresource"></a>
 
 <table style='font-size:smaller'>
       <tr><td><i>Configured By</i></td><td>ATTRIBUTE</td></tr>

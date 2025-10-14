@@ -7,18 +7,18 @@ An Oddjob client that works over http.
 
 | Property | Description |
 | -------- | ----------- |
-| [handlerFactories](#propertyhandlerFactories) | Additional handler factories that allow any interface to be invoked from a remote Oddjob. | 
+| [handlerFactories](#propertyhandlerfactories) | Additional handler factories that allow any interface to be invoked from a remote Oddjob. | 
 | [heartbeat](#propertyheartbeat) | The heart beat interval, in milliseconds. | 
 | [host](#propertyhost) |  | 
-| [logPollingInterval](#propertylogPollingInterval) | The number of milliseconds between polling for new log events. | 
-| [maxConsoleLines](#propertymaxConsoleLines) | The maximum number of console lines to retrieve for any component. | 
-| [maxLoggerLines](#propertymaxLoggerLines) | The maximum number of log lines to retrieve for any component. | 
+| [logPollingInterval](#propertylogpollinginterval) | The number of milliseconds between polling for new log events. | 
+| [maxConsoleLines](#propertymaxconsolelines) | The maximum number of console lines to retrieve for any component. | 
+| [maxLoggerLines](#propertymaxloggerlines) | The maximum number of log lines to retrieve for any component. | 
 | [name](#propertyname) |  | 
 | [port](#propertyport) |  | 
 
 
 ### Property Detail
-#### handlerFactories <a name="propertyhandlerFactories"></a>
+#### handlerFactories <a name="propertyhandlerfactories"></a>
 
 <table style='font-size:smaller'>
       <tr><td><i>Configured By</i></td><td>ELEMENT</td></tr>
@@ -48,7 +48,7 @@ The heart beat interval, in milliseconds.
 
 
 
-#### logPollingInterval <a name="propertylogPollingInterval"></a>
+#### logPollingInterval <a name="propertylogpollinginterval"></a>
 
 <table style='font-size:smaller'>
       <tr><td><i>Configured By</i></td><td>ATTRIBUTE</td></tr>
@@ -59,7 +59,7 @@ The heart beat interval, in milliseconds.
 The number of milliseconds between polling for new
 log events. Defaults to 5.
 
-#### maxConsoleLines <a name="propertymaxConsoleLines"></a>
+#### maxConsoleLines <a name="propertymaxconsolelines"></a>
 
 <table style='font-size:smaller'>
       <tr><td><i>Configured By</i></td><td>ATTRIBUTE</td></tr>
@@ -70,7 +70,7 @@ log events. Defaults to 5.
 The maximum number of console lines to retrieve for any
 component.
 
-#### maxLoggerLines <a name="propertymaxLoggerLines"></a>
+#### maxLoggerLines <a name="propertymaxloggerlines"></a>
 
 <table style='font-size:smaller'>
       <tr><td><i>Configured By</i></td><td>ATTRIBUTE</td></tr>
