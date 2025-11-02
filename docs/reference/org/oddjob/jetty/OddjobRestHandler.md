@@ -4,7 +4,7 @@
 Provide the Oddjob REST Service.
 
 
-The actual service API is defined in `org.oddjob.rest.OddjobApi`.
+The actual service API is defined in [org.oddjob.rest.OddjobApi](http://rgordon.co.uk/oddjob/1.6.0/api/org/oddjob/rest/OddjobApi.html).
 
 ### Property Summary
 
